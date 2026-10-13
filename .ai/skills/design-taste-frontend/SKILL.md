@@ -5,6 +5,8 @@ description: Anti-slop frontend skill for landing pages, portfolios, and redesig
 
 # tasteskill: Anti-Slop Frontend Skill
 
+> **Dùng trong IR DNA:** Áp dụng cho giao diện sinh viên (màn chào, làm bài, giải mã, kết quả). Dù skill ghi "không dành cho UI nhiều bước", màn làm bài vẫn dùng skill này cho nhịp chữ, màu, chuyển động; luồng từng câu theo `.ai/system/kien_truc.md`. Khi skill này gợi ý Tailwind, shadcn/ui, GSAP, font Geist/Satoshi hay icon Phosphor thì làm theo bảng mục 0.3 của `.ai/rules/quy_tac_code.md` (Mantine, Motion, Be Vietnam Pro, `@tabler/icons-react`). Luật dự án luôn thắng skill.
+
 > Landing pages, portfolios, and redesigns. Not dashboards, not data tables, not multi-step product UI.
 > Every rule below is **contextual**. None of it fires automatically. First read the brief, then pull only what fits.
 

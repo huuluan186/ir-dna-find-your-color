@@ -5,6 +5,8 @@ description: Clean editorial-style interfaces. Warm monochrome palette, typograp
 
 # Protocol: Premium Utilitarian Minimalism UI Architect
 
+> **Dùng trong IR DNA:** Áp dụng cho trang quản trị `/admin/*`. Khi skill này gợi ý Tailwind, shadcn/ui, GSAP, font Geist/Satoshi hay icon Phosphor thì làm theo bảng mục 0.3 của `.ai/rules/quy_tac_code.md` (Mantine, Motion, Be Vietnam Pro, `@tabler/icons-react`). Luật dự án luôn thắng skill.
+
 ## 1. Protocol Overview
 Name: Premium Utilitarian Minimalism & Editorial UI
 Description: An advanced frontend engineering directive for generating highly refined, ultra-minimalist, "document-style" web interfaces analogous to top-tier workspace platforms. This protocol strictly enforces a high-contrast warm monochrome palette, bespoke typographic hierarchies, meticulous structural macro-whitespace, bento-grid layouts, and an ultra-flat component architecture with deliberate muted pastel accents. It actively rejects standard generic SaaS design trends.
