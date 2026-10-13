@@ -192,7 +192,7 @@ ir-dna-find-your-color/
 │   │   │              ResultHero, ColorRanking, SoundToggle
 │   │   ├── admin/     ColorEditor, QuestionEditor, BalanceWarning, ResultsTable,
 │   │   │              ColorChart, QrPanel
-│   │   └── shared/    AppShell, Disclaimer, Providers
+│   │   └── shared/    Providers, StudentFrame (khung ~480px), Disclaimer
 │   ├── features/                              # mỗi tính năng một lát cắt
 │   │   ├── auth/  server/ (queries.ts, mutations.ts), client/ (api.ts, hooks.ts), schema.ts
 │   │   ├── quiz/  server/ (lấy đề bỏ điểm, nộp bài), client/, schema.ts
