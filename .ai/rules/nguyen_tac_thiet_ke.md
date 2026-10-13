@@ -46,7 +46,7 @@ Khi cùng một trạng thái (state) hoặc thông tin logic được duy trì 
 #### Trong Backend & CSDL (Next.js server / Supabase Postgres)
 * **Anti-pattern:** Bảng `cau_hoi` lưu thêm cột `tong_diem_toi_da` cho từng màu và cố cập nhật mỗi khi admin sửa điểm đáp án. Chỉ cần quên một chỗ là phần trăm kết quả bị sai.
 * **Best Practice:** Điểm tối đa của từng màu được tính on-the-fly từ bảng `diem_dap_an` mỗi lần chấm (vài chục dòng, rẻ không đáng kể).
-* **Ngoại lệ có chủ đích:** `luot_lam` lưu lại `ty_le` và `id_mau_chinh` vì đó là **ảnh chụp kết quả sinh viên đã thấy tại thời điểm làm bài**, không phải dữ liệu phái sinh của trạng thái hiện tại. Nếu admin đổi điểm sau đó, kết quả cũ vẫn giữ nguyên; muốn chấm lại thì chạy lại từ cột `dap_an_da_chon`.
+* **Ngoại lệ có chủ đích:** `ket_qua` lưu lại `bang_xep_hang`, `id_mau_chinh` và `ma_hex_rieng` vì đó là **ảnh chụp kết quả sinh viên đã thấy tại thời điểm làm bài**, không phải dữ liệu phái sinh của trạng thái hiện tại. Nếu admin đổi điểm sau đó, kết quả cũ vẫn giữ nguyên; muốn chấm lại thì chạy lại từ cột `dap_an_da_chon`.
 
 > [!TIP]
 > **Đánh đổi (Trade-off):** Chi phí CPU để tính toán on-the-fly là cực kỳ rẻ (vài nano-giây hoặc micro-giây). Chi phí khắc phục dữ liệu bị sai lệch do bất đồng bộ đắt hơn gấp hàng nghìn lần. Chỉ xem xét lưu trữ dữ liệu tính sẵn khi chi phí tính toán thực sự trở thành nút thắt cổ chai đã được đo lường (profiled).

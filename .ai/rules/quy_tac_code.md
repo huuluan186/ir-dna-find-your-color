@@ -148,6 +148,6 @@ Ngắn gọn, nêu chức năng chính. Ví dụ: `Màn kết quả: bảng xế
 
 * **Cấu hình:** biến môi trường trong `.env.local` (máy local) và Vercel (bản chạy thật); mẫu ở `.env.example`. Không commit `.env.local`.
 * **Kiểm tra dữ liệu vào:** mọi Server Action và route handler kiểm tra input bằng Zod trước khi chạm CSDL.
-* **Đặt tên CSDL (Postgres):** bảng và cột **chữ thường, snake_case, tiếng Việt không dấu** (`mau_gen`, `cau_hoi`, `dap_an`, `diem_dap_an`, `sinh_vien`, `luot_lam`, `cai_dat`). Không dùng chữ hoa vì Postgres buộc phải đặt trong ngoặc kép. Khoá chính dạng `id_<bảng>` (riêng `sinh_vien` dùng `mssv`).
-* **Trường audit:** bảng nội dung (`mau_gen`, `cau_hoi`, `dap_an`) có `created_at`, `updated_at`, `is_deleted`, `deleted_at`; xoá là xoá mềm để lượt làm cũ không mất tham chiếu.
+* **Đặt tên CSDL (Postgres):** bảng và cột **chữ thường, snake_case, tiếng Việt không dấu** (`mau_gen`, `cau_hoi`, `dap_an`, `diem_dap_an`, `sinh_vien`, `ket_qua`, `cai_dat`). Không dùng chữ hoa vì Postgres buộc phải đặt trong ngoặc kép. Khoá chính dạng `id_<bảng>` (riêng `sinh_vien` dùng `mssv`).
+* **Trường audit:** bảng nội dung (`mau_gen`, `cau_hoi`, `dap_an`) có `created_at`, `updated_at`, `is_deleted`, `deleted_at`; xoá là xoá mềm để kết quả cũ không mất tham chiếu.
 * **Xử lý lỗi:** không trả thông báo lỗi nội bộ hay stack trace về client. Ghi log bằng `console.error` (hiện trong Vercel Logs), trả thông báo chung "Lỗi hệ thống, vui lòng thử lại sau".

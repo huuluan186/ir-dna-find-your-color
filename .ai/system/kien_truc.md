@@ -68,11 +68,11 @@ sequenceDiagram
 	SV->>App: Vào /quiz
 	App->>DB: Lấy cau_hoi + dap_an đang bật (cache)
 	App-->>SV: Bộ đề KHÔNG kèm điểm
-	Note over SV: Làm 8–10 câu, không cần mạng
+	Note over SV: Làm 8–10 câu. Đáp án giữ tạm trên máy,<br/>chưa gửi; rớt mạng giữa chừng vẫn làm tiếp được
 	SV->>App: Nộp danh sách id_dap_an
 	App->>DB: Lấy diem_dap_an + mau_gen
 	App->>App: scoring.ts: cộng điểm → % → xếp hạng → trộn màu
-	App->>DB: Lưu luot_lam
+	App->>DB: Lưu 1 dòng vào ket_qua
 	App-->>SV: /result: màu chính, ý nghĩa, xếp hạng 6 màu
 ```
 
@@ -86,7 +86,7 @@ sequenceDiagram
 | `/admin/login` | Nhóm | Không | Mật khẩu chung `ADMIN_PASSWORD` |
 | `/admin/mau-gen` | Nhóm | Phiên admin | Thêm/sửa 6 mã gen màu |
 | `/admin/cau-hoi` | Nhóm | Phiên admin | Câu hỏi, 4 đáp án, chọn màu chính (+3) / phụ (+1); cảnh báo lệch màu |
-| `/admin/ket-qua` | Nhóm | Phiên admin | Danh sách lượt làm, biểu đồ tỉ lệ màu, xuất CSV |
+| `/admin/ket-qua` | Nhóm | Phiên admin | Danh sách kết quả, biểu đồ tỉ lệ màu, xuất CSV |
 | `/admin/qr` | Nhóm | Phiên admin | Mã QR của link app, tải PNG/SVG để in |
 
 ## 4. THUẬT TOÁN CHẤM ĐIỂM (`src/lib/scoring.ts`)

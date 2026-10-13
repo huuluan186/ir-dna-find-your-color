@@ -13,7 +13,7 @@ CSDL: **Supabase Postgres**. Quy ước tên: chữ thường, snake_case, tiế
 | 3 | **`dap_an`** | Nội dung | 4 đáp án của mỗi câu |
 | 4 | **`diem_dap_an`** | Nội dung | **Ma trận điểm**: đáp án × màu → số điểm |
 | 5 | **`sinh_vien`** | Phát sinh | Sinh viên đã đăng ký (mã SV, họ tên) |
-| 6 | **`luot_lam`** | Phát sinh | Mỗi lần làm bài: đáp án đã chọn và ảnh chụp kết quả |
+| 6 | **`ket_qua`** | Phát sinh | Mỗi lần làm bài là 1 dòng: đáp án đã chọn (input) và kết quả đã chấm (output) |
 | 7 | **`cai_dat`** | Cấu hình | Cặp khoá–giá trị (cho làm lại, định dạng mã SV...) |
 
 ## II. SƠ ĐỒ QUAN HỆ
@@ -23,8 +23,8 @@ erDiagram
 	mau_gen ||--o{ diem_dap_an : "được cộng điểm"
 	cau_hoi ||--|{ dap_an : "có 4"
 	dap_an ||--o{ diem_dap_an : "cộng điểm cho"
-	sinh_vien ||--o{ luot_lam : "làm"
-	mau_gen ||--o{ luot_lam : "là màu chính của"
+	sinh_vien ||--o{ ket_qua : "làm"
+	mau_gen ||--o{ ket_qua : "là màu chính của"
 
 	mau_gen {
 		bigint id_mau_gen PK
@@ -55,11 +55,11 @@ erDiagram
 		text mssv PK
 		text ho_ten
 	}
-	luot_lam {
-		bigint id_luot_lam PK
+	ket_qua {
+		bigint id_ket_qua PK
 		text mssv FK
 		jsonb dap_an_da_chon
-		jsonb ket_qua
+		jsonb bang_xep_hang
 		bigint id_mau_chinh FK
 		char7 ma_hex_rieng
 	}
@@ -71,7 +71,7 @@ erDiagram
 
 ## III. CHI TIẾT TỪNG BẢNG
 
-> **Trường audit:** `mau_gen`, `cau_hoi`, `dap_an` có `created_at TIMESTAMPTZ NOT NULL DEFAULT now()`, `updated_at TIMESTAMPTZ NULL`, `is_deleted BOOLEAN NOT NULL DEFAULT false`, `deleted_at TIMESTAMPTZ NULL`. Xoá là xoá mềm, để lượt làm cũ vẫn tra được màu và đáp án. `sinh_vien`, `luot_lam` chỉ có `created_at` (và `updated_at` cho `sinh_vien`).
+> **Trường audit:** `mau_gen`, `cau_hoi`, `dap_an` có `created_at TIMESTAMPTZ NOT NULL DEFAULT now()`, `updated_at TIMESTAMPTZ NULL`, `is_deleted BOOLEAN NOT NULL DEFAULT false`, `deleted_at TIMESTAMPTZ NULL`. Xoá là xoá mềm, để kết quả cũ vẫn tra được màu và đáp án. `sinh_vien`, `ket_qua` chỉ có `created_at` (và `updated_at` cho `sinh_vien`).
 
 ### 1. `mau_gen`
 | Cột | Kiểu | Ràng buộc | Mô tả |
@@ -115,17 +115,41 @@ Chỉ lưu ô khác 0, nên mỗi đáp án thường có 1–2 dòng.
 | `mssv` | `TEXT` | PK, CHECK theo định dạng mã SV | Nhập trên điện thoại bằng bàn phím số |
 | `ho_ten` | `TEXT` | NOT NULL | Tự viết hoa chữ đầu |
 
-### 6. `luot_lam`
+### 6. `ket_qua`
 | Cột | Kiểu | Ràng buộc | Mô tả |
 | :--- | :--- | :--- | :--- |
-| `id_luot_lam` | `BIGINT` | PK, identity | |
+| `id_ket_qua` | `BIGINT` | PK, identity | |
 | `mssv` | `TEXT` | FK → `sinh_vien`, NOT NULL | |
 | `dap_an_da_chon` | `JSONB` | NOT NULL | Mảng `id_dap_an` theo thứ tự câu |
-| `ket_qua` | `JSONB` | NOT NULL | Bảng xếp hạng lúc chấm: `[{id_mau_gen, diem, toi_da, phan_tram}]` |
+| `bang_xep_hang` | `JSONB` | NOT NULL | Điểm của tất cả các màu lúc chấm, xếp giảm dần (xem ví dụ bên dưới) |
 | `id_mau_chinh` | `BIGINT` | FK → `mau_gen`, NOT NULL | Để thống kê nhanh tỉ lệ màu |
 | `ma_hex_rieng` | `CHAR(7)` | NOT NULL | Màu trộn riêng của sinh viên |
 
-`ket_qua`, `id_mau_chinh`, `ma_hex_rieng` là **ảnh chụp kết quả sinh viên đã thấy**, không phải dữ liệu phái sinh của trạng thái hiện tại (xem `nguyen_tac_thiet_ke.md` mục 1). Index: `(mssv, created_at DESC)` để lấy lượt gần nhất.
+`bang_xep_hang`, `id_mau_chinh`, `ma_hex_rieng` là **ảnh chụp kết quả sinh viên đã thấy**, không phải dữ liệu phái sinh của trạng thái hiện tại (xem `nguyen_tac_thiet_ke.md` mục 1). Index: `(mssv, created_at DESC)` để lấy kết quả gần nhất.
+
+Ví dụ một dòng (bạn Minh, mã SV `2300001234`, bộ đề 3 câu minh hoạ):
+
+| Cột | Giá trị |
+| :--- | :--- |
+| `id_ket_qua` | `1` |
+| `mssv` | `2300001234` |
+| `dap_an_da_chon` | `[11, 21, 31]` (mã của đáp án 1A, 2A, 3A) |
+| `bang_xep_hang` | JSON bên dưới |
+| `id_mau_chinh` | `1` (Xanh lam) |
+| `ma_hex_rieng` | `#3D49A2` |
+| `created_at` | `2026-11-20 09:15:02+07` |
+
+```json
+[
+	{ "id_mau_gen": 1, "ten_mau": "Xanh lam", "diem": 6, "toi_da": 7, "phan_tram": 86 },
+	{ "id_mau_gen": 3, "ten_mau": "Tím", "diem": 4, "toi_da": 7, "phan_tram": 57 },
+	{ "id_mau_gen": 5, "ten_mau": "Xanh lá", "diem": 1, "toi_da": 7, "phan_tram": 14 },
+	{ "id_mau_gen": 2, "ten_mau": "Vàng", "diem": 0, "toi_da": 9, "phan_tram": 0 },
+	{ "id_mau_gen": 4, "ten_mau": "Cam", "diem": 0, "toi_da": 9, "phan_tram": 0 }
+]
+```
+
+`ten_mau` được chép vào để bảng xếp hạng cũ vẫn đọc đúng kể cả khi admin đổi tên màu sau này.
 
 ### 7. `cai_dat`
 | `khoa` | `gia_tri` (ví dụ) | Ý nghĩa |
@@ -138,5 +162,5 @@ Chỉ lưu ô khác 0, nên mỗi đáp án thường có 1–2 dòng.
 
 1. **`cau_hoi` – `dap_an` (1 - N):** mỗi câu đang bật phải có đúng 4 đáp án chưa xoá (kiểm tra ở trang admin trước khi bật câu).
 2. **`dap_an` – `diem_dap_an` – `mau_gen` (N - N):** mỗi đáp án nên có đúng 1 màu chính (3 điểm), tối đa 1 màu phụ (1 điểm). Trang admin cảnh báo khi số lần làm màu chính của các màu lệch nhau quá 1.
-3. **`sinh_vien` – `luot_lam` (1 - N):** nếu `cho_lam_lai = false`, server từ chối nộp bài khi sinh viên đã có lượt. Thống kê dùng lượt gần nhất của mỗi sinh viên.
+3. **`sinh_vien` – `ket_qua` (1 - N):** nếu `cho_lam_lai = false`, server từ chối nộp bài khi sinh viên đã có kết quả. Thống kê dùng kết quả gần nhất của mỗi sinh viên.
 4. **Bảo mật:** bật RLS trên cả 7 bảng, không tạo policy nào cho `anon`/`authenticated`. Chỉ server dùng service role key truy cập.
