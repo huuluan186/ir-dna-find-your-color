@@ -15,7 +15,7 @@ AI **tự đọc** các file trong cột "Đọc thêm" theo đúng loại việ
 | :--- | :--- |
 | `.ai/rules/` | Quy tắc code (file này), nguyên tắc thiết kế phần mềm (`nguyen_tac_thiet_ke.md`) |
 | `.ai/system/` | Kiến trúc hệ thống (`kien_truc.md`), thiết kế CSDL (`thiet_ke_csdl.md`) |
-| `.ai/skills/` | Hướng dẫn chuyên biệt: commit (`git-commit`), Mantine (`mantine-form`, `mantine-custom-components`), giao diện (`design-taste-frontend`, `minimalist-ui`) |
+| `.ai/skills/` | Hướng dẫn chuyên biệt: commit (`git-commit`), Mantine (`mantine-form`, `mantine-custom-components`, `mantine-combobox`), giao diện (`design-taste-frontend`, `minimalist-ui`, `redesign-existing-projects`) |
 | `src/app/` | Trang (App Router). `page.tsx` là Server Component thuần |
 | `src/components/` | Client Component (`"use client"`), chia theo khu vực: `student/`, `admin/`, `shared/` |
 | `src/app/api/` | Route handler (backend). Mỗi file chỉ kiểm tra input, gọi `features/*/server`, trả JSON |
@@ -36,9 +36,11 @@ AI **tự đọc** các file trong cột "Đọc thêm" theo đúng loại việ
 | Frontend: thêm/sửa trang, component | Mục 4 của file này, `src/constants/`, `node_modules/next/dist/docs/` (Next.js bản mới, khác dữ liệu huấn luyện) |
 | Frontend: form (`useForm`, validate) | `.ai/skills/mantine-form/SKILL.md` |
 | Frontend: component Mantine tuỳ biến, theme, Styles API | `.ai/skills/mantine-custom-components/SKILL.md` |
+| Frontend: ô chọn tuỳ biến (Select, Autocomplete, MultiSelect, `useCombobox`) | `.ai/skills/mantine-combobox/SKILL.md` |
 | Backend: thêm/sửa API, cache, prefetch SSR | Mục 4 và 5 của file này, `.ai/system/kien_truc.md` mục 5, `src/constants/query-keys.ts` |
 | Giao diện sinh viên (màn chào, làm bài, kết quả) | `.ai/skills/design-taste-frontend/SKILL.md`, mục 0.3 |
 | Giao diện trang quản trị | `.ai/skills/minimalist-ui/SKILL.md`, mục 0.3 |
+| Rà soát, nâng cấp giao diện đã có | `.ai/skills/redesign-existing-projects/SKILL.md`, mục 0.3 |
 
 ### 0.3. Khi skill thiết kế mâu thuẫn với luật dự án
 Các skill giao diện viết cho nhiều loại dự án nên mặc định gợi ý Tailwind, shadcn/ui, GSAP, font Geist, icon Phosphor. **Luật dự án luôn thắng skill.**
