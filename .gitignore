@@ -40,3 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 !.env.example
+
+# tài liệu tham khảo nặng, chỉ giữ ở máy
+.ai/references/mantine-docs.txt
