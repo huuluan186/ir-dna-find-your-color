@@ -137,6 +137,6 @@ Hậu quả là **Mutable State** trở thành nguồn cơn của hầu hết c�
 
 ## 6. LIÊN HỆ VỚI DỰ ÁN IR DNA – FIND YOUR COLOR
 
-- **Mỗi tính năng một lát cắt:** Server Action / route handler của tính năng nào nằm cạnh tính năng đó. Không dựng sẵn lớp service hay repository dùng chung khi chưa cần (Nguyên tắc 2 - PRY).
+- **Mỗi tính năng một lát cắt:** Route handler, truy vấn và hook TanStack Query của tính năng nào nằm cạnh tính năng đó. Không dựng sẵn lớp service hay repository dùng chung khi chưa cần (Nguyên tắc 2 - PRY).
 - **RSC & Client Components:** Bộ đề lấy từ server. Câu đang làm, tiến độ, đáp án đã chọn chỉ là một mảng state duy nhất; số câu đã làm, phần trăm tiến độ được tính từ mảng đó (Nguyên tắc 1 & 4).
 - **Kiểm thử:** Test thuật toán chấm điểm bằng dữ liệu thật, còn lại kiểm thử luồng thật trên link xem thử (Nguyên tắc 3).

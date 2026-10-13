@@ -18,7 +18,8 @@ AI **tự đọc** các file trong cột "Đọc thêm" theo đúng loại việ
 | `.ai/skills/` | Hướng dẫn chuyên biệt: commit (`git-commit`), Mantine (`mantine-form`, `mantine-custom-components`), giao diện (`design-taste-frontend`, `minimalist-ui`) |
 | `src/app/` | Trang (App Router). `page.tsx` là Server Component thuần |
 | `src/components/` | Client Component (`"use client"`), chia theo khu vực: `student/`, `admin/`, `shared/` |
-| `src/features/` | Logic phía server theo từng tính năng (Server Actions, truy vấn CSDL) |
+| `src/app/api/` | Route handler (backend). Mỗi file chỉ kiểm tra input, gọi `features/*/server`, trả JSON |
+| `src/features/` | Mỗi tính năng một lát cắt: `server/` (truy vấn CSDL, ghi dữ liệu), `client/` (hook TanStack Query), `schema.ts` (Zod) |
 | `src/lib/` | Tiện ích thuần: chấm điểm, phiên đăng nhập, kết nối CSDL, âm thanh |
 | `src/constants/` | `ROUTES`, `API_ENDPOINTS`, `ASSETS`, cấu hình chung |
 | `supabase/` | `migrations/` (đánh số tăng dần), `seed.sql` |
@@ -35,6 +36,7 @@ AI **tự đọc** các file trong cột "Đọc thêm" theo đúng loại việ
 | Frontend: thêm/sửa trang, component | Mục 4 của file này, `src/constants/`, `node_modules/next/dist/docs/` (Next.js bản mới, khác dữ liệu huấn luyện) |
 | Frontend: form (`useForm`, validate) | `.ai/skills/mantine-form/SKILL.md` |
 | Frontend: component Mantine tuỳ biến, theme, Styles API | `.ai/skills/mantine-custom-components/SKILL.md` |
+| Backend: thêm/sửa API, cache, prefetch SSR | Mục 4 và 5 của file này, `.ai/system/kien_truc.md` mục 5, `src/constants/query-keys.ts` |
 | Giao diện sinh viên (màn chào, làm bài, kết quả) | `.ai/skills/design-taste-frontend/SKILL.md`, mục 0.3 |
 | Giao diện trang quản trị | `.ai/skills/minimalist-ui/SKILL.md`, mục 0.3 |
 
@@ -133,13 +135,19 @@ Ngắn gọn, nêu chức năng chính. Ví dụ: `Màn kết quả: bảng xế
 
 * **Prettier:** thụt lề **1 TAB** (`useTabs: true`), xem `.prettierrc`.
 * **UI:** Mantine. Chuyển động: Motion. Âm thanh: Howler (`src/lib/sound.ts`). Không thêm thư viện UI khác.
-* **Directives:** **Cấm `"use client"` và `"use server"` trong `page.tsx`.** `page.tsx` là Server Component thuần; tương tác tách ra Client Component trong `src/components/`. Server Action đặt trong `src/features/<tính-năng>/actions.ts` với `"use server"` ở đầu file.
+* **Directives:** **Cấm `"use client"` và `"use server"` trong `page.tsx`.** `page.tsx` là Server Component thuần; tương tác tách ra Client Component trong `src/components/`. **Không dùng Server Actions**: ghi dữ liệu qua route handler trong `src/app/api/`.
 * **Hằng số:** Không hardcode đường dẫn trang, API, ảnh, âm thanh. Khai báo ở `src/constants/` (`ROUTES`, `API_ENDPOINTS`, `ASSETS`).
 * **Chạy trên mọi thiết bị, ưu tiên điện thoại:** phần lớn người dùng là điện thoại (iPhone Safari, Android Chrome, trình duyệt trong Zalo/Messenger), nhưng desktop và tablet cũng phải dùng tốt.
 	* Thiết kế 360–430px trước, rồi mở rộng: ≥ 768px giao diện sinh viên nằm giữa trong khung tối đa ~480px (như một thẻ app), trang admin dùng hết bề ngang.
 	* Ô nhập cỡ chữ ≥ 16px (`size="md"`), nút cao ≥ 44px, dùng `100dvh` và safe-area, mã SV dùng `inputMode="numeric"`.
 	* Trên desktop: hỗ trợ bàn phím (phím 1–4 hoặc A–D chọn đáp án, Enter để tiếp), trạng thái hover và focus rõ ràng.
 	* Trình duyệt mục tiêu: Safari iOS 16+, Chrome Android 2 bản gần nhất, Chrome/Edge/Firefox/Safari desktop bản mới. Âm thanh chỉ phát sau khi người dùng chạm/bấm.
+* **Dữ liệu server (TanStack Query):**
+	* Chỉ dùng cho dữ liệu từ server. Trạng thái giao diện (câu đang làm, đáp án đã chọn, bật/tắt tiếng) dùng `useReducer`/`useState`, không đưa vào cache.
+	* SSR: `page.tsx` tạo `QueryClient`, `prefetchQuery` gọi thẳng hàm trong `features/*/server/queries.ts` (không tự gọi HTTP), bọc con trong `HydrationBoundary` + `dehydrate`.
+	* Client đọc bằng `useQuery`, ghi bằng `useMutation` trong `features/*/client/hooks.ts`; sau khi ghi gọi `invalidateQueries`. Không gọi `fetch` thẳng trong component.
+	* Query key khai báo tập trung ở `src/constants/query-keys.ts`. `src/lib/query-client.ts`: server tạo mới mỗi request, trình duyệt dùng một bản.
+	* Nộp bài `retry: 3` có backoff (wifi triển lãm yếu); bộ đề `staleTime: Infinity`; kết quả admin `refetchInterval: 15s`; sắp xếp câu hỏi dùng optimistic update.
 * **Bảo mật dữ liệu:** Client không bao giờ gọi Supabase trực tiếp và không nhận điểm của đáp án. Mọi truy vấn qua `src/lib/db.ts` (chỉ chạy phía server).
 
 ---
@@ -147,7 +155,7 @@ Ngắn gọn, nêu chức năng chính. Ví dụ: `Màn kết quả: bảng xế
 ## 5. QUY TẮC BACKEND (NEXT.JS SERVER + SUPABASE)
 
 * **Cấu hình:** biến môi trường trong `.env.local` (máy local) và Vercel (bản chạy thật); mẫu ở `.env.example`. Không commit `.env.local`.
-* **Kiểm tra dữ liệu vào:** mọi Server Action và route handler kiểm tra input bằng Zod trước khi chạm CSDL.
+* **Kiểm tra dữ liệu vào:** mọi route handler kiểm tra input bằng Zod trước khi chạm CSDL.
 * **Đặt tên CSDL (Postgres):** bảng và cột **chữ thường, snake_case, tiếng Việt không dấu** (`mau_gen`, `cau_hoi`, `dap_an`, `diem_dap_an`, `sinh_vien`, `ket_qua`, `cai_dat`). Không dùng chữ hoa vì Postgres buộc phải đặt trong ngoặc kép. Khoá chính dạng `id_<bảng>` (riêng `sinh_vien` dùng `mssv`).
 * **Trường audit:** bảng nội dung (`mau_gen`, `cau_hoi`, `dap_an`) có `created_at`, `updated_at`, `is_deleted`, `deleted_at`; xoá là xoá mềm để kết quả cũ không mất tham chiếu.
 * **Xử lý lỗi:** không trả thông báo lỗi nội bộ hay stack trace về client. Ghi log bằng `console.error` (hiện trong Vercel Logs), trả thông báo chung "Lỗi hệ thống, vui lòng thử lại sau".

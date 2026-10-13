@@ -2,6 +2,8 @@
 
 Một ứng dụng Next.js duy nhất (giao diện + backend) chạy trên Vercel, dữ liệu trên Supabase Postgres. Trình duyệt **không bao giờ** gọi CSDL trực tiếp và **không bao giờ** nhận điểm của đáp án.
 
+**Tên kiến trúc:** Modular Monolith full-stack chạy serverless, tổ chức theo **Vertical Slice Architecture** (mỗi tính năng một lát cắt `server/` + `client/` + `schema.ts`). Dữ liệu server do **TanStack Query** quản lý (SSR prefetch + hydrate), CSDL là Supabase (BaaS).
+
 ---
 
 ## 1. SƠ ĐỒ TỔNG THỂ
@@ -15,13 +17,13 @@ flowchart TB
 
 	subgraph Vercel["Vercel - Next.js app"]
 		direction TB
-		subgraph UI["Giao diện: React + Mantine + Motion + Howler"]
+		subgraph UI["Giao diện: React + Mantine + Motion + Howler + TanStack Query"]
 			P1["/ Màn chào + đăng ký / đăng nhập"]
 			P2["/quiz Làm bài"]
 			P3["/result Kết quả"]
 			P4["/admin/* Quản trị"]
 		end
-		subgraph SRV["Server: Server Actions + Route Handlers"]
+		subgraph SRV["Server: Route Handlers /api/* (Vertical Slice)"]
 			F1["features/auth<br/>phiên SV, phiên admin"]
 			F2["features/quiz<br/>lấy đề (bỏ điểm), nộp bài"]
 			F3["lib/scoring.ts<br/>CHẤM ĐIỂM (hàm thuần)"]
@@ -44,6 +46,7 @@ flowchart TB
 - Một giao diện responsive cho mọi thiết bị: điện thoại iOS/Android là chính, desktop và tablet dùng được đầy đủ (giao diện sinh viên nằm trong khung ~480px ở giữa màn hình lớn).
 - Mọi truy cập CSDL đi qua `src/lib/db.ts` bằng service role key (biến môi trường Vercel). RLS bật trên mọi bảng, không có policy cho `anon`.
 - Chấm điểm chạy trên server. Client chỉ gửi danh sách `id_dap_an` đã chọn.
+- Backend chỉ là route handler trong `src/app/api/`, không dùng Server Actions.
 - Một repo, một lần deploy. Không có server riêng phải bật/tắt.
 
 ## 2. LUỒNG SINH VIÊN
@@ -113,7 +116,43 @@ score(input: {
 
 Ví dụ kiểm thử bắt buộc: 3 câu, chọn 1A-2A-3A → Lam 6/7 = 86%, Tím 4/7 = 57%, Xanh lá 1/7 = 14% → màu chính Lam, màu riêng `#3D49A2` (xem tài liệu kế hoạch).
 
-## 5. ĐĂNG NHẬP & PHIÊN
+## 5. LUỒNG DỮ LIỆU (TANSTACK QUERY + SSR)
+
+```mermaid
+flowchart LR
+	subgraph Server["Server (Next.js)"]
+		PG["page.tsx (RSC)<br/>prefetchQuery"]
+		Q["features/*/server/queries.ts"]
+		API["app/api/* route handler<br/>Zod + ghi CSDL"]
+	end
+	DB[("Supabase")]
+	subgraph Browser["Trình duyệt"]
+		HB["HydrationBoundary<br/>nhận cache đã dehydrate"]
+		UQ["useQuery<br/>features/*/client/hooks.ts"]
+		UM["useMutation<br/>retry + invalidateQueries"]
+	end
+
+	PG --> Q --> DB
+	PG -- "dehydrate" --> HB --> UQ
+	UQ -- "refetch / staleTime" --> API
+	UM --> API --> DB
+	UM -. "invalidateQueries" .-> UQ
+```
+
+| Quy ước | Nội dung |
+| :--- | :--- |
+| Cache | Chỉ dữ liệu server. UI state ở `useReducer`/`useState` + `sessionStorage` |
+| Prefetch | `page.tsx` gọi thẳng `features/*/server/queries.ts`, không tự gọi HTTP |
+| Query key | Tập trung ở `src/constants/query-keys.ts` |
+| Mặc định | `staleTime` 60 giây, `retry` 2 |
+
+Áp dụng theo tính năng:
+- **Nộp bài:** `useMutation` `retry: 3` có backoff; đáp án vẫn giữ trên máy nên rớt mạng không mất bài.
+- **Bộ đề:** `staleTime: Infinity`, tải một lần (đã bỏ điểm).
+- **Admin:** thêm/sửa/xoá xong `invalidateQueries`; trang kết quả `refetchInterval: 15s`; kéo thả thứ tự câu hỏi dùng optimistic update.
+- **Devtools:** `@tanstack/react-query-devtools` chỉ bật khi dev.
+
+## 6. ĐĂNG NHẬP & PHIÊN
 
 | Đối tượng | Đăng nhập | Phiên |
 | :--- | :--- | :--- |
@@ -122,7 +161,7 @@ Ví dụ kiểm thử bắt buộc: 3 câu, chọn 1A-2A-3A → Lam 6/7 = 86%, T
 
 Nâng cấp sau (nếu cần): Supabase Auth + đăng nhập Microsoft email trường, không đổi CSDL nội dung.
 
-## 6. CẤU TRÚC THƯ MỤC
+## 7. CẤU TRÚC THƯ MỤC
 
 ```text
 ir-dna-find-your-color/
@@ -134,7 +173,7 @@ ir-dna-find-your-color/
 ├── AGENTS.md           điểm vào cho AI (CLAUDE.md, GEMINI.md trỏ về đây)
 ├── src/
 │   ├── app/                                   # page.tsx = Server Component thuần
-│   │   ├── layout.tsx                         # MantineProvider, font, theme
+│   │   ├── layout.tsx                         # Providers (Mantine + QueryClient), font
 │   │   ├── page.tsx                           # màn chào + đăng ký/đăng nhập
 │   │   ├── quiz/page.tsx
 │   │   ├── result/page.tsx
@@ -144,24 +183,27 @@ ir-dna-find-your-color/
 │   │   │   ├── cau-hoi/page.tsx
 │   │   │   ├── ket-qua/page.tsx
 │   │   │   └── qr/page.tsx
-│   │   └── api/admin/export/route.ts          # tải CSV
+│   │   └── api/
+│   │       ├── auth/student/route.ts, auth/admin/route.ts
+│   │       ├── quiz/route.ts, quiz/submit/route.ts
+│   │       └── admin/colors/, questions/, results/, export/   # route.ts
 │   ├── components/                            # "use client"
 │   │   ├── student/   WelcomeForm, QuestionCard, DnaProgress, DecodeAnimation,
 │   │   │              ResultHero, ColorRanking, SoundToggle
 │   │   ├── admin/     ColorEditor, QuestionEditor, BalanceWarning, ResultsTable,
 │   │   │              ColorChart, QrPanel
-│   │   └── shared/    AppShell, Disclaimer
-│   ├── features/                              # logic server theo tính năng
-│   │   ├── auth/      actions.ts, queries.ts
-│   │   ├── quiz/      actions.ts (nộp bài), queries.ts (lấy đề bỏ điểm)
-│   │   └── admin/     actions.ts, queries.ts
+│   │   └── shared/    AppShell, Disclaimer, Providers
+│   ├── features/                              # mỗi tính năng một lát cắt
+│   │   ├── auth/  server/ (queries.ts, mutations.ts), client/ (api.ts, hooks.ts), schema.ts
+│   │   ├── quiz/  server/ (lấy đề bỏ điểm, nộp bài), client/, schema.ts
+│   │   └── admin/ server/, client/, schema.ts
 │   ├── lib/
 │   │   ├── scoring.ts           + scoring.test.ts
 │   │   ├── db.ts                # Supabase client, chỉ server ("server-only")
 │   │   ├── session.ts           # ký/đọc cookie SV và admin
-│   │   ├── validation.ts        # schema Zod
+│   │   ├── query-client.ts      # QueryClient (server: mỗi request, client: 1 bản)
 │   │   └── sound.ts             # Howler, bật/tắt tiếng
-│   ├── constants/  routes.ts, api-endpoints.ts, assets.ts, app.ts
+│   ├── constants/  routes.ts, api-endpoints.ts, query-keys.ts, assets.ts, app.ts
 │   ├── theme.ts                 # theme Mantine: màu, font, bo góc
 │   └── middleware.ts            # chặn trang theo phiên
 ├── supabase/
@@ -172,7 +214,7 @@ ir-dna-find-your-color/
 └── README.md
 ```
 
-## 7. CÔNG NGHỆ
+## 8. CÔNG NGHỆ
 
 | Nhóm | Thư viện | Phiên bản (npm, 13/10/2026) |
 | :--- | :--- | :--- |
@@ -181,12 +223,13 @@ ir-dna-find-your-color/
 | Chuyển động | Motion, canvas-confetti | 14.1, 1.9 |
 | Âm thanh | Howler.js | 2.2 |
 | CSDL | `@supabase/supabase-js` | 2.117 |
+| Dữ liệu server | `@tanstack/react-query` (+ devtools khi dev) | 5.104 |
 | Kiểm tra dữ liệu | Zod | 4.6 |
 | Phiên | jose | 6.2 |
 | QR | qrcode.react | 4.2 |
 | Test | Vitest (chỉ `scoring.ts`) | 5.0 |
 
-## 8. BIẾN MÔI TRƯỜNG
+## 9. BIẾN MÔI TRƯỜNG
 
 | Biến | Nguồn |
 | :--- | :--- |
