@@ -100,6 +100,8 @@ erDiagram
 | `noi_dung` | `TEXT` | NOT NULL | |
 | `thu_tu` | `INT` | NOT NULL | A=1, B=2, C=3, D=4 |
 
+Index: `(id_cau_hoi)` để lấy đáp án theo câu.
+
 ### 4. `diem_dap_an` (ma trận điểm)
 | Cột | Kiểu | Ràng buộc | Mô tả |
 | :--- | :--- | :--- | :--- |
@@ -112,7 +114,7 @@ Chỉ lưu ô khác 0, nên mỗi đáp án thường có 1–2 dòng.
 ### 5. `sinh_vien`
 | Cột | Kiểu | Ràng buộc | Mô tả |
 | :--- | :--- | :--- | :--- |
-| `mssv` | `TEXT` | PK, CHECK theo định dạng mã SV | Nhập trên điện thoại bằng bàn phím số |
+| `mssv` | `TEXT` | PK, CHECK `^[0-9]{6,15}$` | Nhập trên điện thoại bằng bàn phím số. CSDL chỉ chặn ký tự không phải số; định dạng chính xác do server kiểm tra theo `cai_dat.dinh_dang_mssv` |
 | `ho_ten` | `TEXT` | NOT NULL | Tự viết hoa chữ đầu |
 
 ### 6. `ket_qua`
@@ -157,6 +159,8 @@ Ví dụ một dòng (bạn Minh, mã SV `2300001234`, bộ đề 3 câu minh ho
 | `cho_lam_lai` | `true` | Sinh viên được làm lại hay không |
 | `dinh_dang_mssv` | `"^[0-9]{10}$"` | Regex kiểm tra mã SV (nhóm xác nhận định dạng mã SV HUFLIT) |
 | `so_cau_toi_da` | `10` | Giới hạn số câu đang bật |
+
+Ba dòng trên được thêm sẵn với giá trị ví dụ trong `0001_init.sql`.
 
 ## IV. QUAN HỆ & RÀNG BUỘC NGHIỆP VỤ
 
