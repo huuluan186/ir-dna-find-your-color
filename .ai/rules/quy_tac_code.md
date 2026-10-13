@@ -20,8 +20,8 @@ AI **tự đọc** các file trong cột "Đọc thêm" theo đúng loại việ
 | `src/components/` | Client Component (`"use client"`), chia theo khu vực: `student/`, `admin/`, `shared/` |
 | `src/app/api/` | Route handler (backend). Mỗi file chỉ kiểm tra input, gọi `features/*/server`, trả JSON |
 | `src/features/` | Mỗi tính năng một lát cắt: `server/` (truy vấn CSDL, ghi dữ liệu), `client/` (hook TanStack Query), `schema.ts` (Zod) |
-| `src/lib/` | Tiện ích thuần: chấm điểm, phiên đăng nhập, kết nối CSDL, âm thanh |
-| `src/constants/` | `ROUTES`, `API_ENDPOINTS`, `ASSETS`, cấu hình chung |
+| `src/lib/` | Tiện ích thuần: chấm điểm, phiên đăng nhập, kết nối CSDL, QueryClient, âm thanh |
+| `src/constants/` | `ROUTES`, `API_ENDPOINTS`, `QUERY_KEYS`, `ASSETS`, cấu hình chung (`APP`) |
 | `supabase/` | `migrations/` (đánh số tăng dần), `seed.sql` |
 | `public/` | Âm thanh, icon, ảnh tĩnh |
 
