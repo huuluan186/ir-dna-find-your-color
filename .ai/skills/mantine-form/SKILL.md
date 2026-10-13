@@ -1,7 +1,7 @@
 ---
 name: mantine-form
 description: >
-  Build forms using @mantine/form in the mantine-9 repository. Use this skill when: (1) setting
+  Build forms using @mantine/form in this project (Mantine 9). Use this skill when: (1) setting
   up a form with useForm, (2) adding validation rules or async validation, (3) working with nested
   object or array fields, (4) sharing form state across components with createFormContext,
   (5) using uncontrolled mode for performance, (6) using the standalone useField hook, or
