@@ -22,6 +22,7 @@ AI **tự đọc** các file trong cột "Đọc thêm" theo đúng loại việ
 | `src/features/` | Mỗi tính năng một lát cắt: `server/` (truy vấn CSDL, ghi dữ liệu), `client/` (hook TanStack Query), `schema.ts` (Zod) |
 | `src/lib/` | Tiện ích thuần: chấm điểm, phiên đăng nhập, kết nối CSDL, QueryClient, âm thanh |
 | `src/constants/` | `ROUTES`, `API_ENDPOINTS`, `QUERY_KEYS`, `ASSETS`, cấu hình chung (`APP`) |
+| `src/mock-data/` | Dữ liệu mẫu (prototype) dùng khi chưa có nội dung thật: màu gen, câu hỏi, đáp án, điểm. Không đưa dữ liệu tạm vào CSDL |
 | `supabase/` | `migrations/` (đánh số tăng dần), `seed.sql` |
 | `public/` | Âm thanh, icon, ảnh tĩnh |
 
@@ -139,6 +140,7 @@ Ngắn gọn, nêu chức năng chính. Ví dụ: `Màn kết quả: bảng xế
 * **UI:** Mantine. Chuyển động: Motion. Âm thanh: Howler (`src/lib/sound.ts`). Không thêm thư viện UI khác.
 * **Directives:** **Cấm `"use client"` và `"use server"` trong `page.tsx`.** `page.tsx` là Server Component thuần; tương tác tách ra Client Component trong `src/components/`. **Không dùng Server Actions**: ghi dữ liệu qua route handler trong `src/app/api/`.
 * **Hằng số:** Không hardcode đường dẫn trang, API, ảnh, âm thanh. Khai báo ở `src/constants/` (`ROUTES`, `API_ENDPOINTS`, `ASSETS`).
+* **Dữ liệu mẫu (prototype):** khi chưa có nội dung thật, không thêm dữ liệu tạm vào CSDL hay `seed.sql`. Đặt trong `src/mock-data/` (tên trường bám theo cột CSDL). Màn hoặc mục menu nào đang đọc dữ liệu mẫu phải gắn **badge "P"** (prototype) cạnh tên; chuyển sang dữ liệu thật thì gỡ badge. Dữ liệu mẫu nên đa dạng: mỗi đáp án cộng điểm cho 1–3 màu, mức 1–5, không bắt buộc kiểu 3:1.
 * **Chạy trên mọi thiết bị, ưu tiên điện thoại:** phần lớn người dùng là điện thoại (iPhone Safari, Android Chrome, trình duyệt trong Zalo/Messenger), nhưng desktop và tablet cũng phải dùng tốt.
 	* Thiết kế 360–430px trước, rồi mở rộng: ≥ 768px giao diện sinh viên nằm giữa trong khung tối đa ~480px (như một thẻ app), trang admin dùng hết bề ngang.
 	* Ô nhập cỡ chữ ≥ 16px (`size="md"`), nút cao ≥ 44px, dùng `100dvh` và safe-area, mã SV dùng `inputMode="numeric"`.

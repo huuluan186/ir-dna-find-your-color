@@ -204,6 +204,7 @@ ir-dna-find-your-color/
 │   │   ├── query-client.ts      # QueryClient (server: mỗi request, client: 1 bản)
 │   │   └── sound.ts             # Howler, bật/tắt tiếng
 │   ├── constants/  routes.ts, api-endpoints.ts, query-keys.ts, assets.ts, app.ts
+│   ├── mock-data/  quiz.ts      # dữ liệu mẫu (prototype): 6 màu, 10 câu, điểm
 │   ├── theme.ts                 # theme Mantine: màu, font, bo góc
 │   └── middleware.ts            # chặn trang theo phiên
 ├── supabase/
