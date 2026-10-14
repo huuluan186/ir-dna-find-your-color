@@ -112,7 +112,7 @@ Cú pháp `<branch-type>/<mô-tả>`. Dùng `feature/` (không dùng `feat/`). C
 ## 2. QUY TẮC TẠO PULL REQUEST (PR)
 
 ### 2.1. Tiêu đề
-Ngắn gọn, nêu chức năng chính. Ví dụ: `Màn kết quả: bảng xếp hạng 6 màu và màu riêng`.
+Ngắn gọn, nêu chức năng chính. Ví dụ: `Màn kết quả: gen nổi bật và DNA kết hợp khi hoà điểm`.
 
 ### 2.2. Nội dung (BẮT BUỘC đủ 2 phần, tối đa 4000 ký tự)
 ```markdown
@@ -142,7 +142,7 @@ Ngắn gọn, nêu chức năng chính. Ví dụ: `Màn kết quả: bảng xế
 * **UI:** Mantine. Chuyển động: Motion. Âm thanh: Howler (`src/lib/sound.ts`). Không thêm thư viện UI khác.
 * **Directives:** **Cấm `"use client"` và `"use server"` trong `page.tsx`.** `page.tsx` là Server Component thuần; tương tác tách ra Client Component trong `src/components/`. **Không dùng Server Actions**: ghi dữ liệu qua route handler trong `src/app/api/`.
 * **Hằng số:** Không hardcode đường dẫn trang, API, ảnh, âm thanh. Khai báo ở `src/constants/` (`ROUTES`, `API_ENDPOINTS`, `ASSETS`).
-* **Dữ liệu mẫu (prototype):** khi chưa có nội dung thật, không thêm dữ liệu tạm vào CSDL hay `seed.sql`. Đặt trong `src/mock-data/` (tên trường bám theo cột CSDL). Màn hoặc mục menu nào đang đọc dữ liệu mẫu phải gắn **badge "P"** (prototype) cạnh tên; chuyển sang dữ liệu thật thì gỡ badge. Dữ liệu mẫu nên đa dạng: mỗi đáp án cộng điểm cho 1–3 màu, mức 1–5, không bắt buộc kiểu 3:1.
+* **Dữ liệu mẫu (prototype):** khi chưa có nội dung thật, không thêm dữ liệu tạm vào CSDL hay `seed.sql`. Đặt trong `src/mock-data/` (tên trường bám theo cột CSDL). Màn hoặc mục menu nào đang đọc dữ liệu mẫu phải gắn **badge "P"** (prototype) cạnh tên; chuyển sang dữ liệu thật thì gỡ badge. Nội dung thật (câu hỏi, gen, luật chấm) lấy từ `docs/noi-dung-web.md`: mỗi phương án gán đúng 1 gen, cộng 1 điểm.
 * **Chạy trên mọi thiết bị, ưu tiên điện thoại:** phần lớn người dùng là điện thoại (iPhone Safari, Android Chrome, trình duyệt trong Zalo/Messenger), nhưng desktop và tablet cũng phải dùng tốt.
 	* Thiết kế 360–430px trước, rồi mở rộng: ≥ 768px giao diện sinh viên nằm giữa trong khung tối đa ~480px (như một thẻ app), trang admin dùng hết bề ngang.
 	* Ô nhập cỡ chữ ≥ 16px (`size="md"`), nút cao ≥ 44px, dùng `100dvh` và safe-area, mã SV dùng `inputMode="numeric"`.

@@ -71,12 +71,12 @@ sequenceDiagram
 	SV->>App: Vào /quiz
 	App->>DB: Lấy cau_hoi + dap_an đang bật (cache)
 	App-->>SV: Bộ đề KHÔNG kèm điểm
-	Note over SV: Làm 8–10 câu. Đáp án giữ tạm trên máy,<br/>chưa gửi; rớt mạng giữa chừng vẫn làm tiếp được
+	Note over SV: Làm 12 câu. Đáp án giữ tạm trên máy,<br/>chưa gửi; rớt mạng giữa chừng vẫn làm tiếp được
 	SV->>App: Nộp danh sách id_dap_an
 	App->>DB: Lấy diem_dap_an + mau_gen
-	App->>App: scoring.ts: cộng điểm → % → xếp hạng → trộn màu
+	App->>App: scoring.ts: mỗi đáp án +1 cho gen của nó → gen điểm cao nhất (có thể hoà)
 	App->>DB: Lưu 1 dòng vào ket_qua
-	App-->>SV: /result: màu chính, ý nghĩa, xếp hạng 6 màu
+	App-->>SV: /result: gen nổi bật (hoặc DNA kết hợp / đồng hạng / đa sắc)
 ```
 
 ## 3. TRANG VÀ QUYỀN TRUY CẬP
@@ -84,37 +84,36 @@ sequenceDiagram
 | Đường dẫn | Ai dùng | Cần phiên | Nội dung |
 | :--- | :--- | :--- | :--- |
 | `/` | Sinh viên | Không | Màn chào, nhập mã SV, họ tên nếu là lần đầu |
-| `/quiz` | Sinh viên | Phiên SV | Mỗi câu một màn, thanh tiến độ dạng chuỗi DNA |
-| `/result` | Sinh viên | Phiên SV | Hoạt ảnh giải mã → màu chính, ý nghĩa, xếp hạng 6 màu, màu riêng, lưu ý tham khảo, làm lại |
+| `/quiz` | Sinh viên | Phiên SV | Mỗi câu một màn, tiến độ "Câu 3/12", bắt buộc chọn mới qua câu, câu cuối có nút "Xem kết quả IR DNA" |
+| `/result` | Sinh viên | Phiên SV | Hoạt ảnh giải mã → gen nổi bật (hoặc DNA kết hợp / đồng hạng / đa sắc), mỗi gen: tên, màu, 3 từ khoá, mô tả, lĩnh vực gợi ý, kỹ năng phát triển; điểm 6 gen; thông điệp chung; lưu ý tham khảo; làm lại |
 | `/admin/login` | Nhóm | Không | Mật khẩu chung `ADMIN_PASSWORD` |
-| `/admin/mau-gen` | Nhóm | Phiên admin | Thêm/sửa 6 mã gen màu |
-| `/admin/cau-hoi` | Nhóm | Phiên admin | Câu hỏi, 4 đáp án, chọn màu chính (+3) / phụ (+1); cảnh báo lệch màu |
+| `/admin/mau-gen` | Nhóm | Phiên admin | Sửa 6 mã gen: nội dung và mã màu (chọn bằng `ColorInput`/color picker của Mantine) |
+| `/admin/cau-hoi` | Nhóm | Phiên admin | Câu hỏi, 4 đáp án, mỗi đáp án chọn đúng 1 gen (+1); cảnh báo khi số lần xuất hiện của 6 gen lệch nhau (chuẩn: 8 lần mỗi gen) |
 | `/admin/ket-qua` | Nhóm | Phiên admin | Danh sách kết quả, biểu đồ tỉ lệ màu, xuất CSV |
 | `/admin/qr` | Nhóm | Phiên admin | Mã QR của link app, tải PNG/SVG để in |
 
 ## 4. THUẬT TOÁN CHẤM ĐIỂM (`src/lib/scoring.ts`)
 
-Hàm thuần, không gọi CSDL:
+Theo đúng tài liệu nội dung của nhóm tổ chức (`docs/noi-dung-web.md` mục IV–V). Hàm thuần, không gọi CSDL:
 
 ```ts
 score(input: {
-	colors: { id: number; hex: string }[];
-	questions: { id: number; options: { id: number; points: Record<colorId, number> }[] }[];
-	selected: number[]; // id_dap_an theo thứ tự câu
+	colorIds: number[]; // 6 gen
+	questions: { id: number; options: { id: number; colorId: number }[] }[]; // mỗi phương án gán đúng 1 gen
+	selected: number[]; // id_dap_an, mỗi câu đúng 1 đáp án
 }) => {
-	ranking: { colorId: number; points: number; max: number; percent: number }[]; // giảm dần
-	topColorId: number;
-	blendHex: string;
+	points: { colorId: number; points: number }[]; // giảm dần, tổng luôn = số câu (12)
+	topColorIds: number[]; // mọi gen đạt điểm cao nhất
+	kind: "don" | "ket_hop" | "dong_hang" | "da_sac";
 }
 ```
 
-1. **Cộng điểm:** với mỗi màu, cộng `points` của các đáp án đã chọn.
-2. **Điểm tối đa:** với mỗi màu, cộng điểm cao nhất màu đó có thể nhận ở từng câu.
-3. **Phần trăm** = điểm / điểm tối đa (màu có tối đa = 0 thì 0%).
-4. **Xếp hạng** giảm dần theo phần trăm. Hoà: ưu tiên màu được cộng điểm ở câu gần cuối nhất.
-5. **Màu riêng:** trộn RGB của 2 màu đầu theo tỉ lệ phần trăm (VD 86% và 57% → 60:40).
+1. **Cộng điểm:** mỗi đáp án đã chọn cộng **1 điểm** cho gen của nó. Không có điểm trừ, không có phần trăm.
+2. **Gen nổi bật:** mọi gen có điểm bằng điểm cao nhất. **Không phá hoà**, không trộn màu.
+3. **Loại kết quả:** 1 gen → `don` (mã gen nổi bật); 2 gen → `ket_hop` ("DNA kết hợp", VD Gen Đỏ × Gen Cam); 3–5 gen → `dong_hang` (hiện tất cả); cả 6 gen bằng điểm → `da_sac` ("DNA đa sắc", kèm câu thông báo trong tài liệu nội dung).
+4. **Kiểm tra đầu vào:** mỗi câu đúng 1 đáp án, id đáp án phải thuộc đề; sai thì báo lỗi để route trả 400.
 
-Ví dụ để tự kiểm tra (không viết unit test): 3 câu, chọn 1A-2A-3A → Lam 6/7 = 86%, Tím 4/7 = 57%, Xanh lá 1/7 = 14% → màu chính Lam, màu riêng `#3D49A2` (xem tài liệu kế hoạch).
+Tự kiểm tra (không viết unit test) bằng script tạm theo checklist mục VIII của tài liệu nội dung: 1 gen thắng, hoà 2, hoà 3 trở lên, hoà cả 6 (mỗi gen 2 điểm). Ví dụ trong tài liệu: Đỏ 3, Cam 3, Vàng 2, Xanh lá 1, Xanh dương 2, Tím 1 → `ket_hop` Đỏ × Cam.
 
 ## 5. LUỒNG DỮ LIỆU (TANSTACK QUERY + SSR)
 
