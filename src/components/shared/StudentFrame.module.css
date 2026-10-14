@@ -1,10 +1,11 @@
+/* 48em = breakpoint sm của Mantine (768px). Viết số thẳng để trình soạn thảo không báo lỗi cú pháp với biến $. */
 .outer {
 	min-height: 100dvh;
 	display: flex;
 	justify-content: center;
 	background: var(--mantine-color-body);
 
-	@media (min-width: $mantine-breakpoint-sm) {
+	@media (min-width: 48em) {
 		align-items: center;
 		padding: var(--mantine-spacing-xl);
 		background: light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-8));
@@ -23,7 +24,7 @@
 		calc(env(safe-area-inset-left) + var(--mantine-spacing-md));
 	background: var(--mantine-color-body);
 
-	@media (min-width: $mantine-breakpoint-sm) {
+	@media (min-width: 48em) {
 		min-height: min(860px, calc(100dvh - 2 * var(--mantine-spacing-xl)));
 		border-radius: var(--mantine-radius-xl);
 		box-shadow: var(--mantine-shadow-xl);
