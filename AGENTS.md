@@ -9,6 +9,7 @@ Mọi AI (Claude Code, Codex, Cursor, Copilot, Gemini...) **phải đọc file n
 
 ## 1. BƯỚC BẮT BUỘC TRƯỚC KHI VIẾT CODE
 
+0. Đọc **`.ai/tien_do.md`** để biết dự án đang ở đâu và việc tiếp theo.
 1. Đọc toàn bộ **`.ai/rules/quy_tac_code.md`**: luật Git, commit, nhánh, PR, frontend, backend, CSDL.
 2. Xác định việc đang làm thuộc nhóm nào trong bảng 0.2, đọc đủ các file của nhóm đó.
 3. Nếu tài liệu mâu thuẫn với code: **code + `supabase/migrations/` là sự thật**, báo lại người dùng để sửa tài liệu.

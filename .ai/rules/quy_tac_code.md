@@ -13,6 +13,7 @@ AI **tự đọc** các file trong cột "Đọc thêm" theo đúng loại việ
 
 | Thư mục | Nội dung |
 | :--- | :--- |
+| `.ai/` | `tien_do.md`: tiến độ, bàn giao, việc tiếp theo |
 | `.ai/rules/` | Quy tắc code (file này), nguyên tắc thiết kế phần mềm (`nguyen_tac_thiet_ke.md`) |
 | `.ai/system/` | Kiến trúc hệ thống (`kien_truc.md`), thiết kế CSDL (`thiet_ke_csdl.md`) |
 | `.ai/skills/` | Hướng dẫn chuyên biệt: commit (`git-commit`), Mantine (`mantine-form`, `mantine-custom-components`, `mantine-combobox`), giao diện (`design-taste-frontend`, `minimalist-ui`, `redesign-existing-projects`) |
@@ -30,6 +31,7 @@ AI **tự đọc** các file trong cột "Đọc thêm" theo đúng loại việ
 
 | Khi làm việc này | Đọc thêm (ngoài file này) |
 | :--- | :--- |
+| Mới vào dự án: nắm tiến độ, việc tiếp theo, mâu thuẫn chưa xử lý | `.ai/tien_do.md` (đọc trước mọi việc khác) |
 | Commit, đặt tên nhánh, tạo PR | Mục 1 và 2 của file này, `.ai/skills/git-commit/SKILL.md` |
 | Thiết kế kiến trúc, refactor, quản lý state | `.ai/rules/nguyen_tac_thiet_ke.md`, `.ai/system/kien_truc.md` |
 | CSDL: bảng, cột, khóa, migration, seed | `.ai/system/thiet_ke_csdl.md`, `supabase/migrations/` (xem số thứ tự file cuối), mục 1.5 |
