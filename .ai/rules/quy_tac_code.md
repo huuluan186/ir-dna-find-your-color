@@ -33,7 +33,7 @@ AI **tự đọc** các file trong cột "Đọc thêm" theo đúng loại việ
 | Commit, đặt tên nhánh, tạo PR | Mục 1 và 2 của file này, `.ai/skills/git-commit/SKILL.md` |
 | Thiết kế kiến trúc, refactor, quản lý state | `.ai/rules/nguyen_tac_thiet_ke.md`, `.ai/system/kien_truc.md` |
 | CSDL: bảng, cột, khóa, migration, seed | `.ai/system/thiet_ke_csdl.md`, `supabase/migrations/` (xem số thứ tự file cuối), mục 1.5 |
-| Thuật toán chấm điểm | `.ai/system/kien_truc.md` mục 4, `src/lib/scoring.ts` và test đi kèm |
+| Thuật toán chấm điểm | `.ai/system/kien_truc.md` mục 4, `src/lib/scoring.ts` |
 | Frontend: thêm/sửa trang, component | Mục 4 của file này, `src/constants/`, `node_modules/next/dist/docs/` (Next.js bản mới, khác dữ liệu huấn luyện) |
 | Frontend: form (`useForm`, validate) | `.ai/skills/mantine-form/SKILL.md` |
 | Frontend: component Mantine tuỳ biến, theme, Styles API | `.ai/skills/mantine-custom-components/SKILL.md` |
@@ -129,7 +129,7 @@ Ngắn gọn, nêu chức năng chính. Ví dụ: `Màn kết quả: bảng xế
 ---
 
 ## 3. LƯU Ý VỀ TESTING
-* **Không viết unit test**, trừ thuật toán chấm điểm `src/lib/scoring.ts` (hàm thuần, test bằng Vitest với ví dụ trong `.ai/system/kien_truc.md`).
+* **Không viết unit test**, kể cả thuật toán chấm điểm `src/lib/scoring.ts`. Muốn kiểm tra thì chạy một script tạm với ví dụ trong `.ai/system/kien_truc.md` mục 4 và `src/mock-data/`, chạy xong xoá, không commit.
 * Kiểm thử tay trên link xem thử của Vercel: Safari iPhone, Chrome Android, trình duyệt trong Zalo, và một trình duyệt desktop.
 
 ---

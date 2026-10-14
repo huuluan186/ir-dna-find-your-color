@@ -114,7 +114,7 @@ score(input: {
 4. **Xếp hạng** giảm dần theo phần trăm. Hoà: ưu tiên màu được cộng điểm ở câu gần cuối nhất.
 5. **Màu riêng:** trộn RGB của 2 màu đầu theo tỉ lệ phần trăm (VD 86% và 57% → 60:40).
 
-Ví dụ kiểm thử bắt buộc: 3 câu, chọn 1A-2A-3A → Lam 6/7 = 86%, Tím 4/7 = 57%, Xanh lá 1/7 = 14% → màu chính Lam, màu riêng `#3D49A2` (xem tài liệu kế hoạch).
+Ví dụ để tự kiểm tra (không viết unit test): 3 câu, chọn 1A-2A-3A → Lam 6/7 = 86%, Tím 4/7 = 57%, Xanh lá 1/7 = 14% → màu chính Lam, màu riêng `#3D49A2` (xem tài liệu kế hoạch).
 
 ## 5. LUỒNG DỮ LIỆU (TANSTACK QUERY + SSR)
 
@@ -198,7 +198,7 @@ ir-dna-find-your-color/
 │   │   ├── quiz/  server/ (lấy đề bỏ điểm, nộp bài), client/, schema.ts
 │   │   └── admin/ server/, client/, schema.ts
 │   ├── lib/
-│   │   ├── scoring.ts           + scoring.test.ts
+│   │   ├── scoring.ts           # chấm điểm (hàm thuần)
 │   │   ├── db.ts                # Supabase client, chỉ server ("server-only")
 │   │   ├── session.ts           # ký/đọc cookie SV và admin
 │   │   ├── query-client.ts      # QueryClient (server: mỗi request, client: 1 bản)
@@ -209,9 +209,8 @@ ir-dna-find-your-color/
 │   └── middleware.ts            # chặn trang theo phiên
 ├── supabase/
 │   ├── migrations/0001_init.sql
-│   └── seed.sql                 # 6 màu + 10 câu mẫu
 ├── public/  sounds/ (mp3 CC0), icons/
-├── .env.example  .prettierrc  package.json  next.config.ts  vitest.config.ts
+├── .env.example  .prettierrc  package.json  next.config.ts
 └── README.md
 ```
 
@@ -228,7 +227,6 @@ ir-dna-find-your-color/
 | Kiểm tra dữ liệu | Zod | 4.6 |
 | Phiên | jose | 6.2 |
 | QR | qrcode.react | 4.2 |
-| Test | Vitest (chỉ `scoring.ts`) | 5.0 |
 
 ## 9. BIẾN MÔI TRƯỜNG
 

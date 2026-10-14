@@ -18,6 +18,6 @@ Mọi AI (Claude Code, Codex, Cursor, Copilot, Gemini...) **phải đọc file n
 - Commit 1 dòng: `<prefix>(<scope>): <tiếng Việt có dấu>`. **Không dùng `chore:`**, việc lặt vặt dùng `commit:`.
 - **Không dùng `git add .`**, stage từng file. Nhánh dùng `feature/`, không dùng `feat/`.
 - Đổi CSDL: thêm file migration mới, PR riêng từ nhánh `database/...`.
-- Không viết unit test, trừ thuật toán chấm điểm `src/lib/scoring.ts`.
+- Không viết unit test (kể cả `src/lib/scoring.ts`).
 - Frontend: 1 TAB, Mantine, `page.tsx` không có `"use client"`/`"use server"`, không hardcode đường dẫn (dùng `src/constants/`).
 - Client không gọi Supabase trực tiếp; không trả lỗi nội bộ về client.
