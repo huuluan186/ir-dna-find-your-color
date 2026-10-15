@@ -1,6 +1,6 @@
 # TIẾN ĐỘ & BÀN GIAO - IR DNA – FIND YOUR COLOR
 
-File này để một AI (hoặc người) mới vào dự án nắm nhanh: dự án là gì, đã làm tới đâu, việc gì tiếp theo. **Cập nhật file này mỗi khi xong một bước.** Cập nhật lần cuối: 14/10/2026.
+File này để một AI (hoặc người) mới vào dự án nắm nhanh: dự án là gì, đã làm tới đâu, việc gì tiếp theo. **Cập nhật file này mỗi khi xong một bước.** Cập nhật lần cuối: 15/10/2026.
 
 Đọc theo thứ tự: `AGENTS.md` → `.ai/rules/quy_tac_code.md` → file này → `.ai/system/kien_truc.md` → `.ai/system/thiet_ke_csdl.md`.
 
@@ -36,8 +36,9 @@ Web app trắc nghiệm cho **Trạm 2 "FIND YOUR COLOR"** của triển lãm **
 | Hằng số | `src/constants/` (`routes`, `api-endpoints`, `query-keys`, `assets`, `app`) | Đã khai báo sẵn đường dẫn cho mọi trang/API dự kiến |
 | QueryClient | `src/lib/query-client.ts` | Server tạo mới mỗi request, trình duyệt dùng một bản |
 | CSDL | `supabase/migrations/0001_init.sql` | 7 bảng, bật RLS. **Chưa chạy trên Supabase thật** (chưa có khoá trong `.env`) |
-| Dữ liệu mẫu | `src/mock-data/quiz.ts` | 6 màu + 10 câu **tự bịa** (prototype), điểm 1–5 nhiều màu. **Đã lỗi thời**, xem mục 4 |
-| Chấm điểm | `src/lib/scoring.ts` | Bản cũ (phần trăm, phá hoà, trộn màu riêng). **Phải viết lại** theo `kien_truc.md` mục 4 mới |
+| Dữ liệu quiz | `src/mock-data/quiz.ts` | Đã thay bằng 12 câu, 48 phương án và 6 gen chính thức từ `docs/noi-dung-web.md`; dữ liệu vẫn ở mock-data nên giao diện cần badge "P" cho đến khi chuyển sang CSDL |
+| Chấm điểm | `src/lib/scoring.ts` | Đã viết lại theo `kien_truc.md` mục 4: mỗi lựa chọn +1, xác thực mỗi câu có một đáp án, giữ nguyên đồng hạng và trả `kind` |
+| Màn chào + form sinh viên | `src/app/page.tsx`, `src/components/student/WelcomeForm.tsx`, `src/components/shared/PrototypeBadge.tsx` | Có form MSSV/họ tên, dữ liệu sinh viên mẫu và badge "P" dùng chung; hiện chưa lưu dữ liệu hay nối sang luồng quiz |
 
 Build `next build` chạy qua, `tsc` không lỗi (14/10/2026).
 
@@ -53,8 +54,8 @@ Mock-data, `scoring.ts`, `thiet_ke_csdl.md` và migration `0001` được viết
 | 2 | Mỗi đáp án cộng 1–5 điểm cho 1–3 màu (admin: chính +3, phụ +1) | **Mỗi phương án gán đúng 1 gen, cộng 1 điểm.** Tổng điểm 6 gen luôn = 12 |
 | 3 | Phần trăm = điểm / điểm tối đa, xếp hạng, phá hoà theo câu gần cuối, trộn màu riêng 2 màu đầu | **Gen điểm cao nhất thắng. Không phá hoà.** 2 gen hoà: "DNA kết hợp" (VD Gen Đỏ × Gen Cam). ≥3 gen hoà: hiện tất cả. Cả 6 bằng nhau (2 điểm mỗi gen): "DNA đa sắc" + câu thông báo riêng |
 | 4 | 6 màu tự đặt: Lam/Ngoại giao, Vàng/Truyền thông, Tím/Chiến lược, Cam/Kinh tế đối ngoại, Xanh lá/Phát triển bền vững, Đỏ/Lãnh đạo | 6 gen thật: **Đỏ – Người dẫn dắt, Cam – Người kết nối, Vàng – Người truyền cảm hứng, Xanh lá – Người kiến tạo, Xanh dương – Người phân tích, Tím – Người sáng tạo chiến lược**. Mã hex: xem bảng dưới |
-| 5 | `mau_gen` có `y_nghia`, `linh_vuc` | Mỗi gen cần: tên, màu, **3 từ khoá** (VD "Chủ động · Quyết đoán · Dám thử thách"), mô tả, **lĩnh vực gợi ý**, **kỹ năng phát triển** → cần migration `0002` thêm cột (VD `tu_khoa`, `ky_nang`) |
-| 6 | `ket_qua` có 1 `id_mau_chinh` + `ma_hex_rieng` | Kết quả có thể **nhiều gen đồng hạng** → cần lưu danh sách gen cao nhất (VD `jsonb`), xem lại `ma_hex_rieng` |
+| 5 | `mau_gen` có `tu_khoa`, `ky_nang` | Đã thêm vào thiết kế và migration `0002` ngày 15/10/2026 |
+| 6 | `ket_qua` lưu `top_mau_gen_ids` + `loai_ket_qua` | Đã thay `id_mau_chinh`/`ma_hex_rieng` bằng migration `0002`; kết quả cũ được chuyển thành loại `don` |
 | 7 | Nhập mã SV (+ họ tên) trước khi làm bài | Tài liệu chỉ nói: trang mở đầu có nút **"Bắt đầu khám phá"**, không nhắc đăng nhập. **Huu chốt giữ bước nhập mã SV** |
 | 8 | Thanh tiến độ dạng chuỗi DNA | Có thanh tiến trình kiểu **"Câu 3/12"**, bắt buộc chọn đáp án mới qua câu, cuối bài nút **"Xem kết quả IR DNA"** |
 | 9 | Không xáo đáp án | Nếu xáo thứ tự phương án thì gen phải đi theo phương án, không theo chữ A/B/C/D |
@@ -80,10 +81,10 @@ Vàng sáng, chữ đặt trên nền vàng phải dùng màu tối.
 ## 5. VIỆC TIẾP THEO (ĐỀ XUẤT THEO THỨ TỰ)
 
 1. ~~Chốt mâu thuẫn, sửa `kien_truc.md` mục 2–4~~ (xong 14/10/2026). `thiet_ke_csdl.md` sửa cùng migration ở bước 4.
-2. **Thay mock-data** `src/mock-data/quiz.ts` bằng 12 câu + 6 gen thật từ file nội dung, mã hex theo bảng mục 4 (vẫn để ở mock-data, gắn badge "P" cho tới khi có CSDL thật). Mỗi đáp án gán 1 gen.
-3. **Viết lại `src/lib/scoring.ts`** theo `kien_truc.md` mục 4: đếm điểm 6 gen, trả về danh sách gen cao nhất + loại kết quả (`don` / `ket_hop` / `dong_hang` / `da_sac`). Tự kiểm bằng script tạm theo checklist mục VIII của file nội dung (1 gen thắng, hoà 2, hoà 3+, hoà cả 6).
-4. **Migration `0002`** + sửa `thiet_ke_csdl.md`: `mau_gen` thêm từ khoá, kỹ năng phát triển; `diem_dap_an` mỗi đáp án đúng 1 gen, điểm = 1; `ket_qua` lưu danh sách gen cao nhất + loại kết quả thay cho `id_mau_chinh`/`ma_hex_rieng`. Chưa chạy được trên Supabase vì chưa có khoá.
-5. **Giao diện sinh viên** đọc mock-data: màn chào + nút "Bắt đầu khám phá" + form mã SV → màn làm bài từng câu (`QuestionCard`, tiến độ "Câu x/12", phím 1–4/A–D) → màn chờ giải mã → màn kết quả (1 gen / kết hợp / đồng hạng / đa sắc). Đọc `.ai/skills/design-taste-frontend/SKILL.md` trước. Cài `motion`, `howler`, `canvas-confetti` ở bước này.
+2. ~~Thay mock-data~~ (xong 14/10/2026): `src/mock-data/quiz.ts` có 12 câu, 48 phương án, mỗi gen xuất hiện 8 lần; 6 hồ sơ gen có mã màu, từ khoá, mô tả, lĩnh vực và kỹ năng.
+3. ~~Viết lại `src/lib/scoring.ts`~~ (xong 14/10/2026): trả điểm 6 gen, danh sách gen cao nhất và loại kết quả (`don` / `ket_hop` / `dong_hang` / `da_sac`); script tạm đã kiểm tra 4 trường hợp trong checklist. `tsc --noEmit` đạt; Prettier đã áp dụng.
+4. ~~Migration `0002` + sửa `thiet_ke_csdl.md`~~ (xong 15/10/2026): `mau_gen` có từ khoá và kỹ năng; mỗi đáp án chỉ gán một gen, cộng 1 điểm; `ket_qua` lưu danh sách gen cao nhất và loại kết quả. **Chưa chạy migration trên Supabase** vì chưa có project/khoá.
+5. **Giao diện sinh viên**: ~~màn chào + form mã SV/họ tên, dữ liệu mẫu có badge "P"~~ (xong 14/10/2026); tiếp tục màn làm bài từng câu (`QuestionCard`, tiến độ "Câu x/12", phím 1–4/A–D) → màn chờ giải mã → màn kết quả (1 gen / kết hợp / đồng hạng / đa sắc). Đã đọc `.ai/skills/design-taste-frontend/SKILL.md`. Cài `motion`, `howler`, `canvas-confetti` ở bước cần dùng.
 6. **Backend**: `src/lib/db.ts`, `src/lib/session.ts`, route `api/quiz` (bỏ điểm khỏi đề), `api/quiz/submit` (gọi `scoring.ts`, lưu `ket_qua`), `api/auth/student`. Cần Huu tạo project Supabase và điền `.env.local`.
 7. **Trang admin**: đăng nhập mật khẩu chung, sửa gen, sửa câu hỏi, bảng kết quả + biểu đồ + CSV, trang QR.
 8. Deploy Vercel, tạo và quét thử QR, chạy checklist mục VIII của file nội dung.

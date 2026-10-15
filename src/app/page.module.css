@@ -1,0 +1,85 @@
+.screen {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: var(--mantine-spacing-xl);
+}
+
+.brand {
+	color: var(--mantine-color-dna-6);
+	font-size: 1.125rem;
+	font-weight: 800;
+	letter-spacing: -0.04em;
+}
+
+.station {
+	margin-top: 2px;
+	color: var(--mantine-color-gray-6);
+	font-size: 0.625rem;
+	font-weight: 700;
+	letter-spacing: 0.13em;
+}
+
+.hero {
+	margin-top: auto;
+}
+
+.eyebrow {
+	color: var(--mantine-color-dna-6);
+	font-size: 0.6875rem;
+	font-weight: 700;
+	letter-spacing: 0.16em;
+}
+
+.title {
+	font-size: clamp(2.75rem, 12vw, 4rem);
+	line-height: 1.02;
+	letter-spacing: -0.065em;
+}
+
+.title span {
+	color: var(--mantine-color-dna-6);
+}
+
+.description {
+	max-width: 28ch;
+	color: var(--mantine-color-gray-7);
+	font-size: 1rem;
+	line-height: 1.6;
+}
+
+.genes {
+	margin-top: 2px;
+}
+
+.geneDot {
+	width: 12px;
+	height: 12px;
+	display: inline-block;
+	border: 1px solid rgb(0 0 0 / 8%);
+	border-radius: 50%;
+}
+
+.duration {
+	margin-left: 5px;
+	color: var(--mantine-color-gray-6);
+	font-size: 0.8125rem;
+}
+
+.footer {
+	max-width: 42ch;
+	margin-top: auto;
+	color: var(--mantine-color-gray-6);
+	font-size: 0.75rem;
+	line-height: 1.5;
+}
+
+@media (max-width: 360px) {
+	.screen {
+		gap: var(--mantine-spacing-lg);
+	}
+
+	.title {
+		font-size: 2.625rem;
+	}
+}
