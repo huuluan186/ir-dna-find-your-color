@@ -1,0 +1,8 @@
+.badge {
+	min-width: 30px;
+	min-height: 30px;
+	border: 1px solid var(--mantine-color-dna-2);
+	background: var(--mantine-color-dna-0);
+	color: var(--mantine-color-dna-7);
+	font-size: 0.75rem;
+}

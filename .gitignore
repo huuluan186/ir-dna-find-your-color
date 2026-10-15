@@ -43,3 +43,5 @@ next-env.d.ts
 
 # tài liệu tham khảo nặng, chỉ giữ ở máy
 .ai/references/mantine-docs.txt
+.ai/skills/taste-skill/*
+.ai/skills/wondelai-skills/*

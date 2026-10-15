@@ -1,0 +1,37 @@
+{
+	"preferences": {
+		"languageLabel": "Ngôn ngữ",
+		"switchToLight": "Chuyển sang giao diện sáng",
+		"switchToDark": "Chuyển sang giao diện tối"
+	},
+	"home": {
+		"brand": "IR DNA",
+		"station": "TRẠM 2 · FIND YOUR COLOR",
+		"prototypeTitle": "Bản thử nghiệm",
+		"eyebrow": "GIẢI MÃ BẢN SẮC CỦA BẠN",
+		"titleFirst": "Tìm màu sắc",
+		"titleSecond": "trong bạn.",
+		"description": "Khám phá thế mạnh của bạn qua 12 câu hỏi ngắn.",
+		"genesLabel": "Sáu mã gen màu sắc",
+		"duration": "3–5 phút"
+	},
+	"form": {
+		"heading": "Bắt đầu khám phá",
+		"hint": "Điền thông tin để tiếp tục.",
+		"studentIdLabel": "Mã số sinh viên",
+		"studentIdPlaceholder": "Nhập mã sinh viên",
+		"nameLabel": "Họ và tên",
+		"namePlaceholder": "Nhập họ tên của bạn",
+		"button": "Bắt đầu khám phá",
+		"sample": "Dữ liệu thử:",
+		"studentIdError": "Mã sinh viên gồm 6–15 chữ số.",
+		"nameError": "Vui lòng nhập họ và tên."
+	},
+	"quiz": {
+		"counter": "Câu {current}/{total}",
+		"next": "Câu tiếp theo",
+		"finish": "Xem kết quả IR DNA",
+		"doneTitle": "Đã hoàn thành bài trắc nghiệm",
+		"doneNote": "Màn kết quả đầy đủ sẽ có ở bước sau. Gen nổi bật của bạn (bản thử nghiệm):"
+	}
+}

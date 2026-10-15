@@ -1,0 +1,201 @@
+.screen {
+	width: 100%;
+	min-height: calc(100dvh - 132px);
+	display: grid;
+	grid-template-columns: minmax(0, 1.1fr) minmax(340px, 0.9fr);
+	grid-template-rows: auto minmax(0, 1fr);
+	align-items: center;
+	column-gap: clamp(48px, 9vw, 128px);
+	row-gap: 18px;
+	padding: 18px 0;
+}
+
+.intro {
+	display: contents;
+}
+
+.identity {
+	grid-column: 1;
+	grid-row: 1;
+	align-self: start;
+}
+
+.brandMark {
+	position: relative;
+	width: 36px;
+	height: 36px;
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	grid-template-rows: repeat(2, 1fr);
+	gap: 3px;
+	transform: rotate(-9deg);
+}
+
+.brandMark span {
+	border-radius: 4px 11px 4px 11px;
+	background: #1e4fa3;
+}
+
+.brandMark span:nth-child(2) {
+	background: #e53935;
+}
+
+.brandMark span:nth-child(3) {
+	background: #fdd835;
+}
+
+.brand {
+	color: var(--mantine-color-text);
+	font-size: 1rem;
+	font-weight: 800;
+	letter-spacing: -0.04em;
+}
+
+.station {
+	margin-top: 2px;
+	color: var(--mantine-color-dimmed);
+	font-size: 0.625rem;
+	font-weight: 700;
+	letter-spacing: 0.1em;
+}
+
+.prototypeBadge {
+	margin-left: 8px;
+	border: 1px solid light-dark(rgb(30 79 163 / 15%), rgb(255 255 255 / 14%));
+	background: light-dark(rgb(255 255 255 / 68%), rgb(255 255 255 / 8%));
+	color: var(--mantine-color-dimmed);
+}
+
+.hero {
+	grid-column: 1;
+	grid-row: 2;
+	align-self: center;
+	padding-top: 0;
+}
+
+@media (min-width: 48em) and (max-height: 680px) {
+	.screen {
+		min-height: 0;
+		flex: 1;
+		row-gap: 12px;
+		padding: 8px 0;
+	}
+
+	.hero {
+		gap: 10px;
+	}
+
+	.title {
+		font-size: clamp(3rem, 6vw, 4.5rem);
+	}
+
+	.description {
+		line-height: 1.5;
+	}
+}
+
+.eyebrow {
+	color: var(--mantine-color-dna-6);
+	font-size: 0.6875rem;
+	font-weight: 800;
+	letter-spacing: 0.18em;
+}
+
+.title {
+	max-width: 10ch;
+	font-size: clamp(3.8rem, 7vw, 6.5rem);
+	line-height: 0.98;
+	letter-spacing: -0.075em;
+}
+
+.title span {
+	color: var(--mantine-color-dna-6);
+}
+
+.description {
+	max-width: 32ch;
+	color: var(--mantine-color-dimmed);
+	font-size: clamp(1rem, 1.5vw, 1.125rem);
+	line-height: 1.7;
+}
+
+.genes {
+	margin-top: 4px;
+}
+
+.geneDot {
+	width: 13px;
+	height: 13px;
+	display: inline-block;
+	border: 1px solid rgb(0 0 0 / 8%);
+	border-radius: 50%;
+	box-shadow: 0 0 0 4px light-dark(rgb(255 255 255 / 62%), rgb(255 255 255 / 8%));
+}
+
+.duration {
+	margin-left: 9px;
+	color: var(--mantine-color-dimmed);
+	font-size: 0.8125rem;
+}
+
+.formColumn {
+	grid-column: 2;
+	grid-row: 2;
+	align-self: center;
+}
+
+@media (max-width: 62em) {
+	.screen {
+		column-gap: 36px;
+		grid-template-columns: minmax(0, 1fr) minmax(310px, 0.88fr);
+	}
+
+	.title {
+		font-size: clamp(3.4rem, 7vw, 5rem);
+	}
+}
+
+@media (max-width: 48em) {
+	.screen {
+		min-height: auto;
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		gap: 30px;
+		padding: 20px 0 12px;
+	}
+
+	.intro {
+		display: contents;
+	}
+
+	.identity {
+		order: 0;
+	}
+
+	.hero {
+		order: 1;
+		gap: 14px;
+		padding-top: 0;
+	}
+
+	.title {
+		max-width: 11ch;
+		font-size: clamp(3.2rem, 14vw, 4.5rem);
+	}
+
+	.description {
+		max-width: 31ch;
+	}
+
+	.formColumn {
+		order: 2;
+	}
+
+}
+
+@media (max-width: 22.5em) {
+	.title {
+		font-size: 2.85rem;
+	}
+}

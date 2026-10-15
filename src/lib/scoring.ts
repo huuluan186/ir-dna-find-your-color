@@ -1,80 +1,93 @@
 // Thuật toán chấm điểm (hàm thuần, không gọi CSDL). Xem .ai/system/kien_truc.md mục 4.
 
 export type ScoreInput = {
-	colors: { id: number; hex: string }[];
-	questions: { id: number; options: { id: number; points: Record<number, number> }[] }[];
+	colorIds: number[];
+	questions: { id: number; options: { id: number; colorId: number }[] }[];
 	selected: number[]; // id_dap_an theo thứ tự câu
 };
 
-export type ColorScore = { colorId: number; points: number; max: number; percent: number };
+export type ColorScore = { colorId: number; points: number };
+
+export type ScoreKind = "don" | "ket_hop" | "dong_hang" | "da_sac";
 
 export type ScoreResult = {
-	ranking: ColorScore[]; // giảm dần
-	topColorId: number;
-	blendHex: string;
+	points: ColorScore[]; // giảm dần; các điểm bằng nhau giữ thứ tự colorIds đầu vào
+	topColorIds: number[];
+	kind: ScoreKind;
 };
 
-export function score({ colors, questions, selected }: ScoreInput): ScoreResult {
-	const optionById = new Map<number, { questionIndex: number; points: Record<number, number> }>();
-	questions.forEach((q, questionIndex) => {
-		for (const o of q.options) optionById.set(o.id, { questionIndex, points: o.points });
-	});
+export function score({ colorIds, questions, selected }: ScoreInput): ScoreResult {
+	if (colorIds.length !== 6 || new Set(colorIds).size !== colorIds.length) {
+		throw new Error("Danh sách mã gen không hợp lệ.");
+	}
 
-	const stats = colors.map((c) => {
-		// Điểm tối đa: điểm cao nhất màu này nhận được ở từng câu.
-		const max = questions.reduce(
-			(sum, q) => sum + Math.max(0, ...q.options.map((o) => o.points[c.id] ?? 0)),
-			0
-		);
-		return { colorId: c.id, hex: c.hex, points: 0, max, lastQuestion: -1 };
-	});
+	if (questions.length === 0 || selected.length !== questions.length) {
+		throw new Error("Cần chọn đúng một đáp án cho mỗi câu hỏi.");
+	}
 
-	for (const id of selected) {
-		const option = optionById.get(id);
-		if (!option) throw new Error(`Đáp án không hợp lệ: ${id}`);
-		for (const s of stats) {
-			const p = option.points[s.colorId] ?? 0;
-			if (p > 0) {
-				s.points += p;
-				s.lastQuestion = Math.max(s.lastQuestion, option.questionIndex);
+	const knownColorIds = new Set(colorIds);
+	const questionIds = new Set<number>();
+	const optionById = new Map<number, { questionId: number; colorId: number }>();
+
+	for (const question of questions) {
+		if (questionIds.has(question.id)) {
+			throw new Error(`Câu hỏi bị trùng mã: ${question.id}`);
+		}
+		questionIds.add(question.id);
+
+		if (question.options.length === 0) {
+			throw new Error(`Câu hỏi ${question.id} chưa có đáp án.`);
+		}
+
+		for (const option of question.options) {
+			if (optionById.has(option.id)) {
+				throw new Error(`Đáp án bị trùng mã: ${option.id}`);
 			}
+			if (!knownColorIds.has(option.colorId)) {
+				throw new Error(`Đáp án ${option.id} gán mã gen không hợp lệ.`);
+			}
+			optionById.set(option.id, { questionId: question.id, colorId: option.colorId });
 		}
 	}
 
-	const ratio = (s: (typeof stats)[number]) => (s.max === 0 ? 0 : s.points / s.max);
-	// Giảm dần theo phần trăm; hoà thì màu được cộng điểm ở câu gần cuối nhất đứng trước.
-	const sorted = [...stats].sort((a, b) => ratio(b) - ratio(a) || b.lastQuestion - a.lastQuestion);
+	const selectedQuestionIds = new Set<number>();
+	const totals = new Map(colorIds.map((colorId) => [colorId, 0]));
 
-	const [first, second] = sorted;
+	for (const optionId of selected) {
+		const option = optionById.get(optionId);
+		if (!option) {
+			throw new Error(`Đáp án không thuộc bộ câu hỏi: ${optionId}`);
+		}
+		if (selectedQuestionIds.has(option.questionId)) {
+			throw new Error(`Chỉ được chọn một đáp án cho câu hỏi ${option.questionId}.`);
+		}
+
+		selectedQuestionIds.add(option.questionId);
+		totals.set(option.colorId, totals.get(option.colorId)! + 1);
+	}
+
+	if (selectedQuestionIds.size !== questions.length) {
+		throw new Error("Cần chọn đúng một đáp án cho mỗi câu hỏi.");
+	}
+
+	const points = colorIds
+		.map((colorId) => ({ colorId, points: totals.get(colorId)! }))
+		.sort((a, b) => b.points - a.points);
+	const highestPoints = points[0].points;
+	const topColorIds = points
+		.filter((result) => result.points === highestPoints)
+		.map((result) => result.colorId);
+
 	return {
-		ranking: sorted.map((s) => ({
-			colorId: s.colorId,
-			points: s.points,
-			max: s.max,
-			percent: Math.round(ratio(s) * 100),
-		})),
-		topColorId: first.colorId,
-		blendHex: blend(first.hex, ratio(first), second?.hex, second ? ratio(second) : 0),
+		points,
+		topColorIds,
+		kind:
+			topColorIds.length === 1
+				? "don"
+				: topColorIds.length === 2
+					? "ket_hop"
+					: topColorIds.length === colorIds.length
+						? "da_sac"
+						: "dong_hang",
 	};
-}
-
-// Trộn RGB 2 màu theo tỉ lệ phần trăm (86% và 57% → 60:40).
-function blend(hexA: string, weightA: number, hexB: string | undefined, weightB: number): string {
-	const total = weightA + weightB;
-	if (!hexB || weightB === 0 || total === 0) return hexA.toUpperCase();
-	const a = toRgb(hexA);
-	const b = toRgb(hexB);
-	const mixed = a.map((v, i) => Math.round((v * weightA + b[i] * weightB) / total));
-	return (
-		"#" +
-		mixed
-			.map((v) => v.toString(16).padStart(2, "0"))
-			.join("")
-			.toUpperCase()
-	);
-}
-
-function toRgb(hex: string): number[] {
-	const n = parseInt(hex.replace("#", ""), 16);
-	return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
 }
