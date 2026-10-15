@@ -1,0 +1,87 @@
+.form {
+	width: 100%;
+	padding: clamp(22px, 3vw, 34px);
+	border: 1px solid light-dark(rgb(255 255 255 / 86%), rgb(255 255 255 / 11%));
+	border-radius: 28px;
+	background: light-dark(rgb(255 255 255 / 88%), rgb(18 27 45 / 88%));
+	box-shadow:
+		0 28px 80px rgb(21 45 91 / 12%),
+		inset 0 1px 0 rgb(255 255 255 / 70%);
+	backdrop-filter: blur(22px);
+}
+
+.formHeading {
+	color: var(--mantine-color-text);
+	font-size: 1.25rem;
+	font-weight: 800;
+	letter-spacing: -0.03em;
+}
+
+.formHint {
+	margin-top: 5px;
+	color: var(--mantine-color-dimmed);
+	font-size: 0.875rem;
+}
+
+.fields {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 14px;
+}
+
+.submitButton {
+	min-height: 50px;
+	margin-top: 2px;
+	border-radius: 14px;
+	font-weight: 700;
+	box-shadow: 0 9px 22px rgb(30 79 163 / 20%);
+}
+
+.sampleHint {
+	color: var(--mantine-color-dimmed);
+	font-size: 0.75rem;
+	line-height: 1.6;
+}
+
+.sampleHint strong {
+	color: var(--mantine-color-text);
+	font-weight: 600;
+}
+
+.status {
+	padding: 10px 12px;
+	border: 1px solid light-dark(rgb(30 79 163 / 12%), rgb(162 184 229 / 18%));
+	border-radius: 12px;
+	background: light-dark(rgb(234 240 251 / 88%), rgb(30 79 163 / 18%));
+	color: light-dark(var(--mantine-color-dna-8), var(--mantine-color-dna-1));
+	font-size: 0.8125rem;
+	line-height: 1.5;
+}
+
+@media (min-width: 48em) and (max-height: 680px) {
+	.form {
+		padding: 20px 24px;
+	}
+
+	.form > :global(.mantine-Stack-root) {
+		gap: 10px !important;
+	}
+
+	.submitButton {
+		min-height: 46px;
+	}
+}
+
+@media (max-width: 62em) {
+	.fields {
+		grid-template-columns: 1fr;
+		gap: 12px;
+	}
+}
+
+@media (max-width: 48em) {
+	.form {
+		padding: 22px 18px;
+		border-radius: 22px;
+	}
+}
