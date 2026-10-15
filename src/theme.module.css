@@ -1,0 +1,8 @@
+/* Ô nhập chỉ để xem (disabled): chữ in nghiêng, vẫn đọc rõ (bỏ độ mờ 0.6 mặc định của Mantine) */
+.input:disabled,
+.input[data-disabled] {
+	opacity: 1;
+	color: var(--mantine-color-dimmed);
+	font-style: italic;
+	cursor: default;
+}

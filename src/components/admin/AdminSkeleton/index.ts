@@ -1,0 +1,1 @@
+export { AdminSkeleton } from "./AdminSkeleton";

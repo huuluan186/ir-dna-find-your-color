@@ -44,7 +44,7 @@ function PreferencesContent({
 
 	return (
 		<>
-			<div className={classes.toolbar}>
+			<div className={classes.toolbar} data-app-preferences>
 				<Group gap={8} wrap="nowrap">
 					<span className={classes.srOnly}>{t("languageLabel")}</span>
 					<SegmentedControl

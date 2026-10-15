@@ -1,0 +1,7 @@
+.page {
+	display: grid;
+	place-items: center;
+	min-height: 100dvh;
+	padding: 24px 16px;
+	background: light-dark(#fbfbfa, #111214);
+}
