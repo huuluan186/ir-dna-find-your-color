@@ -10,6 +10,9 @@ export const QUERY_KEYS = {
 		LATEST: ["result", "latest"],
 	},
 	ADMIN: {
+		ALL: ["admin"],
+		STUDENTS: ["admin", "students"],
+		STUDENT_DETAIL: (mssv: string) => ["admin", "students", mssv] as const,
 		COLORS: ["admin", "colors"],
 		QUESTIONS: ["admin", "questions"],
 		RESULTS: ["admin", "results"],

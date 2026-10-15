@@ -24,3 +24,8 @@ export async function loginStudentRequest(input: StudentLoginInput) {
 		throw error;
 	}
 }
+
+export const loginAdminRequest = (password: string) =>
+	http.post<{ ok: true }>(API_ENDPOINTS.AUTH.ADMIN, { password });
+
+export const logoutAdminRequest = () => http.delete<{ ok: true }>(API_ENDPOINTS.AUTH.ADMIN);
