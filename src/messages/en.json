@@ -1,0 +1,37 @@
+{
+	"preferences": {
+		"languageLabel": "Language",
+		"switchToLight": "Switch to light theme",
+		"switchToDark": "Switch to dark theme"
+	},
+	"home": {
+		"brand": "IR DNA",
+		"station": "STATION 2 · FIND YOUR COLOR",
+		"prototypeTitle": "Prototype",
+		"eyebrow": "DECODE YOUR IDENTITY",
+		"titleFirst": "Find your",
+		"titleSecond": "color.",
+		"description": "Discover your strengths through 12 short questions.",
+		"genesLabel": "Six color genes",
+		"duration": "3–5 minutes"
+	},
+	"form": {
+		"heading": "Start exploring",
+		"hint": "Enter your details to continue.",
+		"studentIdLabel": "Student ID",
+		"studentIdPlaceholder": "e.g. 2300001234",
+		"nameLabel": "Full name",
+		"namePlaceholder": "Your full name",
+		"button": "Start exploring",
+		"sample": "Sample data:",
+		"studentIdError": "Student ID must contain 6–15 digits.",
+		"nameError": "Please enter your full name."
+	},
+	"quiz": {
+		"counter": "Question {current}/{total}",
+		"next": "Next question",
+		"finish": "See my IR DNA result",
+		"doneTitle": "Quiz completed",
+		"doneNote": "The full result screen comes in a later step. Your top gene (prototype):"
+	}
+}
