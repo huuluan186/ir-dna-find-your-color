@@ -1,0 +1,19 @@
+.card {
+	width: 100%;
+	max-width: 400px;
+	padding: 32px;
+	border: 1px solid light-dark(#eaeaea, rgb(255 255 255 / 10%));
+	border-radius: 12px;
+	background: var(--mantine-color-body);
+}
+
+.title {
+	font-size: 1.5rem;
+	letter-spacing: -0.02em;
+}
+
+.hint {
+	margin-top: 4px;
+	color: var(--mantine-color-dimmed);
+	font-size: 0.875rem;
+}

@@ -1,4 +1,5 @@
-import { createTheme, type MantineColorsTuple } from "@mantine/core";
+import { createTheme, Input, type MantineColorsTuple } from "@mantine/core";
+import classes from "./theme.module.css";
 
 // Xanh lam IR DNA (#1E4FA3 ở vị trí 6). Màu của 6 mã gen lấy từ CSDL, không khai báo ở đây.
 const dna: MantineColorsTuple = [
@@ -27,5 +28,7 @@ export const theme = createTheme({
 		Button: { defaultProps: { size: "md" } },
 		TextInput: { defaultProps: { size: "md" } },
 		PasswordInput: { defaultProps: { size: "md" } },
+		// Áp cho mọi ô nhập (TextInput, Select...): ô disabled là ô chỉ để xem, chữ in nghiêng
+		Input: Input.extend({ classNames: { input: classes.input } }),
 	},
 });

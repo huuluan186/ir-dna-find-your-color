@@ -44,3 +44,7 @@ export function validateStudentLogin(input: unknown) {
 	}
 	return { data: undefined, errors };
 }
+
+export const adminLoginSchema = z.object({
+	password: z.string().min(1).max(200),
+});

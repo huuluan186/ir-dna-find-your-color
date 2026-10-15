@@ -8,10 +8,12 @@ export const APP = {
 	TIME_ZONE: "Asia/Ho_Chi_Minh",
 } as const;
 
-// Phiên đăng nhập sinh viên (cookie httpOnly ký JWT, xem kien_truc.md mục 6)
+// Phiên đăng nhập sinh viên và admin (cookie httpOnly ký JWT, xem kien_truc.md mục 6)
 export const SESSION = {
 	STUDENT_COOKIE: "ir-dna-student",
 	STUDENT_MAX_AGE_SECONDS: 7 * 24 * 60 * 60,
+	ADMIN_COOKIE: "ir-dna-admin",
+	ADMIN_MAX_AGE_SECONDS: 12 * 60 * 60,
 } as const;
 
 // Khoá localStorage của trình duyệt
@@ -28,3 +30,18 @@ export const STUDENT_INPUT = {
 
 // Nhãn phương án theo thứ tự A, B, C, D (phím tắt A–D)
 export const OPTION_LETTERS: readonly string[] = ["A", "B", "C", "D"];
+
+// Giới hạn số lần nhập sai mật khẩu admin trên mỗi địa chỉ IP
+export const ADMIN_LOGIN_LIMIT = {
+	MAX_ATTEMPTS: 5,
+	WINDOW_SECONDS: 15 * 60,
+} as const;
+
+// Bảng dữ liệu trang quản trị: số dòng mỗi trang (người dùng chọn được), mặc định theo thiết bị
+export const ADMIN_TABLE = {
+	PAGE_SIZE_OPTIONS: [4, 8, 10, 15, 20],
+	DEFAULT_PAGE_SIZE: 8,
+	DEFAULT_PAGE_SIZE_MOBILE: 4,
+	// Trùng breakpoint sm của Mantine (768px)
+	MOBILE_QUERY: "(max-width: 48em)",
+} as const;
