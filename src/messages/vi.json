@@ -7,25 +7,32 @@
 	"home": {
 		"brand": "IR DNA",
 		"station": "TRẠM 2 · FIND YOUR COLOR",
-		"prototypeTitle": "Bản thử nghiệm",
 		"eyebrow": "GIẢI MÃ BẢN SẮC CỦA BẠN",
 		"titleFirst": "Tìm màu sắc",
 		"titleSecond": "trong bạn.",
-		"description": "Khám phá thế mạnh của bạn qua 12 câu hỏi ngắn.",
+		"description": "Khám phá thế mạnh của bạn qua các câu hỏi ngắn.",
 		"genesLabel": "Sáu mã gen màu sắc",
 		"duration": "3–5 phút"
 	},
 	"form": {
 		"heading": "Bắt đầu khám phá",
-		"hint": "Điền thông tin để tiếp tục.",
+		"hint": "Nhập mã sinh viên để tiếp tục.",
 		"studentIdLabel": "Mã số sinh viên",
 		"studentIdPlaceholder": "Nhập mã sinh viên",
 		"nameLabel": "Họ và tên",
 		"namePlaceholder": "Nhập họ tên của bạn",
 		"button": "Bắt đầu khám phá",
-		"sample": "Dữ liệu thử:",
 		"studentIdError": "Mã sinh viên gồm 6–15 chữ số.",
-		"nameError": "Vui lòng nhập họ và tên."
+		"nameError": "Vui lòng nhập họ và tên.",
+		"nameTooLongError": "Họ và tên tối đa 100 ký tự.",
+		"serverError": "Lỗi hệ thống, vui lòng thử lại sau.",
+		"continue": "Tiếp tục",
+		"newStudentHint": "Lần đầu tham gia? Cho chúng mình biết tên bạn nhé.",
+		"changeStudentId": "Đổi mã sinh viên",
+		"greeting": "Chào {name}!",
+		"confirmHint": "Đúng là bạn chứ?",
+		"notYou": "Không phải bạn?",
+		"studentIdSummary": "Mã sinh viên: {mssv}"
 	},
 	"quiz": {
 		"counter": "Câu {current}/{total}",

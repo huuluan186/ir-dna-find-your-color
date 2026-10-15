@@ -5,9 +5,21 @@
 	justify-content: center;
 	background-color: light-dark(#eef3fc, #080d18);
 	background-image:
-		radial-gradient(ellipse at 8% 10%, light-dark(rgb(229 57 53 / 13%), rgb(229 57 53 / 12%)), transparent 28%),
-		radial-gradient(ellipse at 88% 16%, light-dark(rgb(30 79 163 / 15%), rgb(30 79 163 / 22%)), transparent 32%),
-		radial-gradient(ellipse at 76% 92%, light-dark(rgb(251 140 0 / 11%), rgb(251 140 0 / 10%)), transparent 27%),
+		radial-gradient(
+			ellipse at 8% 10%,
+			light-dark(rgb(229 57 53 / 13%), rgb(229 57 53 / 12%)),
+			transparent 28%
+		),
+		radial-gradient(
+			ellipse at 88% 16%,
+			light-dark(rgb(30 79 163 / 15%), rgb(30 79 163 / 22%)),
+			transparent 32%
+		),
+		radial-gradient(
+			ellipse at 76% 92%,
+			light-dark(rgb(251 140 0 / 11%), rgb(251 140 0 / 10%)),
+			transparent 27%
+		),
 		linear-gradient(135deg, light-dark(#f8faff, #0a1221), light-dark(#e9effb, #0b1020));
 }
 

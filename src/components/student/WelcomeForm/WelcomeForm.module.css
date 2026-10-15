@@ -23,39 +23,12 @@
 	font-size: 0.875rem;
 }
 
-.fields {
-	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 14px;
-}
-
 .submitButton {
 	min-height: 50px;
 	margin-top: 2px;
 	border-radius: 14px;
 	font-weight: 700;
 	box-shadow: 0 9px 22px rgb(30 79 163 / 20%);
-}
-
-.sampleHint {
-	color: var(--mantine-color-dimmed);
-	font-size: 0.75rem;
-	line-height: 1.6;
-}
-
-.sampleHint strong {
-	color: var(--mantine-color-text);
-	font-weight: 600;
-}
-
-.status {
-	padding: 10px 12px;
-	border: 1px solid light-dark(rgb(30 79 163 / 12%), rgb(162 184 229 / 18%));
-	border-radius: 12px;
-	background: light-dark(rgb(234 240 251 / 88%), rgb(30 79 163 / 18%));
-	color: light-dark(var(--mantine-color-dna-8), var(--mantine-color-dna-1));
-	font-size: 0.8125rem;
-	line-height: 1.5;
 }
 
 @media (min-width: 48em) and (max-height: 680px) {
@@ -72,16 +45,51 @@
 	}
 }
 
-@media (max-width: 62em) {
-	.fields {
-		grid-template-columns: 1fr;
-		gap: 12px;
-	}
-}
-
 @media (max-width: 48em) {
 	.form {
 		padding: 22px 18px;
 		border-radius: 22px;
+	}
+}
+
+.serverError {
+	color: var(--mantine-color-error);
+	font-size: 0.8125rem;
+	line-height: 1.5;
+}
+
+.greeting {
+	color: var(--mantine-color-text);
+	font-size: 1.125rem;
+	font-weight: 800;
+}
+
+/* Chuyển bước: nội dung mới trượt vào (từ phải khi tiến, từ trái khi quay lại) */
+.slide {
+	animation: slide-in 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+	will-change: transform, opacity;
+
+	&[data-back] {
+		animation-name: slide-in-back;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		animation: none;
+	}
+}
+
+@keyframes slide-in {
+	from {
+		opacity: 0;
+		transform: translateX(18px);
+		filter: blur(2px);
+	}
+}
+
+@keyframes slide-in-back {
+	from {
+		opacity: 0;
+		transform: translateX(-18px);
+		filter: blur(2px);
 	}
 }

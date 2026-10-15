@@ -3,11 +3,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { Button, Progress, Text, Title, UnstyledButton } from "@mantine/core";
 import { useTranslations } from "next-intl";
+import { OPTION_LETTERS } from "@/constants/app";
 import { score } from "@/lib/scoring";
 import { MOCK_CAU_HOI, MOCK_MAU_GEN } from "@/mock-data/quiz";
 import classes from "./QuizScreen.module.css";
 
-const LETTERS = ["A", "B", "C", "D"];
 const QUESTIONS = MOCK_CAU_HOI.filter((q) => q.dang_bat).sort((a, b) => a.thu_tu - b.thu_tu);
 
 export function QuizScreen() {
@@ -44,7 +44,7 @@ export function QuizScreen() {
 				return;
 			}
 			const key = event.key.toUpperCase();
-			const pos = /^[1-4]$/.test(key) ? Number(key) - 1 : LETTERS.indexOf(key);
+			const pos = /^[1-4]$/.test(key) ? Number(key) - 1 : OPTION_LETTERS.indexOf(key);
 			const option = pos >= 0 ? question.dap_an[pos] : undefined;
 			if (option) choose(option.id_dap_an);
 		}
@@ -105,7 +105,7 @@ export function QuizScreen() {
 						className={classes.option}
 						onClick={() => choose(option.id_dap_an)}
 					>
-						<span className={classes.letter}>{LETTERS[i]}</span>
+						<span className={classes.letter}>{OPTION_LETTERS[i]}</span>
 						<span>{option.noi_dung}</span>
 					</UnstyledButton>
 				))}

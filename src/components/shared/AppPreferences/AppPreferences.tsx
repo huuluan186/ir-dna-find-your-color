@@ -4,13 +4,13 @@ import { useEffect, useSyncExternalStore, type ReactNode } from "react";
 import { ActionIcon, Group, SegmentedControl, Tooltip, useMantineColorScheme } from "@mantine/core";
 import { IconMoon, IconSun } from "@tabler/icons-react";
 import { NextIntlClientProvider, useTranslations } from "next-intl";
+import { APP, STORAGE_KEYS } from "@/constants/app";
 import enMessages from "@/messages/en.json";
 import viMessages from "@/messages/vi.json";
 import classes from "./AppPreferences.module.css";
 
 type Locale = "vi" | "en";
 
-const STORAGE_KEY = "ir-dna-locale";
 const listeners = new Set<() => void>();
 
 function subscribe(listener: () => void) {
@@ -24,7 +24,7 @@ function subscribe(listener: () => void) {
 
 // Server và lần render hydrate đầu luôn là "vi", sau đó React đồng bộ với localStorage
 function getLocale(): Locale {
-	const stored = window.localStorage.getItem(STORAGE_KEY);
+	const stored = window.localStorage.getItem(STORAGE_KEYS.LOCALE);
 	return stored === "en" ? "en" : "vi";
 }
 
@@ -85,12 +85,16 @@ export function AppPreferencesProvider({ children }: { children: ReactNode }) {
 	}, [locale]);
 
 	function setLocale(nextLocale: Locale) {
-		window.localStorage.setItem(STORAGE_KEY, nextLocale);
+		window.localStorage.setItem(STORAGE_KEYS.LOCALE, nextLocale);
 		listeners.forEach((listener) => listener());
 	}
 
 	return (
-		<NextIntlClientProvider locale={locale} messages={locale === "vi" ? viMessages : enMessages}>
+		<NextIntlClientProvider
+			locale={locale}
+			messages={locale === "vi" ? viMessages : enMessages}
+			timeZone={APP.TIME_ZONE}
+		>
 			<PreferencesContent locale={locale} setLocale={setLocale}>
 				{children}
 			</PreferencesContent>
