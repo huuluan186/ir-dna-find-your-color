@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Be_Vietnam_Pro } from "next/font/google";
 import { ColorSchemeScript, mantineHtmlProps } from "@mantine/core";
 import "@mantine/core/styles.css";
-import { Providers } from "@/components/shared/Providers";
+import { Providers } from "@/components/shared";
 import { APP } from "@/constants/app";
 
 const beVietnamPro = Be_Vietnam_Pro({

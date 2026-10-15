@@ -1,0 +1,1 @@
+export { StudentFrame } from "./StudentFrame";

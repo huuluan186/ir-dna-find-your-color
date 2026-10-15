@@ -1,0 +1,35 @@
+.toolbar {
+	position: fixed;
+	top: max(14px, env(safe-area-inset-top));
+	right: max(16px, env(safe-area-inset-right));
+	z-index: 20;
+	padding: 5px;
+	border: 1px solid light-dark(rgb(255 255 255 / 75%), rgb(255 255 255 / 12%));
+	border-radius: 999px;
+	background: light-dark(rgb(255 255 255 / 82%), rgb(14 22 39 / 84%));
+	box-shadow: 0 8px 28px rgb(9 22 48 / 12%);
+	backdrop-filter: blur(18px);
+}
+
+.language {
+	border-color: transparent;
+	background: transparent;
+}
+
+.themeButton {
+	border-color: light-dark(rgb(30 79 163 / 12%), rgb(255 255 255 / 14%));
+	background: light-dark(rgb(255 255 255 / 86%), rgb(255 255 255 / 7%));
+	color: var(--mantine-color-text);
+}
+
+.srOnly {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
