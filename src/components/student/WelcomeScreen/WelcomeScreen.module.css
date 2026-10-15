@@ -59,13 +59,6 @@
 	letter-spacing: 0.1em;
 }
 
-.prototypeBadge {
-	margin-left: 8px;
-	border: 1px solid light-dark(rgb(30 79 163 / 15%), rgb(255 255 255 / 14%));
-	background: light-dark(rgb(255 255 255 / 68%), rgb(255 255 255 / 8%));
-	color: var(--mantine-color-dimmed);
-}
-
 .hero {
 	grid-column: 1;
 	grid-row: 2;
@@ -191,7 +184,6 @@
 	.formColumn {
 		order: 2;
 	}
-
 }
 
 @media (max-width: 22.5em) {

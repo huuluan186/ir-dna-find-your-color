@@ -1,1 +1,0 @@
-export { PrototypeBadge } from "./PrototypeBadge";
