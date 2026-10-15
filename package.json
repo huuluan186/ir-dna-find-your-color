@@ -5,16 +5,19 @@
 	"scripts": {
 		"dev": "next dev",
 		"build": "next build",
+		"vercel-build": "node scripts/migrate.mjs && next build",
 		"start": "next start",
 		"lint": "eslint",
 		"format": "prettier --write .",
-		"format:check": "prettier --check ."
+		"format:check": "prettier --check .",
+		"db:migrate": "node --env-file=.env.local scripts/migrate.mjs"
 	},
 	"dependencies": {
 		"@mantine/core": "^9.7.2",
 		"@mantine/hooks": "^9.7.2",
 		"@tabler/icons-react": "^3.49.0",
 		"@tanstack/react-query": "^5.104.2",
+		"@vercel/speed-insights": "^2.0.0",
 		"next": "16.4.0",
 		"next-intl": "^4.14.9",
 		"react": "19.3.0",
@@ -31,6 +34,7 @@
 		"postcss-preset-mantine": "^1.18.0",
 		"postcss-simple-vars": "^7.0.1",
 		"prettier": "^3.9.10",
+		"supabase": "^2.121.0",
 		"typescript": "^5"
 	}
 }

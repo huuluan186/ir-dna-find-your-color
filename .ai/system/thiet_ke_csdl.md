@@ -162,7 +162,7 @@ Ví dụ một dòng (bạn Minh, mã SV `2300001234`, bộ đề 3 câu minh ho
 | :--- | :--- | :--- |
 | `cho_lam_lai` | `true` | Sinh viên được làm lại hay không |
 | `dinh_dang_mssv` | `"^[0-9]{10}$"` | Regex kiểm tra mã SV (nhóm xác nhận định dạng mã SV HUFLIT) |
-| `so_cau_toi_da` | `10` | Giới hạn số câu đang bật |
+| `so_cau_toi_da` | `12` | Giới hạn số câu đang bật (migration `0003` đổi từ 10 sang 12) |
 
 Ba dòng trên được thêm sẵn với giá trị ví dụ trong `0001_init.sql`.
 

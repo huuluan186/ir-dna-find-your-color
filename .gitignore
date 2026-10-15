@@ -45,3 +45,6 @@ next-env.d.ts
 .ai/references/mantine-docs.txt
 .ai/skills/taste-skill/*
 .ai/skills/wondelai-skills/*
+
+# Supabase CLI
+supabase/.temp/
