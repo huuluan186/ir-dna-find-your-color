@@ -4,6 +4,8 @@ export const APP = {
 	DESCRIPTION: "Trạm 2 triển lãm IDENTITY – IR DNA: giải mã gen màu sắc của bạn.",
 	// Khung giao diện sinh viên trên màn hình lớn (xem quy_tac_code.md mục 4)
 	STUDENT_MAX_WIDTH: 480,
+	// Múi giờ cố định cho next-intl để server và trình duyệt định dạng ngày giờ giống nhau
+	TIME_ZONE: "Asia/Ho_Chi_Minh",
 } as const;
 
 // Phiên đăng nhập sinh viên (cookie httpOnly ký JWT, xem kien_truc.md mục 6)

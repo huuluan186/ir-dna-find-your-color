@@ -1,16 +1,23 @@
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { StudentFrame } from "@/components/shared";
 import { QuizScreen } from "@/components/student";
 import { ROUTES } from "@/constants/routes";
 import { getStudentSession } from "@/lib/session";
 
-export default async function QuizPage() {
-	// Chưa đăng nhập thì quay về màn chào
-	if (!(await getStudentSession())) redirect(ROUTES.HOME);
-
+// cacheComponents: đọc cookie phải nằm trong <Suspense>, khung trang vẫn prerender được
+export default function QuizPage() {
 	return (
 		<StudentFrame>
-			<QuizScreen />
+			<Suspense fallback={null}>
+				<QuizGate />
+			</Suspense>
 		</StudentFrame>
 	);
+}
+
+// Chưa đăng nhập thì quay về màn chào
+async function QuizGate() {
+	if (!(await getStudentSession())) redirect(ROUTES.HOME);
+	return <QuizScreen />;
 }

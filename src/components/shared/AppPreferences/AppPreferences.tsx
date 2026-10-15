@@ -4,7 +4,7 @@ import { useEffect, useSyncExternalStore, type ReactNode } from "react";
 import { ActionIcon, Group, SegmentedControl, Tooltip, useMantineColorScheme } from "@mantine/core";
 import { IconMoon, IconSun } from "@tabler/icons-react";
 import { NextIntlClientProvider, useTranslations } from "next-intl";
-import { STORAGE_KEYS } from "@/constants/app";
+import { APP, STORAGE_KEYS } from "@/constants/app";
 import enMessages from "@/messages/en.json";
 import viMessages from "@/messages/vi.json";
 import classes from "./AppPreferences.module.css";
@@ -90,7 +90,11 @@ export function AppPreferencesProvider({ children }: { children: ReactNode }) {
 	}
 
 	return (
-		<NextIntlClientProvider locale={locale} messages={locale === "vi" ? viMessages : enMessages}>
+		<NextIntlClientProvider
+			locale={locale}
+			messages={locale === "vi" ? viMessages : enMessages}
+			timeZone={APP.TIME_ZONE}
+		>
 			<PreferencesContent locale={locale} setLocale={setLocale}>
 				{children}
 			</PreferencesContent>

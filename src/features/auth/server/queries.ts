@@ -1,9 +1,9 @@
 import "server-only";
-import { db } from "@/lib/db";
+import { getDb } from "@/lib/db";
 
 // Trả null nếu mã SV chưa có trong CSDL
 export async function findStudent(mssv: string) {
-	const { data, error } = await db
+	const { data, error } = await getDb()
 		.from("sinh_vien")
 		.select("mssv, ho_ten")
 		.eq("mssv", mssv)
