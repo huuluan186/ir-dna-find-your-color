@@ -1,4 +1,4 @@
-# TIẾN ĐỘ & BÀN GIAO - IR DNA – FIND YOUR COLOR
+﻿# TIẾN ĐỘ & BÀN GIAO - IR DNA – FIND YOUR COLOR
 
 File này để một AI (hoặc người) mới vào dự án nắm nhanh: dự án là gì, đã làm tới đâu, việc gì tiếp theo. **Cập nhật file này mỗi khi xong một bước.** Cập nhật lần cuối: 15/10/2026.
 
@@ -40,9 +40,11 @@ Web app trắc nghiệm cho **Trạm 2 "FIND YOUR COLOR"** của triển lãm **
 | Chấm điểm | `src/lib/scoring.ts` | Đã viết lại theo `kien_truc.md` mục 4: mỗi lựa chọn +1, xác thực mỗi câu có một đáp án, giữ nguyên đồng hạng và trả `kind` |
 | Màn chào + form sinh viên | `src/app/page.tsx`, `src/components/student/WelcomeForm.tsx`, `src/components/shared/PrototypeBadge.tsx` | Có form MSSV/họ tên, dữ liệu sinh viên mẫu và badge "P" dùng chung; hiện chưa lưu dữ liệu hay nối sang luồng quiz |
 
+Màn mở đầu đã được chỉnh thành bố cục hai cột trên desktop, một cột trên mobile; có bộ điều khiển ngôn ngữ Việt/Anh bằng `next-intl` và giao diện sáng/tối ở cấp ứng dụng. Nội dung tiếng Anh/Việt hiện áp dụng cho màn mở đầu và form. Thay đổi đang ở working tree, chưa commit/deploy.
+
 Build `next build` chạy qua, `tsc` không lỗi (14/10/2026).
 
-Đã deploy prototype lên Vercel: <https://ir-dna-find-your-color.vercel.app>. GitHub Actions kiểm tra build trên push `develop` và PR vào `main` ở `.github/workflows/ci.yml`. Vercel GitHub integration **chưa kết nối**; sau khi kết nối, cần đặt `main` làm Production Branch để merge mới tự deploy production.
+Đã deploy prototype lên Vercel: <https://ir-dna-find-your-color.vercel.app>. `.github/workflows/ci.yml` hiện được chỉnh để chỉ chạy khi có PR vào `main`; thay đổi workflow chưa commit/deploy. Vercel GitHub integration **chưa kết nối**; sau khi kết nối, cần đặt `main` làm Production Branch để merge mới tự deploy production.
 
 **Thư viện chưa cài** (có trong `kien_truc.md` mục 8 nhưng chưa có trong `package.json`): `@mantine/form`, `@mantine/notifications`, `@mantine/charts` + `recharts`, `motion`, `canvas-confetti`, `howler`, `@supabase/supabase-js`, `zod`, `jose`, `server-only`, `qrcode.react`; dev: `@types/howler`, `@types/canvas-confetti`. Cài khi bước nào cần tới, hỏi Huu trước.
 
@@ -95,3 +97,9 @@ Vàng sáng, chữ đặt trên nền vàng phải dùng màu tối.
 
 - `package-lock.json` hiện báo đã sửa nhưng nội dung JSON giống hệt bản đã commit (chỉ khác thụt lề). Không cần commit riêng; lần `npm i` tới sẽ ghi lại.
 - `docs/` đã commit (đổi tên file cho không còn dấu cách).
+
+
+Cấu trúc component đã được gom theo thư mục riêng; mỗi component có index.ts, TSX và CSS Module tương ứng, còn app import qua barrel index.ts. Thay đổi chưa commit.
+Màn chào desktop được thu gọn theo chiều cao viewport thấp; trên màn hình cao và mobile giữ bố cục hiện tại.
+
+Màn làm bài `/quiz` (15/10/2026, chưa commit): `src/app/quiz/page.tsx` + `src/components/student/QuizScreen/` đọc `MOCK_CAU_HOI`, tiến độ "Câu x/12", phím 1–4/A–D chọn, Enter qua câu, cuối bài gọi `score()` và hiện tạm tên gen nổi bật. Form chào đã chuyển sang `/quiz` sau khi nhập hợp lệ (bỏ lời chào tạm). Còn thiếu: badge "P" trên màn làm bài, màn chờ giải mã, màn kết quả đầy đủ, nội dung câu hỏi chưa dịch tiếng Anh, chưa lưu sinh viên/đáp án.
