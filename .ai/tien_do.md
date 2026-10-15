@@ -35,12 +35,14 @@ Web app trắc nghiệm cho **Trạm 2 "FIND YOUR COLOR"** của triển lãm **
 | Màn chào tạm | `src/app/page.tsx` | Chỉ có tiêu đề, chưa có form |
 | Hằng số | `src/constants/` (`routes`, `api-endpoints`, `query-keys`, `assets`, `app`) | Đã khai báo sẵn đường dẫn cho mọi trang/API dự kiến |
 | QueryClient | `src/lib/query-client.ts` | Server tạo mới mỗi request, trình duyệt dùng một bản |
-| CSDL | `supabase/migrations/0001_init.sql` | 7 bảng, bật RLS. **Chưa chạy trên Supabase thật** (chưa có khoá trong `.env`) |
+| CSDL | `supabase/migrations/0001_init.sql`, `0002_update_quiz_results.sql` | 7 bảng, bật RLS. **Chưa chạy migration trên Supabase thật**; thông tin local trong `.env` chưa được xác nhận là project dùng cho app |
 | Dữ liệu quiz | `src/mock-data/quiz.ts` | Đã thay bằng 12 câu, 48 phương án và 6 gen chính thức từ `docs/noi-dung-web.md`; dữ liệu vẫn ở mock-data nên giao diện cần badge "P" cho đến khi chuyển sang CSDL |
 | Chấm điểm | `src/lib/scoring.ts` | Đã viết lại theo `kien_truc.md` mục 4: mỗi lựa chọn +1, xác thực mỗi câu có một đáp án, giữ nguyên đồng hạng và trả `kind` |
 | Màn chào + form sinh viên | `src/app/page.tsx`, `src/components/student/WelcomeForm.tsx`, `src/components/shared/PrototypeBadge.tsx` | Có form MSSV/họ tên, dữ liệu sinh viên mẫu và badge "P" dùng chung; hiện chưa lưu dữ liệu hay nối sang luồng quiz |
 
 Build `next build` chạy qua, `tsc` không lỗi (14/10/2026).
+
+Đã deploy prototype lên Vercel: <https://ir-dna-find-your-color.vercel.app>. GitHub Actions kiểm tra build trên push `develop` và PR vào `main` ở `.github/workflows/ci.yml`. Vercel GitHub integration **chưa kết nối**; sau khi kết nối, cần đặt `main` làm Production Branch để merge mới tự deploy production.
 
 **Thư viện chưa cài** (có trong `kien_truc.md` mục 8 nhưng chưa có trong `package.json`): `@mantine/form`, `@mantine/notifications`, `@mantine/charts` + `recharts`, `motion`, `canvas-confetti`, `howler`, `@supabase/supabase-js`, `zod`, `jose`, `server-only`, `qrcode.react`; dev: `@types/howler`, `@types/canvas-confetti`. Cài khi bước nào cần tới, hỏi Huu trước.
 
@@ -87,7 +89,7 @@ Vàng sáng, chữ đặt trên nền vàng phải dùng màu tối.
 5. **Giao diện sinh viên**: ~~màn chào + form mã SV/họ tên, dữ liệu mẫu có badge "P"~~ (xong 14/10/2026); tiếp tục màn làm bài từng câu (`QuestionCard`, tiến độ "Câu x/12", phím 1–4/A–D) → màn chờ giải mã → màn kết quả (1 gen / kết hợp / đồng hạng / đa sắc). Đã đọc `.ai/skills/design-taste-frontend/SKILL.md`. Cài `motion`, `howler`, `canvas-confetti` ở bước cần dùng.
 6. **Backend**: `src/lib/db.ts`, `src/lib/session.ts`, route `api/quiz` (bỏ điểm khỏi đề), `api/quiz/submit` (gọi `scoring.ts`, lưu `ket_qua`), `api/auth/student`. Cần Huu tạo project Supabase và điền `.env.local`.
 7. **Trang admin**: đăng nhập mật khẩu chung, sửa gen, sửa câu hỏi, bảng kết quả + biểu đồ + CSV, trang QR.
-8. Deploy Vercel, tạo và quét thử QR, chạy checklist mục VIII của file nội dung.
+ 8. ~~Deploy prototype lên Vercel~~ (xong 15/10/2026). Còn kết nối GitHub với project Vercel, tạo và quét thử QR, chạy checklist mục VIII của file nội dung.
 
 ## 6. TRẠNG THÁI GIT LÚC BÀN GIAO
 
