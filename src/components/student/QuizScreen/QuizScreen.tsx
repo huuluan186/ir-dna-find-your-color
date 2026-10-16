@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Button, Progress, Text, Title, UnstyledButton } from "@mantine/core";
+import { Button, Text, Title, UnstyledButton } from "@mantine/core";
+import { IconArrowLeft } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 import { OPTION_LETTERS } from "@/constants/app";
 import { score } from "@/lib/scoring";
+import { playSfx } from "@/lib/sound";
 import { MOCK_CAU_HOI, MOCK_MAU_GEN } from "@/mock-data/quiz";
 import classes from "./QuizScreen.module.css";
 
@@ -19,6 +21,10 @@ export function QuizScreen() {
 	const question = QUESTIONS[index];
 	const chosen = selected[index];
 	const isLast = index === QUESTIONS.length - 1;
+	const answeredCount = selected.filter((id) => id !== undefined).length;
+	// Câu xa nhất được nhảy tới: câu chưa trả lời đầu tiên
+	const firstUnanswered = QUESTIONS.findIndex((_, i) => selected[i] === undefined);
+	const reachable = firstUnanswered === -1 ? QUESTIONS.length - 1 : firstUnanswered;
 
 	function choose(optionId: number) {
 		setSelected((prev) => {
@@ -34,19 +40,39 @@ export function QuizScreen() {
 		else setIndex(index + 1);
 	}
 
-	// Phím 1–4 / A–D chọn đáp án, Enter qua câu tiếp
+	function back() {
+		if (index > 0) setIndex(index - 1);
+	}
+
+	// Phím 1–4 / A–D chọn đáp án, Enter hoặc → qua câu tiếp, ← về câu trước.
+	// Bấm chuột đã có tiếng qua data-sfx (StudentSound); bàn phím không tạo click nên phát ở đây.
 	useEffect(() => {
 		if (done) return;
 		function onKey(event: KeyboardEvent) {
 			if (event.metaKey || event.ctrlKey || event.altKey) return;
-			if (event.key === "Enter") {
+			if (event.key === "Enter" && event.target instanceof HTMLButtonElement) {
+				// Enter trên nút Câu trước/Câu tiếp/vạch tiến trình: để nút tự xử lý (đã có tiếng).
+				// Trên đáp án vừa bấm (còn giữ focus): chặn click lặp lại, Enter nghĩa là qua câu tiếp.
+				if (event.target.getAttribute("role") !== "radio") return;
+				event.preventDefault();
+			}
+			if (event.key === "Enter" || event.key === "ArrowRight") {
+				if (chosen !== undefined) playSfx(isLast ? "success" : "next");
 				next();
+				return;
+			}
+			if (event.key === "ArrowLeft") {
+				if (index > 0) playSfx("back");
+				back();
 				return;
 			}
 			const key = event.key.toUpperCase();
 			const pos = /^[1-4]$/.test(key) ? Number(key) - 1 : OPTION_LETTERS.indexOf(key);
 			const option = pos >= 0 ? question.dap_an[pos] : undefined;
-			if (option) choose(option.id_dap_an);
+			if (option) {
+				playSfx("select");
+				choose(option.id_dap_an);
+			}
 		}
 		window.addEventListener("keydown", onKey);
 		return () => window.removeEventListener("keydown", onKey);
@@ -84,14 +110,42 @@ export function QuizScreen() {
 
 	return (
 		<div className={classes.screen}>
-			<div>
-				<Text className={classes.counter}>
-					{t("counter", { current: index + 1, total: QUESTIONS.length })}
-				</Text>
-				<Progress value={((index + 1) / QUESTIONS.length) * 100} size="sm" radius="xl" />
+			<div className={classes.progress}>
+				<div className={classes.progressHead}>
+					<p className={classes.counter} aria-live="polite">
+						<span className={classes.counterLabel}>{t("questionLabel")}</span>
+						<span className={classes.counterCurrent}>{String(index + 1).padStart(2, "0")}</span>
+						<span className={classes.counterTotal}>/{QUESTIONS.length}</span>
+					</p>
+					<Text className={classes.answered}>
+						{t("answered", { count: answeredCount, total: QUESTIONS.length })}
+					</Text>
+				</div>
+				<div
+					className={classes.segments}
+					role="progressbar"
+					aria-valuemin={0}
+					aria-valuemax={QUESTIONS.length}
+					aria-valuenow={answeredCount}
+					aria-label={t("counter", { current: index + 1, total: QUESTIONS.length })}
+				>
+					{QUESTIONS.map((q, i) => (
+						<button
+							key={q.id_cau_hoi}
+							type="button"
+							className={classes.segment}
+							data-done={selected[i] !== undefined || undefined}
+							data-current={i === index || undefined}
+							disabled={i > reachable}
+							aria-label={t("goTo", { number: i + 1 })}
+							aria-current={i === index ? "step" : undefined}
+							onClick={() => setIndex(i)}
+						/>
+					))}
+				</div>
 			</div>
 
-			<Title order={2} className={classes.question}>
+			<Title order={2} key={index} className={classes.question}>
 				{question.noi_dung}
 			</Title>
 
@@ -102,6 +156,7 @@ export function QuizScreen() {
 						role="radio"
 						aria-checked={chosen === option.id_dap_an}
 						data-selected={chosen === option.id_dap_an || undefined}
+						data-sfx="select"
 						className={classes.option}
 						onClick={() => choose(option.id_dap_an)}
 					>
@@ -111,9 +166,27 @@ export function QuizScreen() {
 				))}
 			</div>
 
-			<Button className={classes.next} fullWidth disabled={chosen === undefined} onClick={next}>
-				{isLast ? t("finish") : t("next")}
-			</Button>
+			<div className={classes.actions}>
+				{index > 0 && (
+					<Button
+						className={classes.back}
+						variant="default"
+						data-sfx="back"
+						leftSection={<IconArrowLeft size={18} stroke={2.2} />}
+						onClick={back}
+					>
+						{t("back")}
+					</Button>
+				)}
+				<Button
+					className={classes.next}
+					disabled={chosen === undefined}
+					data-sfx={isLast ? "success" : "next"}
+					onClick={next}
+				>
+					{isLast ? t("finish") : t("next")}
+				</Button>
+			</div>
 		</div>
 	);
 }

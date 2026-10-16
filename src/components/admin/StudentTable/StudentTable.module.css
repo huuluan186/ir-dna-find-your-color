@@ -30,7 +30,41 @@
 }
 
 .table {
-	min-width: 760px;
+	min-width: 1020px;
+}
+
+/* Dòng tài khoản quản trị ghim ở đầu bảng */
+.pinnedRow {
+	background: light-dark(#fbfbfa, rgb(255 255 255 / 3%));
+}
+
+.account {
+	font-family: ui-monospace, "SF Mono", monospace;
+	font-weight: 600;
+}
+
+/* Tài khoản bị khoá: họ tên mờ và gạch ngang */
+:global(.mantine-Table-tr)[data-locked] .name {
+	color: var(--mantine-color-dimmed);
+	text-decoration: line-through;
+}
+
+/* Bảng tự co cột để vừa khung; badge và tên không được co nhỏ hơn chữ (trước đây bị cắt thành "…") */
+.nowrap,
+.name {
+	white-space: nowrap;
+}
+
+.badge {
+	min-width: max-content;
+	overflow: visible;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	white-space: nowrap;
+}
+
+.confirm {
+	max-width: 300px;
 }
 
 .mssv {

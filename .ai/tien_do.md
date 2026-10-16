@@ -1,6 +1,6 @@
 ﻿# TIẾN ĐỘ & BÀN GIAO - IR DNA – FIND YOUR COLOR
 
-File này để một AI (hoặc người) mới vào dự án nắm nhanh: dự án là gì, đã làm tới đâu, việc gì tiếp theo. **Cập nhật file này mỗi khi xong một bước.** Cập nhật lần cuối: 15/10/2026.
+File này để một AI (hoặc người) mới vào dự án nắm nhanh: dự án là gì, đã làm tới đâu, việc gì tiếp theo. **Cập nhật file này mỗi khi xong một bước.** Cập nhật lần cuối: 16/10/2026.
 
 Đọc theo thứ tự: `AGENTS.md` → `.ai/rules/quy_tac_code.md` → file này → `.ai/system/kien_truc.md` → `.ai/system/thiet_ke_csdl.md`.
 
@@ -46,7 +46,7 @@ Build `next build` chạy qua, `tsc` không lỗi (14/10/2026).
 
 Đã deploy prototype lên Vercel: <https://ir-dna-find-your-color.vercel.app>. `.github/workflows/ci.yml` hiện được chỉnh để chỉ chạy khi có PR vào `main`; thay đổi workflow chưa commit/deploy. Vercel GitHub integration **chưa kết nối**; sau khi kết nối, cần đặt `main` làm Production Branch để merge mới tự deploy production.
 
-**Thư viện chưa cài** (có trong `kien_truc.md` mục 8 nhưng chưa có trong `package.json`): `@mantine/form`, `@mantine/notifications`, `@mantine/charts` + `recharts`, `motion`, `canvas-confetti`, `howler`, `@supabase/supabase-js`, `zod`, `jose`, `server-only`, `qrcode.react`; dev: `@types/howler`, `@types/canvas-confetti`. Cài khi bước nào cần tới, hỏi Huu trước.
+**Thư viện chưa cài** (có trong `kien_truc.md` mục 8 nhưng chưa có trong `package.json`): `@mantine/notifications`, `@mantine/charts` + `recharts`, `motion`, `canvas-confetti`, `qrcode.react`; dev: `@types/canvas-confetti` (đã cài: `howler`, `zzfx`, `@types/howler`, `@supabase/supabase-js`, `zod`, `jose`, `server-only`, `@mantine/form`). Cài khi bước nào cần tới, hỏi Huu trước.
 
 ## 4. NỘI DUNG THẬT KHÁC THIẾT KẾ CŨ (ĐÃ CHỐT 14/10/2026)
 
@@ -116,3 +116,7 @@ Trang admin bước 1 (15/10/2026, chưa commit): đăng nhập bằng `ADMIN_PA
 
 Trang admin bước 2 (15/10/2026): sidebar (`AppShell` layout alt, menu khai báo ở `src/constants/admin-nav.ts`, mục chưa làm có nhãn "Sắp có"), banner tiêu đề trang, bảng sinh viên sắp xếp từng cột + cột `#` + cột "Thao tác" dính phải, phân trang ở client (4/8/10/15/20, mặc định 8 desktop, 4 điện thoại, `ADMIN_TABLE`), bảng cuộn bên trong để trang không cuộn, xem chi tiết bằng modal (form ô disabled). Theme: mọi ô disabled in nghiêng. URL trang đổi chỉ ở `ROUTES`: `ROUTE_TO_PAGE_DIR` + rewrites/redirects trong `next.config.ts` map về thư mục thật (đổi xong phải khởi động lại dev server). Dev: `turbopackFileSystemCacheForDev: false`, có `npm run dev:clean`.
 Biến môi trường Production cần có trên Vercel: `DB_URL`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SESSION_SECRET`, `ADMIN_PASSWORD`.
+
+Âm thanh (16/10/2026, chưa commit): nhạc nền + tiếng bấm cho mọi trang sinh viên (cả màn đăng nhập), nút bật/tắt tiếng cạnh VI/EN, trang admin `/admin/am-thanh` (menu "Cài đặt hệ thống → Âm thanh": bật/tắt nhạc, âm lượng, hiệu ứng, chọn 1 trong 3 bài CC0 có sẵn hoặc bài tải lên MP3/M4A ≤ 4 MB, nghe thử, xoá; tự lưu mỗi thao tác, không có nút Lưu). Màn làm bài: tiếng chọn đáp án, câu tiếp, câu trước, xem kết quả; Enter trên đáp án đang focus nay qua câu tiếp (trước đây bấm lại đáp án). Migration `0004_am_thanh.sql` (bảng `nhac_nen`, `cai_dat.am_thanh`, bucket Storage `am-thanh`) **chưa chạy** trên dev: chạy `npm run db:migrate`; chưa chạy thì trang sinh viên vẫn phát bài mặc định, còn trang admin Âm thanh báo "Không tải được dữ liệu". Chi tiết: `.ai/system/am_thanh.md`.
+
+Quản lý người dùng (16/10/2026, chưa commit): trang `/admin/quan-ly-nguoi-dung` đổi chữ "Sinh viên" thành "Người dùng", thêm cột Vai trò, Trạng thái; dòng "admin" (mật khẩu chung, Huu chốt **không** làm tài khoản admin riêng) ghim đầu bảng, không khoá được. Khoá/mở sinh viên (`PATCH /api/admin/students/[mssv]`, optimistic update; khoá có hỏi lại). Migration `0005_khoa_tai_khoan.sql` (`sinh_vien.bi_khoa`, `khoa_luc`) **đã chạy trên dev**. Bị khoá: đăng nhập trả 403, form báo "Tài khoản này đã bị khoá"; `/quiz` kiểm tra lại CSDL mỗi lần tải trang. **Khi làm `api/quiz/submit` phải từ chối sinh viên `bi_khoa`.**

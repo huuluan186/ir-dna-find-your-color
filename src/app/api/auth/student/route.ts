@@ -23,9 +23,12 @@ export async function POST(request: Request) {
 				? await findStudent(data.mssv)
 				: await registerStudent({ mssv: data.mssv, ho_ten: data.ho_ten });
 		if (!student) return NextResponse.json({ need_name: true });
+		// Tài khoản bị admin khoá: không tạo phiên
+		if (student.bi_khoa) return NextResponse.json({ code: "locked" }, { status: 403 });
 
-		await createStudentSession(student);
-		return NextResponse.json(student);
+		const session = { mssv: student.mssv, ho_ten: student.ho_ten };
+		await createStudentSession(session);
+		return NextResponse.json(session);
 	} catch (error) {
 		console.error("Đăng nhập sinh viên thất bại:", error);
 		return NextResponse.json({ message: "Lỗi hệ thống, vui lòng thử lại sau" }, { status: 500 });

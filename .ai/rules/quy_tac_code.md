@@ -15,7 +15,7 @@ AI **tự đọc** các file trong cột "Đọc thêm" theo đúng loại việ
 | :--- | :--- |
 | `.ai/` | `tien_do.md`: tiến độ, bàn giao, việc tiếp theo |
 | `.ai/rules/` | Quy tắc code (file này), nguyên tắc thiết kế phần mềm (`nguyen_tac_thiet_ke.md`) |
-| `.ai/system/` | Kiến trúc hệ thống (`kien_truc.md`), thiết kế CSDL (`thiet_ke_csdl.md`) |
+| `.ai/system/` | Kiến trúc hệ thống (`kien_truc.md`), thiết kế CSDL (`thiet_ke_csdl.md`), âm thanh (`am_thanh.md`) |
 | `.ai/skills/` | Hướng dẫn chuyên biệt: commit (`git-commit`), Mantine (`mantine-form`, `mantine-custom-components`, `mantine-combobox`), giao diện (`design-taste-frontend`, `minimalist-ui`, `redesign-existing-projects`) |
 | `src/app/` | Trang (App Router). `page.tsx` là Server Component thuần |
 | `src/components/` | Client Component (`"use client"`), chia theo khu vực: `student/`, `admin/`, `shared/` |
@@ -36,6 +36,7 @@ AI **tự đọc** các file trong cột "Đọc thêm" theo đúng loại việ
 | Thiết kế kiến trúc, refactor, quản lý state | `.ai/rules/nguyen_tac_thiet_ke.md`, `.ai/system/kien_truc.md` |
 | CSDL: bảng, cột, khóa, migration, seed | `.ai/system/thiet_ke_csdl.md`, `supabase/migrations/` (xem số thứ tự file cuối), mục 1.5 |
 | Thuật toán chấm điểm | `.ai/system/kien_truc.md` mục 4, `src/lib/scoring.ts` |
+| Âm thanh: nhạc nền, tiếng bấm, nút tắt tiếng, trang admin Âm thanh | `.ai/system/am_thanh.md`, `src/lib/sound.ts`, `src/constants/sound.ts` |
 | Frontend: thêm/sửa trang, component | Mục 4 của file này, `src/constants/`, `node_modules/next/dist/docs/` (Next.js bản mới, khác dữ liệu huấn luyện) |
 | Frontend: form (`useForm`, validate) | `.ai/skills/mantine-form/SKILL.md` |
 | Frontend: component Mantine tuỳ biến, theme, Styles API | `.ai/skills/mantine-custom-components/SKILL.md` |

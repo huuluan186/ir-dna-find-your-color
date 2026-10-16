@@ -37,6 +37,16 @@ export function StudentDetail({ mssv }: { mssv: string }) {
 					value={student.lan_lam_gan_nhat ? formatDate(student.lan_lam_gan_nhat) : t("never")}
 					disabled
 				/>
+				<TextInput
+					label={t("colStatus")}
+					value={student.bi_khoa ? t("statusLocked") : t("statusActive")}
+					disabled
+				/>
+				<TextInput
+					label={t("lockedAt")}
+					value={student.khoa_luc ? formatDate(student.khoa_luc) : "–"}
+					disabled
+				/>
 			</SimpleGrid>
 		</Fieldset>
 	);

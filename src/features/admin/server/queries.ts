@@ -6,6 +6,7 @@ type StudentWithResults = {
 	mssv: string;
 	ho_ten: string;
 	created_at: string;
+	bi_khoa: boolean;
 	ket_qua: { created_at: string }[];
 };
 
@@ -20,7 +21,7 @@ function summarize<T extends StudentWithResults>({ ket_qua, ...student }: T) {
 export async function listStudents(): Promise<AdminStudentRow[]> {
 	const { data, error } = await getDb()
 		.from("sinh_vien")
-		.select("mssv, ho_ten, created_at, ket_qua(created_at)")
+		.select("mssv, ho_ten, created_at, bi_khoa, ket_qua(created_at)")
 		.order("created_at", { ascending: false });
 	if (error) throw error;
 
@@ -31,7 +32,7 @@ export async function listStudents(): Promise<AdminStudentRow[]> {
 export async function getStudentDetail(mssv: string): Promise<AdminStudentDetail | null> {
 	const { data, error } = await getDb()
 		.from("sinh_vien")
-		.select("mssv, ho_ten, created_at, updated_at, ket_qua(created_at)")
+		.select("mssv, ho_ten, created_at, updated_at, bi_khoa, khoa_luc, ket_qua(created_at)")
 		.eq("mssv", mssv)
 		.maybeSingle();
 	if (error) throw error;

@@ -19,6 +19,7 @@ export const SESSION = {
 // Khoá localStorage của trình duyệt
 export const STORAGE_KEYS = {
 	LOCALE: "ir-dna-locale",
+	MUTED: "ir-dna-muted",
 } as const;
 
 // Luật nhập mã SV và họ tên, bám theo cột bảng sinh_vien

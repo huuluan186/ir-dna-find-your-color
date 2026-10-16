@@ -11,6 +11,7 @@ export const ROUTES = {
 		CAU_HOI: "/admin/cau-hoi",
 		KET_QUA: "/admin/ket-qua",
 		QR: "/admin/qr",
+		AM_THANH: "/admin/am-thanh",
 	},
 } as const;
 
@@ -19,4 +20,5 @@ export const ROUTES = {
 // Thêm trang mới: tạo thư mục, khai báo URL trong ROUTES, rồi thêm một cặp [URL, thư mục] vào đây.
 export const ROUTE_TO_PAGE_DIR: [url: string, pageDir: string][] = [
 	[ROUTES.ADMIN.SINH_VIEN, "/admin/sinh-vien"],
+	[ROUTES.ADMIN.AM_THANH, "/admin/am-thanh"],
 ];

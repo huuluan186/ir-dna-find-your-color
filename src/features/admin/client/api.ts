@@ -6,3 +6,9 @@ export const fetchStudents = () => http.get<AdminStudentRow[]>(API_ENDPOINTS.ADM
 
 export const fetchStudentDetail = (mssv: string) =>
 	http.get<AdminStudentDetail>(API_ENDPOINTS.ADMIN.STUDENT_DETAIL(mssv));
+
+export const setStudentLockedRequest = ({ mssv, bi_khoa }: { mssv: string; bi_khoa: boolean }) =>
+	http.patch<{ mssv: string; bi_khoa: boolean; khoa_luc: string | null }>(
+		API_ENDPOINTS.ADMIN.STUDENT_DETAIL(mssv),
+		{ bi_khoa }
+	);
