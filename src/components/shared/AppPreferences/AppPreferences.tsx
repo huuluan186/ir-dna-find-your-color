@@ -2,9 +2,10 @@
 
 import { useEffect, useSyncExternalStore, type ReactNode } from "react";
 import { ActionIcon, Group, SegmentedControl, Tooltip, useMantineColorScheme } from "@mantine/core";
-import { IconMoon, IconSun } from "@tabler/icons-react";
+import { IconMoon, IconSun, IconVolume, IconVolumeOff } from "@tabler/icons-react";
 import { NextIntlClientProvider, useTranslations } from "next-intl";
 import { APP, STORAGE_KEYS } from "@/constants/app";
+import { getServerSoundState, getSoundState, subscribeSound, toggleMuted } from "@/lib/sound";
 import enMessages from "@/messages/en.json";
 import viMessages from "@/messages/vi.json";
 import classes from "./AppPreferences.module.css";
@@ -41,6 +42,9 @@ function PreferencesContent({
 	const { colorScheme, setColorScheme } = useMantineColorScheme();
 	const isDark = colorScheme === "dark";
 	const themeLabel = isDark ? t("switchToLight") : t("switchToDark");
+	// Nút bật/tắt tiếng chỉ hiện ở trang sinh viên (nơi có nhạc nền)
+	const sound = useSyncExternalStore(subscribeSound, getSoundState, getServerSoundState);
+	const soundLabel = sound.muted ? t("soundOn") : t("soundOff");
 
 	return (
 		<>
@@ -70,6 +74,21 @@ function PreferencesContent({
 							{isDark ? <IconSun size={17} /> : <IconMoon size={17} />}
 						</ActionIcon>
 					</Tooltip>
+					{sound.active && (
+						<Tooltip label={soundLabel} withArrow>
+							<ActionIcon
+								aria-label={soundLabel}
+								aria-pressed={!sound.muted}
+								className={classes.themeButton}
+								variant="default"
+								size={34}
+								radius="xl"
+								onClick={toggleMuted}
+							>
+								{sound.muted ? <IconVolumeOff size={17} /> : <IconVolume size={17} />}
+							</ActionIcon>
+						</Tooltip>
+					)}
 				</Group>
 			</div>
 			{children}

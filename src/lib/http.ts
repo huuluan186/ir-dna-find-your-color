@@ -11,11 +11,13 @@ export class HttpError extends Error {
 	}
 }
 
+// body là FormData (tải file) thì gửi nguyên, trình duyệt tự đặt Content-Type multipart
 async function request<T>(method: string, url: string, body?: unknown): Promise<T> {
+	const isForm = body instanceof FormData;
 	const response = await fetch(url, {
 		method,
-		headers: body === undefined ? undefined : { "Content-Type": "application/json" },
-		body: body === undefined ? undefined : JSON.stringify(body),
+		headers: body === undefined || isForm ? undefined : { "Content-Type": "application/json" },
+		body: body === undefined ? undefined : isForm ? body : JSON.stringify(body),
 	});
 
 	const data = await response.json().catch(() => null);
@@ -27,5 +29,6 @@ export const http = {
 	get: <T>(url: string) => request<T>("GET", url),
 	post: <T>(url: string, body?: unknown) => request<T>("POST", url, body),
 	put: <T>(url: string, body?: unknown) => request<T>("PUT", url, body),
+	patch: <T>(url: string, body?: unknown) => request<T>("PATCH", url, body),
 	delete: <T>(url: string) => request<T>("DELETE", url),
 };

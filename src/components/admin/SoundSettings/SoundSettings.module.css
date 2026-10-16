@@ -1,0 +1,136 @@
+.wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	max-width: 760px;
+}
+
+.card {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	padding: 24px;
+	border: 1px solid light-dark(#eaeaea, rgb(255 255 255 / 8%));
+	border-radius: 12px;
+	background: var(--mantine-color-body);
+
+	@media (max-width: 48em) {
+		padding: 18px 16px;
+	}
+}
+
+.cardHead {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.cardTitle {
+	margin: 0;
+	font-size: 1rem;
+	font-weight: 700;
+}
+
+.cardHint {
+	color: var(--mantine-color-dimmed);
+	font-size: 0.875rem;
+	line-height: 1.5;
+}
+
+.libraryHead {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 16px;
+
+	@media (max-width: 30em) {
+		flex-direction: column;
+	}
+}
+
+/* Không cho nút co lại khi phần mô tả bên cạnh dài (trước đây bị cắt thành "Tải nhạc l") */
+.uploadButton {
+	flex: none;
+}
+
+.fieldLabel {
+	font-size: 0.875rem;
+	font-weight: 500;
+}
+
+.volumeValue {
+	color: var(--mantine-color-dimmed);
+	font-size: 0.875rem;
+	font-variant-numeric: tabular-nums;
+}
+
+.slider {
+	max-width: 420px;
+}
+
+/* Mỗi bài một dòng, chia bằng đường kẻ mảnh */
+.list {
+	display: flex;
+	flex-direction: column;
+	border: 1px solid light-dark(#eaeaea, rgb(255 255 255 / 8%));
+	border-radius: 8px;
+}
+
+.track {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	min-height: 64px;
+	padding: 10px 14px;
+
+	& + & {
+		border-top: 1px solid light-dark(#eaeaea, rgb(255 255 255 / 8%));
+	}
+}
+
+.radio {
+	flex: 1;
+	min-width: 0;
+}
+
+.radioBody {
+	align-items: center;
+}
+
+.trackName {
+	font-weight: 600;
+	overflow-wrap: anywhere;
+}
+
+.badge {
+	flex: none;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+
+	@media (max-width: 30em) {
+		display: none;
+	}
+}
+
+.confirm {
+	max-width: 280px;
+}
+
+/* Dòng trạng thái tự lưu ở đầu trang: gợi ý / đang lưu / đã lưu / lỗi */
+.notice {
+	min-height: 1.5em;
+	color: var(--mantine-color-dimmed);
+	font-size: 0.875rem;
+
+	&[data-tone="ok"] {
+		color: light-dark(#346538, #8fd19e);
+	}
+
+	&[data-tone="error"] {
+		color: light-dark(#9f2f2d, #ff8a85);
+	}
+
+	&[data-tone="pending"] {
+		color: var(--mantine-color-dimmed);
+	}
+}

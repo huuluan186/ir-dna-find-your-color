@@ -201,7 +201,7 @@ ir-dna-find-your-color/
 │   │   ├── db.ts                # Supabase client, chỉ server ("server-only")
 │   │   ├── session.ts           # ký/đọc cookie SV và admin
 │   │   ├── query-client.ts      # QueryClient (server: mỗi request, client: 1 bản)
-│   │   └── sound.ts             # Howler, bật/tắt tiếng
+│   │   └── sound.ts             # Howler (nhạc nền) + ZzFX (hiệu ứng), xem am_thanh.md
 │   ├── constants/  routes.ts, api-endpoints.ts, query-keys.ts, assets.ts, app.ts
 │   ├── mock-data/  quiz.ts      # dữ liệu mẫu (prototype): 6 màu, 10 câu, điểm
 │   ├── theme.ts                 # theme Mantine: màu, font, bo góc
@@ -220,7 +220,7 @@ ir-dna-find-your-color/
 | Nền tảng | Next.js (App Router) + TypeScript, React | 16.4, 19.3 |
 | Giao diện | Mantine (`core`, `hooks`, `form`, `notifications`, `charts`), `@tabler/icons-react` | 9.7 |
 | Chuyển động | Motion, canvas-confetti | 14.1, 1.9 |
-| Âm thanh | Howler.js | 2.2 |
+| Âm thanh | Howler.js (nhạc nền) + ZzFX (hiệu ứng tạo bằng code) | 2.2 / 1.4 |
 | CSDL | `@supabase/supabase-js` | 2.117 |
 | Dữ liệu server | `@tanstack/react-query` (+ devtools khi dev) | 5.104 |
 | Kiểm tra dữ liệu | Zod | 4.6 |

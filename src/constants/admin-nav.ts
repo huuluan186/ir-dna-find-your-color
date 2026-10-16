@@ -4,6 +4,7 @@ import {
 	IconListDetails,
 	IconQrcode,
 	IconUsers,
+	IconVolume,
 	type Icon,
 } from "@tabler/icons-react";
 import { ROUTES } from "./routes";
@@ -68,6 +69,18 @@ export const ADMIN_NAV: AdminNavGroup[] = [
 				titleKey: "titleQr",
 				Icon: IconQrcode,
 				ready: false,
+			},
+		],
+	},
+	{
+		labelKey: "navGroupSystem",
+		items: [
+			{
+				href: ROUTES.ADMIN.AM_THANH,
+				labelKey: "navSound",
+				titleKey: "titleSound",
+				Icon: IconVolume,
+				ready: true,
 			},
 		],
 	},

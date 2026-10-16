@@ -6,6 +6,7 @@ import { IconArrowLeft } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 import { OPTION_LETTERS } from "@/constants/app";
 import { score } from "@/lib/scoring";
+import { playSfx } from "@/lib/sound";
 import { MOCK_CAU_HOI, MOCK_MAU_GEN } from "@/mock-data/quiz";
 import classes from "./QuizScreen.module.css";
 
@@ -43,23 +44,35 @@ export function QuizScreen() {
 		if (index > 0) setIndex(index - 1);
 	}
 
-	// Phím 1–4 / A–D chọn đáp án, Enter hoặc → qua câu tiếp, ← về câu trước
+	// Phím 1–4 / A–D chọn đáp án, Enter hoặc → qua câu tiếp, ← về câu trước.
+	// Bấm chuột đã có tiếng qua data-sfx (StudentSound); bàn phím không tạo click nên phát ở đây.
 	useEffect(() => {
 		if (done) return;
 		function onKey(event: KeyboardEvent) {
 			if (event.metaKey || event.ctrlKey || event.altKey) return;
+			if (event.key === "Enter" && event.target instanceof HTMLButtonElement) {
+				// Enter trên nút Câu trước/Câu tiếp/vạch tiến trình: để nút tự xử lý (đã có tiếng).
+				// Trên đáp án vừa bấm (còn giữ focus): chặn click lặp lại, Enter nghĩa là qua câu tiếp.
+				if (event.target.getAttribute("role") !== "radio") return;
+				event.preventDefault();
+			}
 			if (event.key === "Enter" || event.key === "ArrowRight") {
+				if (chosen !== undefined) playSfx(isLast ? "success" : "next");
 				next();
 				return;
 			}
 			if (event.key === "ArrowLeft") {
+				if (index > 0) playSfx("back");
 				back();
 				return;
 			}
 			const key = event.key.toUpperCase();
 			const pos = /^[1-4]$/.test(key) ? Number(key) - 1 : OPTION_LETTERS.indexOf(key);
 			const option = pos >= 0 ? question.dap_an[pos] : undefined;
-			if (option) choose(option.id_dap_an);
+			if (option) {
+				playSfx("select");
+				choose(option.id_dap_an);
+			}
 		}
 		window.addEventListener("keydown", onKey);
 		return () => window.removeEventListener("keydown", onKey);
@@ -143,6 +156,7 @@ export function QuizScreen() {
 						role="radio"
 						aria-checked={chosen === option.id_dap_an}
 						data-selected={chosen === option.id_dap_an || undefined}
+						data-sfx="select"
 						className={classes.option}
 						onClick={() => choose(option.id_dap_an)}
 					>
@@ -157,13 +171,19 @@ export function QuizScreen() {
 					<Button
 						className={classes.back}
 						variant="default"
+						data-sfx="back"
 						leftSection={<IconArrowLeft size={18} stroke={2.2} />}
 						onClick={back}
 					>
 						{t("back")}
 					</Button>
 				)}
-				<Button className={classes.next} disabled={chosen === undefined} onClick={next}>
+				<Button
+					className={classes.next}
+					disabled={chosen === undefined}
+					data-sfx={isLast ? "success" : "next"}
+					onClick={next}
+				>
 					{isLast ? t("finish") : t("next")}
 				</Button>
 			</div>

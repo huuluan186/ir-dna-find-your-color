@@ -5,6 +5,8 @@ export const API_ENDPOINTS = {
 		STUDENT: "/api/auth/student",
 		ADMIN: "/api/auth/admin",
 	},
+	// Cài đặt âm thanh công khai cho trang sinh viên (nhạc nền đang dùng, âm lượng)
+	SOUND: "/api/sound",
 	QUIZ: {
 		GET: "/api/quiz",
 		SUBMIT: "/api/quiz/submit",
@@ -16,5 +18,8 @@ export const API_ENDPOINTS = {
 		QUESTIONS: "/api/admin/questions",
 		RESULTS: "/api/admin/results",
 		EXPORT: "/api/admin/export",
+		SOUND: "/api/admin/sound",
+		SOUND_UPLOADS: "/api/admin/sound/uploads",
+		SOUND_UPLOAD: (id: number) => `/api/admin/sound/uploads/${id}`,
 	},
 } as const;

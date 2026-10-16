@@ -10,6 +10,7 @@ import { ROUTES } from "@/constants/routes";
 import { LoginValidationError } from "@/features/auth/client/api";
 import { useLoginStudent } from "@/features/auth/client/hooks";
 import { validateStudentLogin, type LoginErrorCode } from "@/features/auth/schema";
+import { HttpError } from "@/lib/http";
 import classes from "./WelcomeForm.module.css";
 
 const ERROR_KEYS: Record<LoginErrorCode, string> = {
@@ -17,6 +18,11 @@ const ERROR_KEYS: Record<LoginErrorCode, string> = {
 	ho_ten_required: "nameError",
 	ho_ten_too_long: "nameTooLongError",
 };
+
+// Server trả 403 khi admin đã khoá tài khoản
+function isLockedError(error: unknown) {
+	return error instanceof HttpError && error.status === 403;
+}
 
 // mssv: nhập mã SV → name: mã chưa có, nhập họ tên → confirm: mã đã có, chào và xác nhận
 type Step = "mssv" | "name" | "confirm";
@@ -61,6 +67,10 @@ export function WelcomeForm() {
 				}
 			},
 			onError: (error) => {
+				if (isLockedError(error)) {
+					form.setErrors({ mssv: t("accountLocked") });
+					return;
+				}
 				if (!(error instanceof LoginValidationError)) return;
 				form.setErrors({
 					mssv: error.errors.mssv ? t(ERROR_KEYS[error.errors.mssv]) : undefined,
@@ -78,11 +88,13 @@ export function WelcomeForm() {
 		setStep("mssv");
 	}
 
-	const serverError = login.isError && !(login.error instanceof LoginValidationError) && (
-		<Text className={classes.serverError} role="alert">
-			{t("serverError")}
-		</Text>
-	);
+	const serverError = login.isError &&
+		!(login.error instanceof LoginValidationError) &&
+		!isLockedError(login.error) && (
+			<Text className={classes.serverError} role="alert">
+				{t("serverError")}
+			</Text>
+		);
 
 	if (step === "confirm") {
 		return (

@@ -10,7 +10,7 @@ export async function registerStudent({ mssv, ho_ten }: { mssv: string; ho_ten: 
 
 	const { data, error } = await getDb()
 		.from("sinh_vien")
-		.select("mssv, ho_ten")
+		.select("mssv, ho_ten, bi_khoa")
 		.eq("mssv", mssv)
 		.single();
 	if (error) throw error;

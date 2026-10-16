@@ -4,7 +4,7 @@ CSDL: **Supabase Postgres**. Quy ước tên: chữ thường, snake_case, tiế
 
 ---
 
-## I. DANH SÁCH BẢNG (7 BẢNG)
+## I. DANH SÁCH BẢNG (8 BẢNG)
 
 | STT | Bảng | Nhóm | Chức năng |
 | :---: | :--- | :--- | :--- |
@@ -14,7 +14,8 @@ CSDL: **Supabase Postgres**. Quy ước tên: chữ thường, snake_case, tiế
 | 4 | **`diem_dap_an`** | Nội dung | Ánh xạ mỗi đáp án tới đúng một gen, mỗi lựa chọn cộng 1 điểm |
 | 5 | **`sinh_vien`** | Phát sinh | Sinh viên đã đăng ký (mã SV, họ tên) |
 | 6 | **`ket_qua`** | Phát sinh | Mỗi lần làm bài là 1 dòng: đáp án đã chọn, điểm và danh sách gen cao nhất |
-| 7 | **`cai_dat`** | Cấu hình | Cặp khoá–giá trị (cho làm lại, định dạng mã SV...) |
+| 7 | **`cai_dat`** | Cấu hình | Cặp khoá–giá trị (cho làm lại, định dạng mã SV, âm thanh...) |
+| 8 | **`nhac_nen`** | Cấu hình | Nhạc nền admin tải lên; file nằm trong Supabase Storage (bucket `am-thanh`). Migration `0004` |
 
 ## II. SƠ ĐỒ QUAN HỆ
 
@@ -55,6 +56,7 @@ erDiagram
 	sinh_vien {
 		text mssv PK
 		text ho_ten
+		boolean bi_khoa
 	}
 	ket_qua {
 		bigint id_ket_qua PK
@@ -67,6 +69,13 @@ erDiagram
 	cai_dat {
 		text khoa PK
 		jsonb gia_tri
+	}
+	nhac_nen {
+		bigint id_nhac_nen PK
+		text ten
+		text duong_dan UK
+		int kich_thuoc
+		text loai_file
 	}
 ```
 
@@ -119,6 +128,8 @@ Mỗi đáp án phải có đúng một dòng; ràng buộc UNIQUE bảo đảm 
 | :--- | :--- | :--- | :--- |
 | `mssv` | `TEXT` | PK, CHECK `^[0-9]{6,15}$` | Nhập trên điện thoại bằng bàn phím số. CSDL chỉ chặn ký tự không phải số; định dạng chính xác do server kiểm tra theo `cai_dat.dinh_dang_mssv` |
 | `ho_ten` | `TEXT` | NOT NULL | Tự viết hoa chữ đầu |
+| `bi_khoa` | `BOOLEAN` | NOT NULL DEFAULT false | Admin khoá tài khoản (migration `0005`): không đăng nhập được, vào `/quiz` bị đưa về màn chào. Nộp bài (`api/quiz/submit`, chưa làm) cũng phải từ chối |
+| `khoa_luc` | `TIMESTAMPTZ` | NULL | Thời điểm khoá gần nhất, mở khoá thì về null |
 
 ### 6. `ket_qua`
 | Cột | Kiểu | Ràng buộc | Mô tả |
@@ -163,12 +174,27 @@ Ví dụ một dòng (bạn Minh, mã SV `2300001234`, bộ đề 3 câu minh ho
 | `cho_lam_lai` | `true` | Sinh viên được làm lại hay không |
 | `dinh_dang_mssv` | `"^[0-9]{10}$"` | Regex kiểm tra mã SV (nhóm xác nhận định dạng mã SV HUFLIT) |
 | `so_cau_toi_da` | `12` | Giới hạn số câu đang bật (migration `0003` đổi từ 10 sang 12) |
+| `am_thanh` | `{"nhac_nen": {"nguon": "co_san", "ma": "outer-space"}, "am_luong": 40, "hieu_ung": true}` | Nhạc nền đang dùng (`null` là tắt; `co_san` + `ma` trong `src/constants/sound.ts`, hoặc `tai_len` + `id_nhac_nen`), âm lượng 0–100, bật hiệu ứng bấm. Kiểm tra bằng Zod `soundSettingsSchema` |
 
-Ba dòng trên được thêm sẵn với giá trị ví dụ trong `0001_init.sql`.
+Ba dòng đầu được thêm sẵn với giá trị ví dụ trong `0001_init.sql`; `am_thanh` thêm trong `0004_am_thanh.sql`.
+
+### 8. `nhac_nen`
+| Cột | Kiểu | Ràng buộc | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `id_nhac_nen` | `BIGINT` | PK, identity | |
+| `ten` | `TEXT` | NOT NULL, 1–100 ký tự | Tên hiển thị, lấy từ tên file khi tải lên |
+| `duong_dan` | `TEXT` | NOT NULL, UNIQUE | Đường dẫn trong bucket `am-thanh`, dạng `nhac-nen/<uuid>.mp3` |
+| `kich_thuoc` | `INT` | NOT NULL, 1–4194304 | Số byte, tối đa 4 MB |
+| `loai_file` | `TEXT` | NOT NULL, `audio/mpeg` hoặc `audio/mp4` | |
+| `created_at` | `TIMESTAMPTZ` | NOT NULL DEFAULT now() | |
+
+Xoá là **xoá cứng** (không có bảng nào tham chiếu): xoá dòng rồi xoá file trong Storage. Không cho xoá bài đang chọn trong `cai_dat.am_thanh`.
+
+**Supabase Storage:** bucket `am-thanh` công khai để trình duyệt tải file về phát, `file_size_limit` 4 MB, chỉ nhận `audio/mpeg`, `audio/mp4`. Ghi/xoá chỉ qua server bằng service role.
 
 ## IV. QUAN HỆ & RÀNG BUỘC NGHIỆP VỤ
 
 1. **`cau_hoi` – `dap_an` (1 - N):** mỗi câu đang bật phải có đúng 4 đáp án chưa xoá (kiểm tra ở trang admin trước khi bật câu).
 2. **`dap_an` – `diem_dap_an` – `mau_gen`:** mỗi đáp án phải gán đúng 1 gen và cộng 1 điểm. Trang admin cảnh báo nếu số lần xuất hiện của sáu gen lệch nhau (chuẩn: 8 lần mỗi gen trong 48 đáp án).
 3. **`sinh_vien` – `ket_qua` (1 - N):** nếu `cho_lam_lai = false`, server từ chối nộp bài khi sinh viên đã có kết quả. Thống kê dùng kết quả gần nhất của mỗi sinh viên.
-4. **Bảo mật:** bật RLS trên cả 7 bảng, không tạo policy nào cho `anon`/`authenticated`. Chỉ server dùng service role key truy cập.
+4. **Bảo mật:** bật RLS trên cả 8 bảng, không tạo policy nào cho `anon`/`authenticated`. Chỉ server dùng service role key truy cập.

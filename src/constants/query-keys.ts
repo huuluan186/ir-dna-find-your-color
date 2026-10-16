@@ -6,6 +6,7 @@ export const QUERY_KEYS = {
 	QUIZ: {
 		ALL: ["quiz"],
 	},
+	SOUND: ["sound"],
 	RESULT: {
 		LATEST: ["result", "latest"],
 	},
@@ -16,5 +17,6 @@ export const QUERY_KEYS = {
 		COLORS: ["admin", "colors"],
 		QUESTIONS: ["admin", "questions"],
 		RESULTS: ["admin", "results"],
+		SOUND: ["admin", "sound"],
 	},
 } as const;
