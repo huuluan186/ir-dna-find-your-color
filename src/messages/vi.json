@@ -36,6 +36,10 @@
 	},
 	"quiz": {
 		"counter": "Câu {current}/{total}",
+		"questionLabel": "Câu",
+		"answered": "Đã chọn {count}/{total}",
+		"goTo": "Đến câu {number}",
+		"back": "Câu trước",
 		"next": "Câu tiếp theo",
 		"finish": "Xem kết quả IR DNA",
 		"doneTitle": "Đã hoàn thành bài trắc nghiệm",

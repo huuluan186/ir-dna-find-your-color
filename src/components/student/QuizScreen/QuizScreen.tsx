@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Button, Progress, Text, Title, UnstyledButton } from "@mantine/core";
+import { Button, Text, Title, UnstyledButton } from "@mantine/core";
+import { IconArrowLeft } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 import { OPTION_LETTERS } from "@/constants/app";
 import { score } from "@/lib/scoring";
@@ -19,6 +20,10 @@ export function QuizScreen() {
 	const question = QUESTIONS[index];
 	const chosen = selected[index];
 	const isLast = index === QUESTIONS.length - 1;
+	const answeredCount = selected.filter((id) => id !== undefined).length;
+	// Câu xa nhất được nhảy tới: câu chưa trả lời đầu tiên
+	const firstUnanswered = QUESTIONS.findIndex((_, i) => selected[i] === undefined);
+	const reachable = firstUnanswered === -1 ? QUESTIONS.length - 1 : firstUnanswered;
 
 	function choose(optionId: number) {
 		setSelected((prev) => {
@@ -34,13 +39,21 @@ export function QuizScreen() {
 		else setIndex(index + 1);
 	}
 
-	// Phím 1–4 / A–D chọn đáp án, Enter qua câu tiếp
+	function back() {
+		if (index > 0) setIndex(index - 1);
+	}
+
+	// Phím 1–4 / A–D chọn đáp án, Enter hoặc → qua câu tiếp, ← về câu trước
 	useEffect(() => {
 		if (done) return;
 		function onKey(event: KeyboardEvent) {
 			if (event.metaKey || event.ctrlKey || event.altKey) return;
-			if (event.key === "Enter") {
+			if (event.key === "Enter" || event.key === "ArrowRight") {
 				next();
+				return;
+			}
+			if (event.key === "ArrowLeft") {
+				back();
 				return;
 			}
 			const key = event.key.toUpperCase();
@@ -84,14 +97,42 @@ export function QuizScreen() {
 
 	return (
 		<div className={classes.screen}>
-			<div>
-				<Text className={classes.counter}>
-					{t("counter", { current: index + 1, total: QUESTIONS.length })}
-				</Text>
-				<Progress value={((index + 1) / QUESTIONS.length) * 100} size="sm" radius="xl" />
+			<div className={classes.progress}>
+				<div className={classes.progressHead}>
+					<p className={classes.counter} aria-live="polite">
+						<span className={classes.counterLabel}>{t("questionLabel")}</span>
+						<span className={classes.counterCurrent}>{String(index + 1).padStart(2, "0")}</span>
+						<span className={classes.counterTotal}>/{QUESTIONS.length}</span>
+					</p>
+					<Text className={classes.answered}>
+						{t("answered", { count: answeredCount, total: QUESTIONS.length })}
+					</Text>
+				</div>
+				<div
+					className={classes.segments}
+					role="progressbar"
+					aria-valuemin={0}
+					aria-valuemax={QUESTIONS.length}
+					aria-valuenow={answeredCount}
+					aria-label={t("counter", { current: index + 1, total: QUESTIONS.length })}
+				>
+					{QUESTIONS.map((q, i) => (
+						<button
+							key={q.id_cau_hoi}
+							type="button"
+							className={classes.segment}
+							data-done={selected[i] !== undefined || undefined}
+							data-current={i === index || undefined}
+							disabled={i > reachable}
+							aria-label={t("goTo", { number: i + 1 })}
+							aria-current={i === index ? "step" : undefined}
+							onClick={() => setIndex(i)}
+						/>
+					))}
+				</div>
 			</div>
 
-			<Title order={2} className={classes.question}>
+			<Title order={2} key={index} className={classes.question}>
 				{question.noi_dung}
 			</Title>
 
@@ -111,9 +152,21 @@ export function QuizScreen() {
 				))}
 			</div>
 
-			<Button className={classes.next} fullWidth disabled={chosen === undefined} onClick={next}>
-				{isLast ? t("finish") : t("next")}
-			</Button>
+			<div className={classes.actions}>
+				{index > 0 && (
+					<Button
+						className={classes.back}
+						variant="default"
+						leftSection={<IconArrowLeft size={18} stroke={2.2} />}
+						onClick={back}
+					>
+						{t("back")}
+					</Button>
+				)}
+				<Button className={classes.next} disabled={chosen === undefined} onClick={next}>
+					{isLast ? t("finish") : t("next")}
+				</Button>
+			</div>
 		</div>
 	);
 }

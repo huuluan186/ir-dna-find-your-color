@@ -36,6 +36,10 @@
 	},
 	"quiz": {
 		"counter": "Question {current}/{total}",
+		"questionLabel": "Question",
+		"answered": "{count}/{total} answered",
+		"goTo": "Go to question {number}",
+		"back": "Back",
 		"next": "Next question",
 		"finish": "See my IR DNA result",
 		"doneTitle": "Quiz completed",
