@@ -1,6 +1,6 @@
-﻿# TIẾN ĐỘ & BÀN GIAO - IR DNA – FIND YOUR COLOR
+# TIẾN ĐỘ & BÀN GIAO - IR DNA – FIND YOUR COLOR
 
-File này để một AI (hoặc người) mới vào dự án nắm nhanh: dự án là gì, đã làm tới đâu, việc gì tiếp theo. **Cập nhật file này mỗi khi xong một bước.** Cập nhật lần cuối: 16/10/2026.
+File này để một AI (hoặc người) mới vào dự án nắm nhanh: dự án là gì, đã làm tới đâu, việc gì tiếp theo. **Cập nhật file này mỗi khi xong một bước.** Cập nhật lần cuối: 17/10/2026.
 
 Đọc theo thứ tự: `AGENTS.md` → `.ai/rules/quy_tac_code.md` → file này → `.ai/system/kien_truc.md` → `.ai/system/thiet_ke_csdl.md`.
 
@@ -120,3 +120,9 @@ Biến môi trường Production cần có trên Vercel: `DB_URL`, `SUPABASE_URL
 Âm thanh (16/10/2026, chưa commit): nhạc nền + tiếng bấm cho mọi trang sinh viên (cả màn đăng nhập), nút bật/tắt tiếng cạnh VI/EN, trang admin `/admin/am-thanh` (menu "Cài đặt hệ thống → Âm thanh": bật/tắt nhạc, âm lượng, hiệu ứng, chọn 1 trong 3 bài CC0 có sẵn hoặc bài tải lên MP3/M4A ≤ 4 MB, nghe thử, xoá; tự lưu mỗi thao tác, không có nút Lưu). Màn làm bài: tiếng chọn đáp án, câu tiếp, câu trước, xem kết quả; Enter trên đáp án đang focus nay qua câu tiếp (trước đây bấm lại đáp án). Migration `0004_am_thanh.sql` (bảng `nhac_nen`, `cai_dat.am_thanh`, bucket Storage `am-thanh`) **chưa chạy** trên dev: chạy `npm run db:migrate`; chưa chạy thì trang sinh viên vẫn phát bài mặc định, còn trang admin Âm thanh báo "Không tải được dữ liệu". Chi tiết: `.ai/system/am_thanh.md`.
 
 Quản lý người dùng (16/10/2026, chưa commit): trang `/admin/quan-ly-nguoi-dung` đổi chữ "Sinh viên" thành "Người dùng", thêm cột Vai trò, Trạng thái; dòng "admin" (mật khẩu chung, Huu chốt **không** làm tài khoản admin riêng) ghim đầu bảng, không khoá được. Khoá/mở sinh viên (`PATCH /api/admin/students/[mssv]`, optimistic update; khoá có hỏi lại). Migration `0005_khoa_tai_khoan.sql` (`sinh_vien.bi_khoa`, `khoa_luc`) **đã chạy trên dev**. Bị khoá: đăng nhập trả 403, form báo "Tài khoản này đã bị khoá"; `/quiz` kiểm tra lại CSDL mỗi lần tải trang. **Khi làm `api/quiz/submit` phải từ chối sinh viên `bi_khoa`.**
+
+Tách UI quản trị dùng chung (17/10/2026): tách bảng dữ liệu, nút thao tác dòng và modal chi tiết từ `StudentTable`, `StudentDetail`, `SoundSettings` thành 3 bộ component dùng chung trong `src/components/admin/` để các menu quản lý tiếp theo (`Mã gen`, `Câu hỏi`, `Kết quả`) áp dụng thống nhất:
+- `AdminDataTable` (`AdminDataTable`, `AdminPinnedRow`, `AdminCellButton`, `AdminBadge`, `AdminStatusBadge`, `adminTableClasses`, `normalizeSearch`, `matchesSearch`): tìm kiếm không dấu, sắp xếp theo cột, phân trang client theo thiết bị, dòng ghim đầu bảng, cột `#` và cột `Thao tác` dính phải.
+- `AdminRowActions` (`AdminIconAction`, `AdminConfirmAction`, `AdminToggleAction`): nút icon có Tooltip (hỗ trợ `disabled` vẫn hiện Tooltip), nút hành động nguy hiểm có Popover xác nhận (khoá tài khoản, xoá bài nhạc...), nút bật/tắt 2 chiều.
+- `AdminDetailModal` (`AdminDetailModal`, `useDetailModal`, `AdminDetailShell`, `AdminFieldset`, `AdminReadonlyGrid`): quản lý mở/đóng modal giữ nội dung khi chạy hiệu ứng đóng, khung tải/lỗi (`AdminSkeleton`), nhóm `Fieldset` và lưới ô chỉ đọc `TextInput disabled`.
+

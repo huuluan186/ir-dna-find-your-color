@@ -43,7 +43,7 @@ AI **tự đọc** các file trong cột "Đọc thêm" theo đúng loại việ
 | Frontend: ô chọn tuỳ biến (Select, Autocomplete, MultiSelect, `useCombobox`) | `.ai/skills/mantine-combobox/SKILL.md` |
 | Backend: thêm/sửa API, cache, prefetch SSR | Mục 4 và 5 của file này, `.ai/system/kien_truc.md` mục 5, `src/constants/query-keys.ts` |
 | Giao diện sinh viên (màn chào, làm bài, kết quả) | `.ai/skills/design-taste-frontend/SKILL.md`, mục 0.3 |
-| Giao diện trang quản trị | `.ai/skills/minimalist-ui/SKILL.md`, mục 0.3 |
+| Giao diện trang quản trị | `.ai/skills/minimalist-ui/SKILL.md`, mục 0.3, `src/components/admin/` (`AdminDataTable`, `AdminRowActions`, `AdminDetailModal`) |
 | Rà soát, nâng cấp giao diện đã có | `.ai/skills/redesign-existing-projects/SKILL.md`, mục 0.3 |
 
 ### 0.3. Khi skill thiết kế mâu thuẫn với luật dự án
