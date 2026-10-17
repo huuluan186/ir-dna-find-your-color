@@ -1,10 +1,19 @@
-/* Chiếm hết chiều cao vùng nội dung: ô tìm kiếm, khung bảng (co giãn, cuộn bên trong), chân bảng */
+/* Khung bảng dữ liệu dùng chung cho các trang quản trị:
+   thanh tìm kiếm/công cụ, khung bảng cuộn bên trong (không làm cuộn cả trang), chân bảng phân trang */
 .wrapper {
 	display: flex;
 	flex: 1;
 	flex-direction: column;
 	gap: 16px;
 	min-height: 0;
+}
+
+.toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px 16px;
 }
 
 .search {
@@ -33,7 +42,7 @@
 	min-width: 1020px;
 }
 
-/* Dòng tài khoản quản trị ghim ở đầu bảng */
+/* Dòng ghim cố định ở đầu trang 1 (VD: tài khoản admin mật khẩu chung) */
 .pinnedRow {
 	background: light-dark(#fbfbfa, rgb(255 255 255 / 3%));
 }
@@ -43,13 +52,13 @@
 	font-weight: 600;
 }
 
-/* Tài khoản bị khoá: họ tên mờ và gạch ngang */
+/* Dòng bị khoá hoặc vô hiệu hoá: tên/nội dung chính mờ và gạch ngang */
 :global(.mantine-Table-tr)[data-locked] .name {
 	color: var(--mantine-color-dimmed);
 	text-decoration: line-through;
 }
 
-/* Bảng tự co cột để vừa khung; badge và tên không được co nhỏ hơn chữ (trước đây bị cắt thành "…") */
+/* Giữ nguyên trên 1 dòng để bảng không cắt chữ hoặc làm vỡ badge */
 .nowrap,
 .name {
 	white-space: nowrap;
@@ -63,15 +72,14 @@
 	white-space: nowrap;
 }
 
-.confirm {
-	max-width: 300px;
-}
-
-.mssv {
+.cellButton {
 	color: var(--mantine-color-text);
-	font-family: ui-monospace, "SF Mono", monospace;
 	font-weight: 600;
 	text-decoration: none;
+
+	&[data-monospace] {
+		font-family: ui-monospace, "SF Mono", monospace;
+	}
 
 	&:hover {
 		text-decoration: underline;
@@ -81,10 +89,6 @@
 		outline: 2px solid var(--mantine-color-dna-5);
 		outline-offset: 2px;
 	}
-}
-
-.modalTitle {
-	font-weight: 700;
 }
 
 .indexCell {
@@ -192,9 +196,7 @@
 	.footerControls {
 		justify-content: center;
 	}
-}
 
-@media (max-width: 36em) {
 	.search {
 		max-width: none;
 	}

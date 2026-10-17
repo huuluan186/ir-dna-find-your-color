@@ -7,7 +7,6 @@ import {
 	Button,
 	FileButton,
 	Group,
-	Popover,
 	Radio,
 	Slider,
 	Stack,
@@ -22,7 +21,8 @@ import {
 	IconUpload,
 } from "@tabler/icons-react";
 import { useFormatter, useTranslations } from "next-intl";
-import { AdminSkeleton } from "@/components/admin/AdminSkeleton";
+import { AdminDetailShell } from "@/components/admin/AdminDetailModal";
+import { AdminConfirmAction } from "@/components/admin/AdminRowActions";
 import { BGM_PRESETS, SOUND } from "@/constants/sound";
 import { getSoundErrorCode } from "@/features/sound/client/api";
 import {
@@ -67,10 +67,11 @@ export function SoundSettings() {
 	const t = useTranslations("adminSound");
 	const { data, isError } = useAdminSound();
 
-	if (!data) {
-		return isError ? <Text c="dimmed">{t("loadError")}</Text> : <AdminSkeleton variant="detail" />;
-	}
-	return <SoundSettingsPanel data={data} />;
+	return (
+		<AdminDetailShell isLoading={!data} isError={isError} errorText={t("loadError")}>
+			{data && <SoundSettingsPanel data={data} />}
+		</AdminDetailShell>
+	);
 }
 
 type Notice = { tone: "ok" | "error"; text: string };
@@ -330,7 +331,6 @@ function TrackRow({
 	deleting?: boolean;
 }) {
 	const t = useTranslations("adminSound");
-	const [confirmOpen, setConfirmOpen] = useState(false);
 	const previewLabel = playing ? t("stopPreview") : t("preview");
 
 	return (
@@ -357,38 +357,18 @@ function TrackRow({
 				{badge}
 			</Badge>
 			{onDelete && (
-				<Popover opened={confirmOpen} onChange={setConfirmOpen} position="bottom-end" withArrow>
-					<Popover.Target>
-						<ActionIcon
-							variant="subtle"
-							color="red"
-							size={36}
-							aria-label={`${t("delete")}: ${name}`}
-							loading={deleting}
-							onClick={() => setConfirmOpen((open) => !open)}
-						>
-							<IconTrash size={17} stroke={1.7} />
-						</ActionIcon>
-					</Popover.Target>
-					<Popover.Dropdown className={classes.confirm}>
-						<Text size="sm">{t("deleteConfirm", { name })}</Text>
-						<Group justify="flex-end" gap={8} mt="sm">
-							<Button size="xs" variant="default" onClick={() => setConfirmOpen(false)}>
-								{t("cancel")}
-							</Button>
-							<Button
-								size="xs"
-								color="red"
-								onClick={() => {
-									setConfirmOpen(false);
-									onDelete();
-								}}
-							>
-								{t("delete")}
-							</Button>
-						</Group>
-					</Popover.Dropdown>
-				</Popover>
+				<AdminConfirmAction
+					label={t("delete")}
+					ariaLabel={`${t("delete")}: ${name}`}
+					confirmText={t("deleteConfirm", { name })}
+					cancelLabel={t("cancel")}
+					size={36}
+					loading={deleting}
+					withTooltip={false}
+					onConfirm={onDelete}
+				>
+					<IconTrash size={17} stroke={1.7} />
+				</AdminConfirmAction>
 			)}
 		</div>
 	);

@@ -112,10 +112,6 @@
 	}
 }
 
-.confirm {
-	max-width: 280px;
-}
-
 /* Dòng trạng thái tự lưu ở đầu trang: gợi ý / đang lưu / đã lưu / lỗi */
 .notice {
 	min-height: 1.5em;
