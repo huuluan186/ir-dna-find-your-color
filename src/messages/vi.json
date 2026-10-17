@@ -46,7 +46,10 @@
 		"next": "Câu tiếp theo",
 		"finish": "Xem kết quả IR DNA",
 		"doneTitle": "Đã hoàn thành bài trắc nghiệm",
-		"doneNote": "Màn kết quả đầy đủ sẽ có ở bước sau. Gen nổi bật của bạn (bản thử nghiệm):"
+		"doneNote": "Đáp án của bạn đã sẵn sàng. Bước nộp bài và giải mã kết quả sẽ nối ở bước tiếp theo.",
+		"loadError": "Không tải được bộ câu hỏi. Vui lòng thử lại.",
+		"retry": "Thử lại",
+		"emptyQuiz": "Chưa có câu hỏi nào đang mở."
 	},
 	"admin": {
 		"brand": "IR DNA",

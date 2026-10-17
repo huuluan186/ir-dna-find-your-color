@@ -1,30 +1,28 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Text, Title, UnstyledButton } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 import { OPTION_LETTERS } from "@/constants/app";
-import { score } from "@/lib/scoring";
+import { useQuiz } from "@/features/quiz/client/hooks";
 import { playSfx } from "@/lib/sound";
-import { MOCK_CAU_HOI, MOCK_MAU_GEN } from "@/mock-data/quiz";
 import classes from "./QuizScreen.module.css";
-
-const QUESTIONS = MOCK_CAU_HOI.filter((q) => q.dang_bat).sort((a, b) => a.thu_tu - b.thu_tu);
 
 export function QuizScreen() {
 	const t = useTranslations("quiz");
+	const { data: questions = [], isError, refetch } = useQuiz();
 	const [index, setIndex] = useState(0);
 	const [selected, setSelected] = useState<number[]>([]); // id_dap_an theo thứ tự câu
 	const [done, setDone] = useState(false);
 
-	const question = QUESTIONS[index];
+	const question = questions[index];
 	const chosen = selected[index];
-	const isLast = index === QUESTIONS.length - 1;
+	const isLast = index === questions.length - 1;
 	const answeredCount = selected.filter((id) => id !== undefined).length;
 	// Câu xa nhất được nhảy tới: câu chưa trả lời đầu tiên
-	const firstUnanswered = QUESTIONS.findIndex((_, i) => selected[i] === undefined);
-	const reachable = firstUnanswered === -1 ? QUESTIONS.length - 1 : firstUnanswered;
+	const firstUnanswered = questions.findIndex((_, i) => selected[i] === undefined);
+	const reachable = firstUnanswered === -1 ? questions.length - 1 : firstUnanswered;
 
 	function choose(optionId: number) {
 		setSelected((prev) => {
@@ -47,7 +45,7 @@ export function QuizScreen() {
 	// Phím 1–4 / A–D chọn đáp án, Enter hoặc → qua câu tiếp, ← về câu trước.
 	// Bấm chuột đã có tiếng qua data-sfx (StudentSound); bàn phím không tạo click nên phát ở đây.
 	useEffect(() => {
-		if (done) return;
+		if (done || !question) return;
 		function onKey(event: KeyboardEvent) {
 			if (event.metaKey || event.ctrlKey || event.altKey) return;
 			if (event.key === "Enter" && event.target instanceof HTMLButtonElement) {
@@ -78,32 +76,30 @@ export function QuizScreen() {
 		return () => window.removeEventListener("keydown", onKey);
 	});
 
-	const result = useMemo(() => {
-		if (!done) return null;
-		return score({
-			colorIds: MOCK_MAU_GEN.map((g) => g.id_mau_gen),
-			questions: QUESTIONS.map((q) => ({
-				id: q.id_cau_hoi,
-				options: q.dap_an.map((o) => ({ id: o.id_dap_an, colorId: o.id_mau_gen })),
-			})),
-			selected,
-		});
-	}, [done, selected]);
+	if (isError) {
+		return (
+			<div className={classes.screen}>
+				<Text className={classes.note}>{t("loadError")}</Text>
+				<Button variant="default" onClick={() => refetch()}>
+					{t("retry")}
+				</Button>
+			</div>
+		);
+	}
 
-	if (result) {
-		const top = MOCK_MAU_GEN.filter((g) => result.topColorIds.includes(g.id_mau_gen));
+	if (!question) {
+		return (
+			<div className={classes.screen}>
+				<Text className={classes.note}>{t("emptyQuiz")}</Text>
+			</div>
+		);
+	}
+
+	if (done) {
 		return (
 			<div className={classes.screen}>
 				<Title order={2}>{t("doneTitle")}</Title>
 				<Text className={classes.note}>{t("doneNote")}</Text>
-				<ul className={classes.topList}>
-					{top.map((g) => (
-						<li key={g.id_mau_gen}>
-							<span className={classes.dot} style={{ backgroundColor: g.ma_hex }} />
-							{g.ten_mau} – {g.ten_ma_gen}
-						</li>
-					))}
-				</ul>
 			</div>
 		);
 	}
@@ -115,21 +111,21 @@ export function QuizScreen() {
 					<p className={classes.counter} aria-live="polite">
 						<span className={classes.counterLabel}>{t("questionLabel")}</span>
 						<span className={classes.counterCurrent}>{String(index + 1).padStart(2, "0")}</span>
-						<span className={classes.counterTotal}>/{QUESTIONS.length}</span>
+						<span className={classes.counterTotal}>/{questions.length}</span>
 					</p>
 					<Text className={classes.answered}>
-						{t("answered", { count: answeredCount, total: QUESTIONS.length })}
+						{t("answered", { count: answeredCount, total: questions.length })}
 					</Text>
 				</div>
 				<div
 					className={classes.segments}
 					role="progressbar"
 					aria-valuemin={0}
-					aria-valuemax={QUESTIONS.length}
+					aria-valuemax={questions.length}
 					aria-valuenow={answeredCount}
-					aria-label={t("counter", { current: index + 1, total: QUESTIONS.length })}
+					aria-label={t("counter", { current: index + 1, total: questions.length })}
 				>
-					{QUESTIONS.map((q, i) => (
+					{questions.map((q, i) => (
 						<button
 							key={q.id_cau_hoi}
 							type="button"

@@ -46,7 +46,10 @@
 		"next": "Next question",
 		"finish": "See my IR DNA result",
 		"doneTitle": "Quiz completed",
-		"doneNote": "The full result screen comes in a later step. Your top gene (prototype):"
+		"doneNote": "Your answers are ready. Submission and result decoding will be connected in the next step.",
+		"loadError": "Could not load questions. Please try again.",
+		"retry": "Retry",
+		"emptyQuiz": "No questions are currently active."
 	},
 	"admin": {
 		"brand": "IR DNA",

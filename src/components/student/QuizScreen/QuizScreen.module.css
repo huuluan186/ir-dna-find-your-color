@@ -238,21 +238,3 @@
 	color: var(--mantine-color-dimmed);
 	font-size: 0.875rem;
 }
-
-.topList {
-	margin: 0;
-	padding: 0;
-	list-style: none;
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-	font-weight: 700;
-}
-
-.dot {
-	display: inline-block;
-	width: 12px;
-	height: 12px;
-	margin-right: 8px;
-	border-radius: 50%;
-}
