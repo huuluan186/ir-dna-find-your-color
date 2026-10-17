@@ -24,20 +24,37 @@ const MUSIC_FADE_MS = 1200;
 
 type Engine = {
 	Howl: typeof Howl;
-	ctx: AudioContext;
+	howler: typeof import("howler").Howler;
 	zzfx: (...parameters: (number | undefined)[]) => unknown;
+	ZZFX: typeof import("zzfx").ZZFX;
 };
 
-let engine: Promise<Engine> | undefined;
+let enginePromise: Promise<Engine> | undefined;
+let engine: Engine | undefined;
 
 function loadEngine() {
-	engine ??= Promise.all([import("howler"), import("zzfx")]).then(([howler, zzfx]) => {
-		// Howler.volume() tạo AudioContext nếu chưa có. ZzFX phát chung context đó để được mở khoá cùng lúc.
-		howler.Howler.volume(1);
-		zzfx.ZZFX.audioContext = howler.Howler.ctx;
-		return { Howl: howler.Howl, ctx: howler.Howler.ctx, zzfx: zzfx.zzfx };
+	enginePromise ??= Promise.all([import("howler"), import("zzfx")]).then(([howlerMod, zzfxMod]) => {
+		// Tắt autoSuspend để Howler không tự tạm dừng AudioContext sau 30 giây khi nhạc nền đang tắt.
+		howlerMod.Howler.autoSuspend = false;
+		// Howler.volume() tạo AudioContext nếu chưa có. Đóng AudioContext thừa do zzfx tự tạo lúc import.
+		howlerMod.Howler.volume(1);
+		if (
+			zzfxMod.ZZFX.audioContext &&
+			zzfxMod.ZZFX.audioContext !== howlerMod.Howler.ctx &&
+			zzfxMod.ZZFX.audioContext.state !== "closed"
+		) {
+			void zzfxMod.ZZFX.audioContext.close().catch(() => {});
+		}
+		zzfxMod.ZZFX.audioContext = howlerMod.Howler.ctx;
+		engine = {
+			Howl: howlerMod.Howl,
+			howler: howlerMod.Howler,
+			zzfx: zzfxMod.zzfx,
+			ZZFX: zzfxMod.ZZFX,
+		};
+		return engine;
 	});
-	return engine;
+	return enginePromise;
 }
 
 // ---------- Trạng thái dùng chung cho giao diện (nút bật/tắt tiếng) ----------
@@ -159,13 +176,36 @@ export function leaveStudentPage() {
 
 // ---------- Hiệu ứng ----------
 
+function triggerSfx(eng: Engine, name: SfxName) {
+	// Luôn đọc Howler.ctx hiện tại vì Howler._unlockAudio() có thể đóng ctx đầu tiên và tạo ctx mới
+	// khi sampleRate của thiết bị khác 44100 Hz (VD: 48000 Hz trên desktop).
+	const ctx = eng.howler.ctx;
+	if (!ctx) return;
+	eng.ZZFX.audioContext = ctx;
+
+	if (ctx.state === "running") {
+		eng.zzfx(...SFX[name]);
+		return;
+	}
+	if (ctx.state === "suspended") {
+		void ctx
+			.resume()
+			.then(() => {
+				if (eng.howler.ctx) eng.ZZFX.audioContext = eng.howler.ctx;
+				eng.zzfx(...SFX[name]);
+			})
+			.catch(() => {});
+	}
+}
+
 export function playSfx(name: SfxName) {
 	const { active, muted } = getSoundState();
 	if (!active || muted || !effectsEnabled) return;
-	void loadEngine().then(({ ctx, zzfx }) => {
-		// Chưa mở khoá thì bỏ qua, tránh dồn nhiều tiếng phát cùng lúc khi vừa mở khoá
-		if (ctx.state === "running") zzfx(...SFX[name]);
-	});
+	if (engine) {
+		triggerSfx(engine, name);
+		return;
+	}
+	void loadEngine().then((eng) => triggerSfx(eng, name));
 }
 
 // ---------- Nghe thử ở trang admin ----------
