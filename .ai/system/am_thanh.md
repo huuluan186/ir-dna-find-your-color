@@ -8,7 +8,7 @@
 | :--- | :--- | :--- |
 | Lõi phát âm thanh | `src/lib/sound.ts` | Nhạc nền: Howler (Web Audio, lặp, tăng/giảm dần). Hiệu ứng: ZzFX (tạo tiếng bằng code, không file). Import động, chỉ chạy ở trình duyệt |
 | Gắn vào trang sinh viên | `src/components/shared/StudentSound/` | Nằm trong `StudentFrame`, nên mọi trang sinh viên (cả màn đăng nhập) đều có nhạc |
-| Nút bật/tắt tiếng | `src/components/shared/AppPreferences/` | Chỉ hiện khi đang ở trang sinh viên; nhớ lựa chọn trong `localStorage` (`STORAGE_KEYS.MUTED`) |
+| Nút bật/tắt tiếng | `src/components/shared/AppPreferences/` | Chỉ hiện ở trang sinh viên khi admin đang bật nhạc nền (`hasMusic`); nhớ lựa chọn trong `localStorage` (`STORAGE_KEYS.MUTED`) |
 | Nhạc có sẵn | `public/sounds/bgm/`, `ASSETS.BGM`, `BGM_PRESETS` (`src/constants/sound.ts`) | |
 | Cài đặt | `cai_dat.am_thanh`, bảng `nhac_nen`, bucket `am-thanh` | Migration `0004_am_thanh.sql`, chi tiết ở `thiet_ke_csdl.md` |
 | API | `GET /api/sound` (công khai), `GET/PUT /api/admin/sound`, `POST /api/admin/sound/uploads`, `DELETE /api/admin/sound/uploads/[id]` | `src/features/sound/` |
