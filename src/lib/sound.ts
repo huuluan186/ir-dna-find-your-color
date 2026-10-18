@@ -6,7 +6,8 @@ import { STORAGE_KEYS } from "@/constants/app";
 // Trình duyệt chỉ cho phát sau lần chạm/bấm đầu tiên: Howler tự mở khoá AudioContext ở lần đó
 // (kể cả Safari iOS), nhạc đã gọi play() trước đó sẽ tự bắt đầu. Xem .ai/system/am_thanh.md
 
-export type SfxName = "tap" | "select" | "next" | "back" | "page" | "success";
+export type SfxName =
+	"tap" | "select" | "next" | "back" | "page" | "success" | "decode" | "celebrate";
 
 // Tham số ZzFX theo thứ tự: âm lượng, độ ngẫu nhiên, tần số (Hz), attack, sustain, release (giây),
 // dạng sóng (0 = sin), độ cong, trượt cao độ, trượt bậc 2, nhảy cao độ (Hz), thời điểm nhảy (giây).
@@ -18,7 +19,15 @@ const SFX: Record<SfxName, (number | undefined)[]> = {
 	back: [0.5, 0, 620, 0.01, 0.04, 0.12, 0, 1, -6], // trượt xuống
 	page: [0.45, 0, 392, 0.02, 0.06, 0.2, 0, 1, 0, 0, 196, 0.06], // G4 → D5
 	success: [0.7, 0, 523, 0.02, 0.25, 0.5, 0, 1, 0, 0, 262, 0.1], // C5 → G5
+	decode: [0.45, 0, 440, 0.03, 0.12, 0.32, 0, 1, 0, 0, 147, 0.08], // A4 → D5 êm dịu khi giải mã
+	celebrate: [0.5, 0, 523.25, 0.015, 0.12, 0.38, 0, 1, 0, 0, 135.25, 0.07], // C5 → E5
 };
+
+// Chuỗi nốt hợp âm chúc mừng (E5 → G5 → C6) nối tiếp sau nốt đầu của "celebrate"
+const CELEBRATE_CHIME_NOTES: { delayMs: number; params: (number | undefined)[] }[] = [
+	{ delayMs: 110, params: [0.48, 0, 659.25, 0.015, 0.12, 0.4, 0, 1, 0, 0, 124.75, 0.07] },
+	{ delayMs: 230, params: [0.55, 0, 783.99, 0.02, 0.22, 0.55, 0, 1, 0, 0, 262.51, 0.09] },
+];
 
 const MUSIC_FADE_MS = 1200;
 
@@ -59,10 +68,11 @@ function loadEngine() {
 
 // ---------- Trạng thái dùng chung cho giao diện (nút bật/tắt tiếng) ----------
 
-// active: đang ở trang sinh viên (có StudentSound). muted: người dùng tắt tiếng, nhớ trong localStorage
-export type SoundState = { active: boolean; muted: boolean };
+// active: đang ở trang sinh viên (có StudentSound). hasMusic: admin đang bật nhạc nền.
+// muted: người dùng tắt tiếng (chỉ có tác dụng khi hasMusic = true, lúc có hiện nút loa).
+export type SoundState = { active: boolean; muted: boolean; hasMusic: boolean };
 
-const SERVER_STATE: SoundState = { active: false, muted: false };
+const SERVER_STATE: SoundState = { active: false, muted: false, hasMusic: false };
 let state: SoundState | undefined;
 const listeners = new Set<() => void>();
 
@@ -75,7 +85,7 @@ function readMuted() {
 }
 
 export function getSoundState(): SoundState {
-	state ??= { active: false, muted: readMuted() };
+	state ??= { active: false, muted: readMuted(), hasMusic: false };
 	return state;
 }
 
@@ -89,7 +99,16 @@ export function subscribeSound(listener: () => void) {
 }
 
 function setState(patch: Partial<SoundState>) {
-	state = { ...getSoundState(), ...patch };
+	const current = getSoundState();
+	const next = { ...current, ...patch };
+	if (
+		next.active === current.active &&
+		next.muted === current.muted &&
+		next.hasMusic === current.hasMusic
+	) {
+		return;
+	}
+	state = next;
 	listeners.forEach((listener) => listener());
 	syncMusic();
 }
@@ -135,6 +154,7 @@ function syncMusic() {
 export async function setMusic(src: string | null, volume: number, effects: boolean) {
 	effectsEnabled = effects;
 	musicVolume = volume;
+	setState({ hasMusic: Boolean(src) });
 	if (src === musicSrc) {
 		if (music?.playing()) music.fade(music.volume(), volume, MUSIC_FADE_MS / 2);
 		syncMusic();
@@ -176,6 +196,28 @@ export function leaveStudentPage() {
 
 // ---------- Hiệu ứng ----------
 
+function canPlayEffects() {
+	const { active, muted, hasMusic } = getSoundState();
+	if (!active || !effectsEnabled) return false;
+	if (hasMusic && muted) return false;
+	return true;
+}
+
+function playNoteSequence(eng: Engine, name: SfxName) {
+	eng.zzfx(...SFX[name]);
+	if (name === "celebrate") {
+		for (const note of CELEBRATE_CHIME_NOTES) {
+			setTimeout(() => {
+				if (!canPlayEffects()) return;
+				const currentCtx = eng.howler.ctx;
+				if (!currentCtx || currentCtx.state !== "running") return;
+				eng.ZZFX.audioContext = currentCtx;
+				eng.zzfx(...note.params);
+			}, note.delayMs);
+		}
+	}
+}
+
 function triggerSfx(eng: Engine, name: SfxName) {
 	// Luôn đọc Howler.ctx hiện tại vì Howler._unlockAudio() có thể đóng ctx đầu tiên và tạo ctx mới
 	// khi sampleRate của thiết bị khác 44100 Hz (VD: 48000 Hz trên desktop).
@@ -184,7 +226,7 @@ function triggerSfx(eng: Engine, name: SfxName) {
 	eng.ZZFX.audioContext = ctx;
 
 	if (ctx.state === "running") {
-		eng.zzfx(...SFX[name]);
+		playNoteSequence(eng, name);
 		return;
 	}
 	if (ctx.state === "suspended") {
@@ -192,15 +234,14 @@ function triggerSfx(eng: Engine, name: SfxName) {
 			.resume()
 			.then(() => {
 				if (eng.howler.ctx) eng.ZZFX.audioContext = eng.howler.ctx;
-				eng.zzfx(...SFX[name]);
+				playNoteSequence(eng, name);
 			})
 			.catch(() => {});
 	}
 }
 
 export function playSfx(name: SfxName) {
-	const { active, muted } = getSoundState();
-	if (!active || muted || !effectsEnabled) return;
+	if (!canPlayEffects()) return;
 	if (engine) {
 		triggerSfx(engine, name);
 		return;
