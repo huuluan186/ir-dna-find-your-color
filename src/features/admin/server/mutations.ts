@@ -1,6 +1,6 @@
 import "server-only";
 import { getDb } from "@/lib/db";
-import { areColorsTooSimilar } from "@/lib/color-name";
+import { isSameHexColor } from "@/lib/color-name";
 import type { UpdateColorInput } from "../schema";
 import type { AdminColorDetail } from "../types";
 
@@ -37,11 +37,8 @@ export async function updateAdminColor(
 			throw new Error("DUPLICATE_COLOR_NAME");
 		}
 
-		// Kiểm tra trùng mã hex tuyệt đối hoặc quá gần nhau về thị giác (CIE LAB Delta < 0.10)
-		const duplicateHex = existing.find((c) => {
-			const check = areColorsTooSimilar(c.ma_hex, normMaHex);
-			return check.similar;
-		});
+		// Kiểm tra trùng mã hex tuyệt đối
+		const duplicateHex = existing.find((c) => isSameHexColor(c.ma_hex, normMaHex));
 		if (duplicateHex) {
 			throw new Error("DUPLICATE_COLOR_HEX");
 		}
@@ -94,11 +91,8 @@ export async function createAdminColor(input: UpdateColorInput): Promise<AdminCo
 			throw new Error("DUPLICATE_COLOR_NAME");
 		}
 
-		// Kiểm tra trùng mã hex tuyệt đối hoặc quá gần nhau về thị giác (CIE LAB Delta < 0.10)
-		const duplicateHex = existing.find((c) => {
-			const check = areColorsTooSimilar(c.ma_hex, normMaHex);
-			return check.similar;
-		});
+		// Kiểm tra trùng mã hex tuyệt đối
+		const duplicateHex = existing.find((c) => isSameHexColor(c.ma_hex, normMaHex));
 		if (duplicateHex) {
 			throw new Error("DUPLICATE_COLOR_HEX");
 		}

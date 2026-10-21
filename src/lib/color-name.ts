@@ -1,7 +1,4 @@
-import { colord, extend } from "colord";
-import labPlugin from "colord/plugins/lab";
-
-extend([labPlugin]);
+import { colord } from "colord";
 
 export type ColorFamily =
 	| "Red"
@@ -70,37 +67,13 @@ export function getLocalizedColorName(hex: string, locale: "vi" | "en" = "vi"): 
 }
 
 /**
- * Kiểm tra xem 2 mã màu có thực sự trùng lặp hoặc quá gần nhau hay không
- * Sử dụng kết hợp:
- * 1. Cùng nhóm màu (Color Family)
- * 2. Khoảng cách thị giác Delta-E trong không gian màu CIELAB < 0.10
+ * Kiểm tra xem 2 mã màu có trùng mã HEX với nhau không (chuẩn hoá chữ hoa và khoảng trắng)
  */
-export function areColorsTooSimilar(
-	hex1: string,
-	hex2: string,
-	deltaThreshold = 0.1
-): { similar: boolean; reason?: string } {
+export function isSameHexColor(hex1: string, hex2: string): boolean {
 	const c1 = colord(hex1.trim());
 	const c2 = colord(hex2.trim());
-
 	if (!c1.isValid() || !c2.isValid()) {
-		return { similar: false };
+		return hex1.trim().toUpperCase() === hex2.trim().toUpperCase();
 	}
-
-	// 1. Nếu trùng hoàn toàn mã HEX
-	if (c1.toHex().toUpperCase() === c2.toHex().toUpperCase()) {
-		return { similar: true, reason: "EXACT_HEX" };
-	}
-
-	// 2. Tính khoảng cách thị giác Delta trong CIE LAB
-	const delta = c1.delta(c2);
-	const family1 = getColorFamily(hex1);
-	const family2 = getColorFamily(hex2);
-
-	// Nếu cùng nhóm màu và độ sai lệch thị giác < 0.10 (mắt người nhìn vào thấy gần như cùng một màu)
-	if (family1 === family2 && delta < deltaThreshold) {
-		return { similar: true, reason: "VISUALLY_IDENTICAL" };
-	}
-
-	return { similar: false };
+	return c1.toHex().toUpperCase() === c2.toHex().toUpperCase();
 }
