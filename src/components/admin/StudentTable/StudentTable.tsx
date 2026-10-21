@@ -19,6 +19,7 @@ import { AdminIconAction, AdminToggleAction } from "@/components/admin/AdminRowA
 import { StudentDetail } from "@/components/admin/StudentDetail";
 import { useSetStudentLocked, useStudents } from "@/features/admin/client/hooks";
 import type { AdminStudentRow } from "@/features/admin/types";
+import { showErrorToast, showSuccessToast } from "@/lib/toast";
 
 type StudentColumnKey =
 	"mssv" | "ho_ten" | "role" | "bi_khoa" | "created_at" | "so_lan_lam" | "lan_lam_gan_nhat";
@@ -153,7 +154,19 @@ export function StudentTable() {
 							deactivateLabel={t("unlock")}
 							deactivateAriaLabel={t("unlockOf", { name: student.ho_ten })}
 							deactivateIcon={<IconLockOpen size={18} stroke={1.7} />}
-							onChange={(bi_khoa) => setLocked.mutate({ mssv: student.mssv, bi_khoa })}
+							onChange={(bi_khoa) =>
+								setLocked.mutate(
+									{ mssv: student.mssv, bi_khoa },
+									{
+										onSuccess: () => {
+											showSuccessToast(bi_khoa ? t("lockSuccess") : t("unlockSuccess"));
+										},
+										onError: (err) => {
+											showErrorToast(err, t("saveError"));
+										},
+									}
+								)
+							}
 						/>
 					</>
 				)}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, type HTMLAttributes, type ReactNode } from "react";
+import { useMemo, useState, type CSSProperties, type HTMLAttributes, type ReactNode } from "react";
 import {
 	Badge,
 	Button,
@@ -42,7 +42,11 @@ export type AdminDataTableProps<T, K extends string = string> = {
 	// Danh sách trường văn bản của dòng để tìm kiếm không dấu ngay trên trình duyệt
 	searchFields?: (row: T) => (string | null | undefined)[];
 	searchPlaceholder?: string;
-	// Thành phần phụ đặt bên phải ô tìm kiếm (bộ lọc, nút thêm mới, xuất CSV...)
+	// Bộ lọc đặt bên trái cạnh ô tìm kiếm (Select box...)
+	filters?: ReactNode;
+	// Nút thao tác ngoài bảng đặt phía trên bên phải (Nút thêm mới, xuất file...)
+	actions?: ReactNode;
+	// Thành phần phụ đặt bên phải ô tìm kiếm (giữ để tương thích ngược)
 	toolbar?: ReactNode;
 	// Dòng ghim ở đầu trang 1; nhận từ khoá đã bỏ dấu để tự ẩn/hiện khi tìm kiếm
 	pinnedRows?: (keyword: string) => ReactNode;
@@ -101,6 +105,8 @@ export function AdminDataTable<T, K extends string = string>({
 	defaultSort,
 	searchFields,
 	searchPlaceholder,
+	filters,
+	actions,
 	toolbar,
 	pinnedRows,
 	rowProps,
@@ -151,25 +157,28 @@ export function AdminDataTable<T, K extends string = string>({
 	const rows = visible.slice(firstIndex, firstIndex + pageSize);
 	const pinnedContent = currentPage === 1 && pinnedRows ? pinnedRows(keyword) : null;
 	const hasPinned = Boolean(pinnedContent);
-	const showToolbar = Boolean(searchFields || toolbar);
+	const showToolbar = Boolean(searchFields || filters || actions || toolbar);
 
 	return (
 		<div className={classes.wrapper}>
 			{showToolbar && (
 				<div className={classes.toolbar}>
-					{searchFields && (
-						<TextInput
-							className={classes.search}
-							placeholder={searchPlaceholder ?? t("searchPlaceholder")}
-							leftSection={<IconSearch size={16} />}
-							value={search}
-							onChange={(event) => {
-								setSearch(event.currentTarget.value);
-								setPage(1);
-							}}
-						/>
-					)}
-					{toolbar}
+					<div className={classes.toolbarLeft}>
+						{searchFields && (
+							<TextInput
+								className={classes.search}
+								placeholder={searchPlaceholder ?? t("searchPlaceholder")}
+								leftSection={<IconSearch size={16} />}
+								value={search}
+								onChange={(event) => {
+									setSearch(event.currentTarget.value);
+									setPage(1);
+								}}
+							/>
+						)}
+						{filters}
+					</div>
+					{(actions || toolbar) && <div className={classes.toolbarRight}>{actions ?? toolbar}</div>}
 				</div>
 			)}
 
@@ -354,18 +363,120 @@ export function AdminCellButton({
 	);
 }
 
-// Nhãn pill in hoa dùng chung trên bảng và danh sách quản trị, không bị cắt chữ khi bảng co
+// Nhãn pill dùng chung trên bảng và danh sách quản trị, không bị cắt chữ khi bảng co
 export function AdminBadge({
 	color = "gray",
+	uppercase = true,
+	radius = "xl",
+	size = "sm",
 	children,
+	className,
 }: {
 	color?: MantineColor;
+	uppercase?: boolean;
+	radius?: "xs" | "sm" | "md" | "lg" | "xl";
+	size?: "xs" | "sm" | "md" | "lg" | "xl";
 	children: ReactNode;
+	className?: string;
 }) {
 	return (
-		<Badge variant="light" color={color} radius="xl" className={classes.badge}>
+		<Badge
+			variant="light"
+			color={color}
+			radius={radius}
+			size={size}
+			className={`${classes.badge} ${className ?? ""}`}
+			data-uppercase={uppercase || undefined}
+		>
 			{children}
 		</Badge>
+	);
+}
+
+// Nhóm chứa các nhãn/từ khoá, tự động xuống dòng và không co vỡ chữ
+export function AdminBadgeGroup({
+	children,
+	gap = 6,
+	minWidth,
+	maxWidth,
+}: {
+	children: ReactNode;
+	gap?: number | string;
+	minWidth?: number | string;
+	maxWidth?: number | string;
+}) {
+	return (
+		<div
+			className={classes.badgeGroup}
+			style={
+				{
+					gap: typeof gap === "number" ? `${gap}px` : gap,
+					...(minWidth
+						? { "--min-width": typeof minWidth === "number" ? `${minWidth}px` : minWidth }
+						: {}),
+					...(maxWidth
+						? { "--max-width": typeof maxWidth === "number" ? `${maxWidth}px` : maxWidth }
+						: {}),
+				} as CSSProperties
+			}
+		>
+			{children}
+		</div>
+	);
+}
+
+export type AdminCellTextProps = {
+	children: ReactNode;
+	/**
+	 * Số dòng tối đa hiển thị. Khi vượt quá số dòng này mới cắt '...' (mặc định: 2 dòng)
+	 * @default 2
+	 */
+	maxLines?: number;
+	/**
+	 * Chiều rộng tối thiểu của nội dung ô để bảng giữ layout đẹp
+	 * @default 180
+	 */
+	minWidth?: number | string;
+	/**
+	 * Chiều rộng tối đa của nội dung ô
+	 * @default 320
+	 */
+	maxWidth?: number | string;
+	/**
+	 * Màu chữ mờ nhẹ (dimmed) cho nội dung mô tả phụ
+	 * @default false
+	 */
+	dimmed?: boolean;
+	title?: string;
+	className?: string;
+};
+
+// Ô văn bản dùng chung cho các bảng quản trị: tự xuống dòng nhiều dòng, vượt quá chiều cao quy định mới cắt '...'
+export function AdminCellText({
+	children,
+	maxLines = 2,
+	minWidth = 180,
+	maxWidth = 320,
+	dimmed = false,
+	title,
+	className,
+}: AdminCellTextProps) {
+	const tooltip = title ?? (typeof children === "string" ? children : undefined);
+	return (
+		<div
+			className={`${classes.cellText} ${className ?? ""}`}
+			data-dimmed={dimmed || undefined}
+			title={tooltip}
+			style={
+				{
+					"--line-clamp": maxLines,
+					"--min-width": typeof minWidth === "number" ? `${minWidth}px` : minWidth,
+					"--max-width": typeof maxWidth === "number" ? `${maxWidth}px` : maxWidth,
+				} as CSSProperties
+			}
+		>
+			{children}
+		</div>
 	);
 }
 

@@ -1,7 +1,15 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { Fieldset, Modal, SimpleGrid, Text, TextInput, type MantineSize } from "@mantine/core";
+import {
+	Fieldset,
+	Modal,
+	SimpleGrid,
+	Text,
+	Textarea,
+	TextInput,
+	type MantineSize,
+} from "@mantine/core";
 import { useTranslations } from "next-intl";
 import { AdminSkeleton } from "@/components/admin/AdminSkeleton";
 import classes from "./AdminDetailModal.module.css";
@@ -76,9 +84,21 @@ export function AdminDetailShell({
 }
 
 // Nhóm thông tin có khung viền và tiêu đề legend chuẩn trang quản trị
-export function AdminFieldset({ legend, children }: { legend: ReactNode; children: ReactNode }) {
+export function AdminFieldset({
+	legend,
+	children,
+	className,
+}: {
+	legend: ReactNode;
+	children: ReactNode;
+	className?: string;
+}) {
 	return (
-		<Fieldset legend={legend} classNames={{ legend: classes.legend }}>
+		<Fieldset
+			legend={legend}
+			className={`${classes.fieldset} ${className ?? ""}`}
+			classNames={{ legend: classes.legend }}
+		>
 			{children}
 		</Fieldset>
 	);
@@ -87,15 +107,41 @@ export function AdminFieldset({ legend, children }: { legend: ReactNode; childre
 export type AdminReadonlyField = {
 	label: string;
 	value: string;
+	multiline?: boolean;
+	fullWidth?: boolean;
 };
 
-// Lưới 2 cột các ô TextInput chỉ xem (disabled, theme tự in nghiêng chữ)
-export function AdminReadonlyGrid({ fields }: { fields: AdminReadonlyField[] }) {
+// Lưới các ô chỉ xem (disabled, theme tự in nghiêng chữ; hỗ trợ ô nhiều dòng autosize không bị cắt chữ)
+export function AdminReadonlyGrid({
+	fields,
+	cols = { base: 1, sm: 2 },
+}: {
+	fields: AdminReadonlyField[];
+	cols?: { base?: number; sm?: number; md?: number } | number;
+}) {
 	return (
-		<SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md" verticalSpacing="sm">
-			{fields.map((field) => (
-				<TextInput key={field.label} label={field.label} value={field.value} disabled />
-			))}
+		<SimpleGrid cols={cols} spacing="md" verticalSpacing="md">
+			{fields.map((field) =>
+				field.multiline ? (
+					<Textarea
+						key={field.label}
+						label={field.label}
+						value={field.value}
+						disabled
+						autosize
+						minRows={2}
+						style={field.fullWidth ? { gridColumn: "1 / -1" } : undefined}
+					/>
+				) : (
+					<TextInput
+						key={field.label}
+						label={field.label}
+						value={field.value}
+						disabled
+						style={field.fullWidth ? { gridColumn: "1 / -1" } : undefined}
+					/>
+				)
+			)}
 		</SimpleGrid>
 	);
 }

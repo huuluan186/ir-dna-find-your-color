@@ -1,15 +1,8 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import {
-	ActionIcon,
-	Button,
-	Group,
-	Popover,
-	Text,
-	Tooltip,
-	type MantineColor,
-} from "@mantine/core";
+import { ActionIcon, Button, Group, Modal, Text, Tooltip, type MantineColor } from "@mantine/core";
+import { IconAlertTriangle, IconEdit, IconEye, IconTrash } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 import classes from "./AdminRowActions.module.css";
 
@@ -59,26 +52,30 @@ export function AdminIconAction({
 export type AdminConfirmActionProps = {
 	label: string;
 	ariaLabel?: string;
+	confirmTitle?: string;
 	confirmText: ReactNode;
 	confirmLabel?: string;
 	cancelLabel?: string;
 	color?: MantineColor;
 	size?: number;
+	disabled?: boolean;
 	loading?: boolean;
 	withTooltip?: boolean;
 	onConfirm: () => void;
 	children: ReactNode;
 };
 
-// Nút thao tác nguy hiểm (khoá tài khoản, xoá bản ghi...) có Popover hỏi xác nhận trước khi chạy
+// Nút thao tác nguy hiểm (khoá tài khoản, xoá bản ghi...) mở popup Modal giữa màn hình hỏi xác nhận trước khi chạy
 export function AdminConfirmAction({
 	label,
 	ariaLabel,
+	confirmTitle,
 	confirmText,
 	confirmLabel,
 	cancelLabel,
 	color = "red",
 	size = 34,
+	disabled = false,
 	loading = false,
 	withTooltip = true,
 	onConfirm,
@@ -90,36 +87,53 @@ export function AdminConfirmAction({
 	const button = (
 		<ActionIcon
 			variant="subtle"
-			color={color}
+			color={disabled ? "gray" : color}
 			size={size}
 			loading={loading}
+			data-disabled={disabled || undefined}
+			aria-disabled={disabled || undefined}
 			aria-label={ariaLabel ?? label}
-			onClick={() => setOpened((prev) => !prev)}
+			onClick={disabled ? undefined : () => setOpened(true)}
 		>
 			{children}
 		</ActionIcon>
 	);
 
 	return (
-		<Popover opened={opened} onChange={setOpened} position="bottom-end" withArrow>
-			<Popover.Target>
-				{withTooltip ? (
-					<Tooltip label={label} withArrow disabled={opened}>
-						{button}
-					</Tooltip>
-				) : (
-					button
-				)}
-			</Popover.Target>
-			<Popover.Dropdown className={classes.confirm}>
-				<Text size="sm">{confirmText}</Text>
-				<Group justify="flex-end" gap={8} mt="sm">
-					<Button size="xs" variant="default" onClick={() => setOpened(false)}>
+		<>
+			{withTooltip ? (
+				<Tooltip label={label} withArrow disabled={opened}>
+					{button}
+				</Tooltip>
+			) : (
+				button
+			)}
+
+			<Modal
+				opened={opened}
+				onClose={() => setOpened(false)}
+				centered
+				size="sm"
+				title={
+					<Group gap={8}>
+						<IconAlertTriangle size={20} color="var(--mantine-color-red-6)" stroke={2} />
+						<Text fw={700} size="md">
+							{confirmTitle ?? t("deleteConfirmTitle")}
+						</Text>
+					</Group>
+				}
+			>
+				<Text size="sm" c="dimmed" style={{ lineHeight: 1.5 }}>
+					{confirmText}
+				</Text>
+				<Group justify="flex-end" gap={10} mt="xl">
+					<Button size="sm" variant="default" onClick={() => setOpened(false)} disabled={loading}>
 						{cancelLabel ?? t("cancel")}
 					</Button>
 					<Button
-						size="xs"
+						size="sm"
 						color={color}
+						loading={loading}
 						onClick={() => {
 							setOpened(false);
 							onConfirm();
@@ -128,8 +142,8 @@ export function AdminConfirmAction({
 						{confirmLabel ?? label}
 					</Button>
 				</Group>
-			</Popover.Dropdown>
-		</Popover>
+			</Modal>
+		</>
 	);
 }
 
@@ -185,5 +199,76 @@ export function AdminToggleAction({
 		>
 			{activateIcon}
 		</AdminConfirmAction>
+	);
+}
+
+export type AdminRowStandardActionsProps = {
+	onView?: () => void;
+	viewLabel?: string;
+	viewDisabled?: boolean;
+	onEdit?: () => void;
+	editLabel?: string;
+	editDisabled?: boolean;
+	onDelete?: () => void;
+	deleteLabel?: string;
+	deleteTitle?: string;
+	deleteConfirmText?: ReactNode;
+	deleteDisabled?: boolean;
+	isDeleting?: boolean;
+};
+
+// Bộ 3 nút thao tác chuẩn cho bảng quản trị: Xem chi tiết (View), Sửa (Edit), Xoá (Delete)
+export function AdminRowStandardActions({
+	onView,
+	viewLabel,
+	viewDisabled = false,
+	onEdit,
+	editLabel,
+	editDisabled = false,
+	onDelete,
+	deleteLabel,
+	deleteTitle,
+	deleteConfirmText,
+	deleteDisabled = false,
+	isDeleting = false,
+}: AdminRowStandardActionsProps) {
+	const t = useTranslations("admin");
+
+	return (
+		<>
+			{onView && (
+				<AdminIconAction
+					label={viewLabel ?? t("viewDetail")}
+					disabled={viewDisabled}
+					color="gray"
+					onClick={onView}
+				>
+					<IconEye size={18} stroke={1.7} />
+				</AdminIconAction>
+			)}
+			{onEdit && (
+				<AdminIconAction
+					label={editLabel ?? t("edit")}
+					disabled={editDisabled}
+					color="dna"
+					onClick={onEdit}
+				>
+					<IconEdit size={18} stroke={1.7} />
+				</AdminIconAction>
+			)}
+			{onDelete && (
+				<AdminConfirmAction
+					label={deleteLabel ?? t("delete")}
+					confirmTitle={deleteTitle ?? t("deleteConfirmTitle")}
+					confirmText={deleteConfirmText ?? t("deleteConfirm")}
+					disabled={deleteDisabled}
+					loading={isDeleting}
+					color="red"
+					onConfirm={onDelete}
+				>
+					<IconTrash size={18} stroke={1.7} />
+				</AdminConfirmAction>
+			)}
+		</>
 	);
 }
