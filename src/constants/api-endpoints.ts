@@ -15,6 +15,7 @@ export const API_ENDPOINTS = {
 		STUDENTS: "/api/admin/students",
 		STUDENT_DETAIL: (mssv: string) => `/api/admin/students/${mssv}`,
 		COLORS: "/api/admin/colors",
+		COLOR_DETAIL: (id: number) => `/api/admin/colors/${id}`,
 		QUESTIONS: "/api/admin/questions",
 		RESULTS: "/api/admin/results",
 		EXPORT: "/api/admin/export",

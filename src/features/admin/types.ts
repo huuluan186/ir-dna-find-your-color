@@ -13,3 +13,20 @@ export type AdminStudentDetail = AdminStudentRow & {
 	updated_at: string | null;
 	khoa_luc: string | null;
 };
+
+export type AdminColorRow = {
+	id_mau_gen: number;
+	ten_mau: string;
+	ma_hex: string;
+	ten_ma_gen: string;
+	tu_khoa: string[];
+	y_nghia: string;
+	linh_vuc: string;
+	ky_nang: string;
+	thu_tu: number;
+	updated_at: string | null;
+};
+
+export type AdminColorDetail = AdminColorRow & {
+	created_at: string;
+};

@@ -15,6 +15,7 @@ export const QUERY_KEYS = {
 		STUDENTS: ["admin", "students"],
 		STUDENT_DETAIL: (mssv: string) => ["admin", "students", mssv] as const,
 		COLORS: ["admin", "colors"],
+		COLOR_DETAIL: (id: number) => ["admin", "colors", id] as const,
 		QUESTIONS: ["admin", "questions"],
 		RESULTS: ["admin", "results"],
 		SOUND: ["admin", "sound"],
