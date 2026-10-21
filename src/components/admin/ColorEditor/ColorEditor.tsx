@@ -4,11 +4,12 @@ import { useState } from "react";
 import { Button, ColorInput, TagsInput, Text, Textarea, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconCheck, IconDeviceFloppy } from "@tabler/icons-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { DNA_COLORS } from "@/constants/app";
 import { updateColorSchema, type UpdateColorInput } from "@/features/admin/schema";
 import { useCreateAdminColor, useUpdateAdminColor } from "@/features/admin/client/hooks";
 import type { AdminColorRow } from "@/features/admin/types";
+import { getLocalizedColorName } from "@/lib/color-name";
 import { showErrorToast, showSuccessToast } from "@/lib/toast";
 import classes from "./ColorEditor.module.css";
 
@@ -19,6 +20,7 @@ type ColorEditorProps = {
 
 export function ColorEditor({ color, onClose }: ColorEditorProps) {
 	const t = useTranslations("admin");
+	const locale = useLocale() as "vi" | "en";
 	const updateColor = useUpdateAdminColor();
 	const createColor = useCreateAdminColor();
 	const isEditing = Boolean(color);
@@ -28,7 +30,7 @@ export function ColorEditor({ color, onClose }: ColorEditorProps) {
 
 	const form = useForm<UpdateColorInput>({
 		initialValues: {
-			ten_mau: color?.ten_mau ?? "",
+			ten_mau: color?.ten_mau ?? (locale === "en" ? "Blue" : "Xanh dương"),
 			ma_hex: color?.ma_hex ?? "#1E4FA3",
 			ten_ma_gen: color?.ten_ma_gen ?? "",
 			tu_khoa: color?.tu_khoa ?? [],
@@ -82,13 +84,6 @@ export function ColorEditor({ color, onClose }: ColorEditorProps) {
 	return (
 		<form onSubmit={form.onSubmit(handleSubmit)} className={classes.form}>
 			<div className={classes.grid3}>
-				<TextInput
-					label={t("fieldColorName")}
-					placeholder="VD: Đỏ"
-					required
-					withAsterisk
-					{...form.getInputProps("ten_mau")}
-				/>
 				<ColorInput
 					label={t("fieldColorHex")}
 					format="hex"
@@ -96,6 +91,20 @@ export function ColorEditor({ color, onClose }: ColorEditorProps) {
 					required
 					withAsterisk
 					{...form.getInputProps("ma_hex")}
+					onChange={(val) => {
+						form.getInputProps("ma_hex").onChange(val);
+						const detectedName = getLocalizedColorName(val, locale);
+						if (detectedName) {
+							form.setFieldValue("ten_mau", detectedName);
+						}
+					}}
+				/>
+				<TextInput
+					label={t("fieldColorName")}
+					placeholder="VD: Đỏ"
+					required
+					withAsterisk
+					{...form.getInputProps("ten_mau")}
 				/>
 				<TextInput
 					label={t("fieldGeneName")}
