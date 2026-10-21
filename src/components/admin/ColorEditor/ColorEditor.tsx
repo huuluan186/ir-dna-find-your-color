@@ -102,8 +102,9 @@ export function ColorEditor({ color, onClose }: ColorEditorProps) {
 				<TextInput
 					label={t("fieldColorName")}
 					placeholder="VD: Đỏ"
-					required
-					withAsterisk
+					readOnly
+					disabled
+					description="Tự động cập nhật theo mã màu"
 					{...form.getInputProps("ten_mau")}
 				/>
 				<TextInput
