@@ -104,7 +104,6 @@ export function ColorEditor({ color, onClose }: ColorEditorProps) {
 					placeholder="VD: Đỏ"
 					readOnly
 					disabled
-					description="Tự động cập nhật theo mã màu"
 					{...form.getInputProps("ten_mau")}
 				/>
 				<TextInput
