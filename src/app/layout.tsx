@@ -3,6 +3,7 @@ import { Be_Vietnam_Pro } from "next/font/google";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ColorSchemeScript, mantineHtmlProps } from "@mantine/core";
 import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
 import { Providers } from "@/components/shared";
 import { APP } from "@/constants/app";
 
