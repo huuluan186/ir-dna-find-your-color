@@ -1,29 +1,21 @@
 import nearestColor from "nearest-color";
 
-// Bộ màu tiếng Anh tiêu chuẩn phổ quát để bắt dải màu
+/**
+ * Bảng màu chuẩn neo theo 6 màu gen của dự án và các màu phổ quát
+ * Giúp nhận diện chính xác dải màu mà người dùng chọn
+ */
 const COLOR_PALETTE = {
-	Red: "#FF0000",
-	Crimson: "#DC143C",
-	Coral: "#FF7F50",
-	Orange: "#FFA500",
-	Gold: "#FFD700",
-	Yellow: "#FFFF00",
-	Lime: "#00FF00",
-	Green: "#008000",
-	Teal: "#008080",
-	Cyan: "#00FFFF",
-	SkyBlue: "#87CEEB",
-	Blue: "#0000FF",
-	Navy: "#000080",
-	Indigo: "#4B0082",
-	Purple: "#800080",
-	Violet: "#EE82EE",
-	Magenta: "#FF00FF",
-	Pink: "#FFC0CB",
-	Brown: "#8B4513",
-	White: "#FFFFFF",
-	Gray: "#808080",
+	Red: "#E53935",
+	Orange: "#FB8C00",
+	Yellow: "#FDD835",
+	Green: "#43A047",
+	Blue: "#1E4FA3",
+	Purple: "#8E24AA",
+	Pink: "#E91E63",
+	Brown: "#795548",
+	Gray: "#9E9E9E",
 	Black: "#000000",
+	White: "#FFFFFF",
 };
 
 const matcher = nearestColor.from(COLOR_PALETTE);
@@ -51,27 +43,16 @@ export function getClosestColorName(hex: string): string {
  */
 export const COLOR_TRANSLATIONS: Record<string, { vi: string; en: string }> = {
 	Red: { vi: "Đỏ", en: "Red" },
-	Crimson: { vi: "Đỏ thẫm", en: "Crimson" },
-	Coral: { vi: "Cam san hô", en: "Coral" },
 	Orange: { vi: "Cam", en: "Orange" },
-	Gold: { vi: "Vàng kim", en: "Gold" },
 	Yellow: { vi: "Vàng", en: "Yellow" },
-	Lime: { vi: "Xanh chanh", en: "Lime" },
 	Green: { vi: "Xanh lá", en: "Green" },
-	Teal: { vi: "Xanh mòng két", en: "Teal" },
-	Cyan: { vi: "Xanh ngọc (Cyan)", en: "Cyan" },
-	SkyBlue: { vi: "Xanh da trời", en: "Sky Blue" },
 	Blue: { vi: "Xanh dương", en: "Blue" },
-	Navy: { vi: "Xanh navy", en: "Navy" },
-	Indigo: { vi: "Chàm", en: "Indigo" },
 	Purple: { vi: "Tím", en: "Purple" },
-	Violet: { vi: "Tím hoa cà", en: "Violet" },
-	Magenta: { vi: "Hồng cánh sen", en: "Magenta" },
 	Pink: { vi: "Hồng", en: "Pink" },
 	Brown: { vi: "Nâu", en: "Brown" },
-	White: { vi: "Trắng", en: "White" },
 	Gray: { vi: "Xám", en: "Gray" },
 	Black: { vi: "Đen", en: "Black" },
+	White: { vi: "Trắng", en: "White" },
 };
 
 /**
