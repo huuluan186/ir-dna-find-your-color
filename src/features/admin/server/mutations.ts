@@ -20,6 +20,28 @@ export async function updateAdminColor(
 	id: number,
 	input: UpdateColorInput
 ): Promise<AdminColorDetail | null> {
+	// Kiểm tra trùng tên màu hoặc mã màu với các mã gen khác đang hoạt động
+	const { data: existing } = await getDb()
+		.from("mau_gen")
+		.select("id_mau_gen, ten_mau, ma_hex")
+		.eq("is_deleted", false)
+		.neq("id_mau_gen", id);
+
+	if (existing && existing.length > 0) {
+		const normTenMau = input.ten_mau.trim().toLowerCase();
+		const normMaHex = input.ma_hex.trim().toUpperCase();
+
+		const duplicateName = existing.find((c) => c.ten_mau.trim().toLowerCase() === normTenMau);
+		if (duplicateName) {
+			throw new Error("DUPLICATE_COLOR_NAME");
+		}
+
+		const duplicateHex = existing.find((c) => c.ma_hex.trim().toUpperCase() === normMaHex);
+		if (duplicateHex) {
+			throw new Error("DUPLICATE_COLOR_HEX");
+		}
+	}
+
 	const { data, error } = await getDb()
 		.from("mau_gen")
 		.update({
@@ -52,6 +74,27 @@ export async function updateAdminColor(
 
 // Thêm mới một mã gen
 export async function createAdminColor(input: UpdateColorInput): Promise<AdminColorDetail> {
+	// Kiểm tra trùng tên màu hoặc mã màu với các mã gen đang hoạt động
+	const { data: existing } = await getDb()
+		.from("mau_gen")
+		.select("id_mau_gen, ten_mau, ma_hex")
+		.eq("is_deleted", false);
+
+	if (existing && existing.length > 0) {
+		const normTenMau = input.ten_mau.trim().toLowerCase();
+		const normMaHex = input.ma_hex.trim().toUpperCase();
+
+		const duplicateName = existing.find((c) => c.ten_mau.trim().toLowerCase() === normTenMau);
+		if (duplicateName) {
+			throw new Error("DUPLICATE_COLOR_NAME");
+		}
+
+		const duplicateHex = existing.find((c) => c.ma_hex.trim().toUpperCase() === normMaHex);
+		if (duplicateHex) {
+			throw new Error("DUPLICATE_COLOR_HEX");
+		}
+	}
+
 	const { data: maxRow } = await getDb()
 		.from("mau_gen")
 		.select("thu_tu")
