@@ -42,7 +42,7 @@ export const ADMIN_NAV: AdminNavGroup[] = [
 				labelKey: "navGenes",
 				titleKey: "titleGenes",
 				Icon: IconDna2,
-				ready: false,
+				ready: true,
 			},
 			{
 				href: ROUTES.ADMIN.CAU_HOI,

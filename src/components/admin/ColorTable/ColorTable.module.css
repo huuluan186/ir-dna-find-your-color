@@ -1,0 +1,27 @@
+.colorCell {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.swatch {
+	width: 22px;
+	height: 22px;
+	border-radius: 6px;
+	border: 1px solid light-dark(rgb(0 0 0 / 14%), rgb(255 255 255 / 18%));
+	box-shadow: 0 1px 3px rgb(0 0 0 / 12%);
+	flex-shrink: 0;
+}
+
+.hexCode {
+	font-family: var(--mantine-font-family-monospace);
+	font-size: 0.8125rem;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+}
+
+.geneName {
+	font-weight: 600;
+	font-size: 0.875rem;
+	white-space: nowrap;
+}
