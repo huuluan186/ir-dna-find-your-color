@@ -1,7 +1,15 @@
 "use client";
 
-import { useMemo, useState, type CSSProperties, type HTMLAttributes, type ReactNode } from "react";
 import {
+	useEffect,
+	useMemo,
+	useState,
+	type CSSProperties,
+	type HTMLAttributes,
+	type ReactNode,
+} from "react";
+import {
+	ActionIcon,
 	Badge,
 	Button,
 	Group,
@@ -10,11 +18,19 @@ import {
 	Table,
 	Text,
 	TextInput,
+	Tooltip,
 	UnstyledButton,
 	type MantineColor,
 } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
-import { IconChevronDown, IconChevronUp, IconSearch, IconSelector } from "@tabler/icons-react";
+import { useHotkeys, useMediaQuery } from "@mantine/hooks";
+import {
+	IconChevronDown,
+	IconChevronUp,
+	IconMaximize,
+	IconMinimize,
+	IconSearch,
+	IconSelector,
+} from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 import { ADMIN_TABLE } from "@/constants/app";
 import classes from "./AdminDataTable.module.css";
@@ -60,6 +76,8 @@ export type AdminDataTableProps<T, K extends string = string> = {
 	emptyText: string;
 	// Câu thông báo khi lọc tìm kiếm không có bản ghi khớp (mặc định dùng admin.noMatch)
 	noMatchText?: string;
+	// Cho phép phóng to toàn màn hình bảng dữ liệu (mặc định: true)
+	withMaximize?: boolean;
 };
 
 // Bỏ dấu tiếng Việt để tìm "nguyen" ra "Nguyễn"
@@ -115,10 +133,12 @@ export function AdminDataTable<T, K extends string = string>({
 	onRetry,
 	emptyText,
 	noMatchText,
+	withMaximize = true,
 }: AdminDataTableProps<T, K>) {
 	const t = useTranslations("admin");
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
+	const [isMaximized, setIsMaximized] = useState(false);
 	// null = chưa chọn, dùng mặc định theo thiết bị (điện thoại ít dòng hơn để bảng vừa màn hình)
 	const [pageSizeChoice, setPageSizeChoice] = useState<number | null>(null);
 	const isMobile = useMediaQuery(ADMIN_TABLE.MOBILE_QUERY);
@@ -126,6 +146,26 @@ export function AdminDataTable<T, K extends string = string>({
 		pageSizeChoice ??
 		(isMobile ? ADMIN_TABLE.DEFAULT_PAGE_SIZE_MOBILE : ADMIN_TABLE.DEFAULT_PAGE_SIZE);
 	const [sort, setSort] = useState<SortState<K> | null>(defaultSort ?? null);
+
+	// Phím Esc để thoát chế độ phóng to
+	useHotkeys([
+		[
+			"Escape",
+			() => {
+				if (isMaximized) setIsMaximized(false);
+			},
+		],
+	]);
+
+	// Khoá cuộn của trang nền khi phóng to toàn màn hình
+	useEffect(() => {
+		if (!isMaximized) return;
+		const originalOverflow = document.body.style.overflow;
+		document.body.style.overflow = "hidden";
+		return () => {
+			document.body.style.overflow = originalOverflow;
+		};
+	}, [isMaximized]);
 
 	const keyword = useMemo(() => normalizeSearch(search), [search]);
 
@@ -157,10 +197,10 @@ export function AdminDataTable<T, K extends string = string>({
 	const rows = visible.slice(firstIndex, firstIndex + pageSize);
 	const pinnedContent = currentPage === 1 && pinnedRows ? pinnedRows(keyword) : null;
 	const hasPinned = Boolean(pinnedContent);
-	const showToolbar = Boolean(searchFields || filters || actions || toolbar);
+	const showToolbar = Boolean(searchFields || filters || actions || toolbar || withMaximize);
 
 	return (
-		<div className={classes.wrapper}>
+		<div className={classes.wrapper} data-maximized={isMaximized || undefined}>
 			{showToolbar && (
 				<div className={classes.toolbar}>
 					<div className={classes.toolbarLeft}>
@@ -178,7 +218,26 @@ export function AdminDataTable<T, K extends string = string>({
 						)}
 						{filters}
 					</div>
-					{(actions || toolbar) && <div className={classes.toolbarRight}>{actions ?? toolbar}</div>}
+					<div className={classes.toolbarRight}>
+						{actions ?? toolbar}
+						{withMaximize && (
+							<Tooltip label={isMaximized ? t("minimizeTable") : t("maximizeTable")} withArrow>
+								<ActionIcon
+									variant="default"
+									size={36}
+									radius="sm"
+									aria-label={isMaximized ? t("minimizeTable") : t("maximizeTable")}
+									onClick={() => setIsMaximized((prev) => !prev)}
+								>
+									{isMaximized ? (
+										<IconMinimize size={18} stroke={1.75} />
+									) : (
+										<IconMaximize size={18} stroke={1.75} />
+									)}
+								</ActionIcon>
+							</Tooltip>
+						)}
+					</div>
 				</div>
 			)}
 

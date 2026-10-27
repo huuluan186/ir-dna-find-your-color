@@ -228,7 +228,9 @@
 		"geneCountUnit": "{count} times",
 		"geneTargetUnit": "Target: {target}",
 		"toggleQuestionActive": "Activate question",
-		"toggleQuestionInactive": "Hide question"
+		"toggleQuestionInactive": "Hide question",
+		"maximizeTable": "Maximize table",
+		"minimizeTable": "Minimize table (Esc)"
 	},
 	"adminSound": {
 		"playbackTitle": "Playback",

@@ -8,6 +8,46 @@
 	min-height: 0;
 }
 
+/* Chế độ phóng to toàn màn hình */
+.wrapper[data-maximized] {
+	position: fixed;
+	inset: 0;
+	z-index: 400;
+	padding: 20px 24px;
+	background: var(--mantine-color-body);
+	height: 100dvh;
+	width: 100vw;
+	box-sizing: border-box;
+	animation: fadeInMaximize 0.15s ease-out;
+
+	& .tableCard {
+		flex: 1;
+		min-height: 0;
+	}
+
+	& .tableScroll {
+		flex: 1;
+		min-height: 0;
+	}
+}
+
+@keyframes fadeInMaximize {
+	from {
+		opacity: 0.85;
+		transform: scale(0.995);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+@media (max-width: 48em) {
+	.wrapper[data-maximized] {
+		padding: 12px;
+	}
+}
+
 .toolbar {
 	display: flex;
 	flex-wrap: wrap;

@@ -228,7 +228,9 @@
 		"geneCountUnit": "{count} lần",
 		"geneTargetUnit": "Mục tiêu: {target} lần",
 		"toggleQuestionActive": "Bật câu hỏi",
-		"toggleQuestionInactive": "Tạm ẩn câu hỏi"
+		"toggleQuestionInactive": "Tạm ẩn câu hỏi",
+		"maximizeTable": "Phóng to bảng (toàn màn hình)",
+		"minimizeTable": "Thu nhỏ bảng (Esc)"
 	},
 	"adminSound": {
 		"playbackTitle": "Phát âm thanh",
