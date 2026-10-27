@@ -48,7 +48,6 @@ export function AdminLoginForm() {
 					<Title order={1} className={classes.title}>
 						{t("loginTitle")}
 					</Title>
-					<Text className={classes.hint}>{t("loginHint")}</Text>
 				</div>
 				<PasswordInput
 					label={t("passwordLabel")}
