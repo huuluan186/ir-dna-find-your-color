@@ -114,6 +114,7 @@ export function AdminConfirmAction({
 				onClose={() => setOpened(false)}
 				centered
 				size="sm"
+				zIndex={300}
 				title={
 					<Group gap={8}>
 						<IconAlertTriangle size={20} color="var(--mantine-color-red-6)" stroke={2} />

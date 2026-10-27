@@ -37,12 +37,14 @@ export function AdminDetailModal({
 	onClose,
 	title,
 	size = "lg",
+	zIndex = 300,
 	children,
 }: {
 	opened: boolean;
 	onClose: () => void;
 	title: ReactNode;
 	size?: MantineSize | number;
+	zIndex?: number;
 	children: ReactNode;
 }) {
 	return (
@@ -53,6 +55,7 @@ export function AdminDetailModal({
 			size={size}
 			radius={12}
 			centered
+			zIndex={zIndex}
 			classNames={{ title: classes.modalTitle }}
 		>
 			{children}

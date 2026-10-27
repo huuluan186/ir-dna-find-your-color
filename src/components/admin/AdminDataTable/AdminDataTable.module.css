@@ -12,7 +12,7 @@
 .wrapper[data-maximized] {
 	position: fixed;
 	inset: 0;
-	z-index: 400;
+	z-index: 160;
 	padding: 20px 24px;
 	background: var(--mantine-color-body);
 	height: 100dvh;

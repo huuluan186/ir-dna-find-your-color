@@ -153,12 +153,16 @@ export function AdminDataTable<T, K extends string = string>({
 		(isMobile ? ADMIN_TABLE.DEFAULT_PAGE_SIZE_MOBILE : ADMIN_TABLE.DEFAULT_PAGE_SIZE);
 	const [sort, setSort] = useState<SortState<K> | null>(defaultSort ?? null);
 
-	// Phím Esc để thoát chế độ phóng to
+	// Phím Esc để thoát chế độ phóng to (nếu có modal đang mở thì để modal xử lý đóng trước)
 	useHotkeys([
 		[
 			"Escape",
 			() => {
-				if (isMaximized) setIsMaximized(false);
+				if (!isMaximized) return;
+				const hasOpenModal = document.querySelector(".mantine-Modal-root, [role='dialog']");
+				if (!hasOpenModal) {
+					setIsMaximized(false);
+				}
 			},
 		],
 	]);
