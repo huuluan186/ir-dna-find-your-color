@@ -1,0 +1,36 @@
+.optionsCell {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	flex-wrap: wrap;
+}
+
+.optionBadge {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	padding: 2px 7px;
+	border-radius: 6px;
+	font-size: 0.75rem;
+	font-weight: 600;
+	cursor: default;
+	border: 1px solid transparent;
+	transition: transform 0.15s ease;
+}
+
+.optionBadge:hover {
+	transform: translateY(-1px);
+}
+
+.swatchDot {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	flex-shrink: 0;
+}
+
+.orderText {
+	font-weight: 700;
+	font-family: var(--mantine-font-family-monospace);
+	font-size: 0.875rem;
+}

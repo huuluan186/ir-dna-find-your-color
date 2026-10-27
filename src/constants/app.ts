@@ -32,6 +32,16 @@ export const STUDENT_INPUT = {
 // Nhãn phương án theo thứ tự A, B, C, D (phím tắt A–D)
 export const OPTION_LETTERS: readonly string[] = ["A", "B", "C", "D"];
 
+// 6 màu mã gen mặc định của triển lãm IR DNA (Đỏ, Cam, Vàng, Xanh lá, Xanh dương, Tím)
+export const DNA_COLORS: readonly string[] = [
+	"#E53935",
+	"#FB8C00",
+	"#FDD835",
+	"#43A047",
+	"#1E4FA3",
+	"#8E24AA",
+];
+
 // Giới hạn số lần nhập sai mật khẩu admin trên mỗi địa chỉ IP
 export const ADMIN_LOGIN_LIMIT = {
 	MAX_ATTEMPTS: 5,

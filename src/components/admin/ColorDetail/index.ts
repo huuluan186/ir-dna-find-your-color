@@ -1,0 +1,1 @@
+export { ColorDetail } from "./ColorDetail";

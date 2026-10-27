@@ -1,10 +1,75 @@
-/* Chiếm hết chiều cao vùng nội dung: ô tìm kiếm, khung bảng (co giãn, cuộn bên trong), chân bảng */
+/* Khung bảng dữ liệu dùng chung cho các trang quản trị:
+   thanh tìm kiếm/công cụ, khung bảng cuộn bên trong (không làm cuộn cả trang), chân bảng phân trang */
 .wrapper {
 	display: flex;
 	flex: 1;
 	flex-direction: column;
 	gap: 16px;
 	min-height: 0;
+}
+
+/* Chế độ phóng to toàn màn hình */
+.wrapper[data-maximized] {
+	position: fixed;
+	inset: 0;
+	z-index: 160;
+	padding: 20px 24px;
+	background: var(--mantine-color-body);
+	height: 100dvh;
+	width: 100vw;
+	box-sizing: border-box;
+	animation: fadeInMaximize 0.15s ease-out;
+
+	& .tableCard {
+		flex: 1;
+		min-height: 0;
+	}
+
+	& .tableScroll {
+		flex: 1;
+		min-height: 0;
+	}
+}
+
+@keyframes fadeInMaximize {
+	from {
+		opacity: 0.85;
+		transform: scale(0.995);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+@media (max-width: 48em) {
+	.wrapper[data-maximized] {
+		padding: 12px;
+	}
+}
+
+.toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px 16px;
+}
+
+.toolbarLeft {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 12px;
+	flex: 1;
+	min-width: 0;
+}
+
+.toolbarRight {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 12px;
 }
 
 .search {
@@ -23,6 +88,34 @@
 	background: var(--mantine-color-body);
 }
 
+/* Thanh liền ở trên của khung bảng chứa các chức năng trên đối tượng bảng (phóng to, tuỳ biến...) */
+.tableHeader {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 6px 12px;
+	min-height: 38px;
+	border-bottom: 1px solid light-dark(#eaeaea, rgb(255 255 255 / 8%));
+	background: light-dark(#fcfcfc, rgb(255 255 255 / 2%));
+	gap: 12px;
+	flex-shrink: 0;
+}
+
+.tableHeaderLeft {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 0.8125rem;
+	color: var(--mantine-color-dimmed);
+}
+
+.tableHeaderRight {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	margin-left: auto;
+}
+
 .tableScroll {
 	min-height: 0;
 	overflow: auto;
@@ -33,7 +126,7 @@
 	min-width: 1020px;
 }
 
-/* Dòng tài khoản quản trị ghim ở đầu bảng */
+/* Dòng ghim cố định ở đầu trang 1 (VD: tài khoản admin mật khẩu chung) */
 .pinnedRow {
 	background: light-dark(#fbfbfa, rgb(255 255 255 / 3%));
 }
@@ -43,13 +136,13 @@
 	font-weight: 600;
 }
 
-/* Tài khoản bị khoá: họ tên mờ và gạch ngang */
+/* Dòng bị khoá hoặc vô hiệu hoá: tên/nội dung chính mờ và gạch ngang */
 :global(.mantine-Table-tr)[data-locked] .name {
 	color: var(--mantine-color-dimmed);
 	text-decoration: line-through;
 }
 
-/* Bảng tự co cột để vừa khung; badge và tên không được co nhỏ hơn chữ (trước đây bị cắt thành "…") */
+/* Giữ nguyên trên 1 dòng để bảng không cắt chữ hoặc làm vỡ badge */
 .nowrap,
 .name {
 	white-space: nowrap;
@@ -58,20 +151,56 @@
 .badge {
 	min-width: max-content;
 	overflow: visible;
-	letter-spacing: 0.04em;
-	text-transform: uppercase;
 	white-space: nowrap;
+	flex-shrink: 0;
+	text-transform: none;
+
+	&[data-uppercase] {
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+	}
+
+	&:not([data-uppercase]) :global(.mantine-Badge-label) {
+		text-transform: none;
+	}
 }
 
-.confirm {
-	max-width: 300px;
+.badgeGroup {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 6px;
+	width: 100%;
+	min-width: var(--min-width, auto);
+	max-width: var(--max-width, 100%);
 }
 
-.mssv {
+.cellText {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: var(--line-clamp, 2);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: normal;
+	word-break: break-word;
+	line-height: 1.45;
+	font-size: 0.8125rem;
+	min-width: var(--min-width, 180px);
+	max-width: var(--max-width, 320px);
+
+	&[data-dimmed] {
+		color: var(--mantine-color-dimmed);
+	}
+}
+
+.cellButton {
 	color: var(--mantine-color-text);
-	font-family: ui-monospace, "SF Mono", monospace;
 	font-weight: 600;
 	text-decoration: none;
+
+	&[data-monospace] {
+		font-family: ui-monospace, "SF Mono", monospace;
+	}
 
 	&:hover {
 		text-decoration: underline;
@@ -81,10 +210,6 @@
 		outline: 2px solid var(--mantine-color-dna-5);
 		outline-offset: 2px;
 	}
-}
-
-.modalTitle {
-	font-weight: 700;
 }
 
 .indexCell {
@@ -192,9 +317,7 @@
 	.footerControls {
 		justify-content: center;
 	}
-}
 
-@media (max-width: 36em) {
 	.search {
 		max-width: none;
 	}

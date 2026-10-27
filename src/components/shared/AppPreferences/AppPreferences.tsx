@@ -74,7 +74,7 @@ function PreferencesContent({
 							{isDark ? <IconSun size={17} /> : <IconMoon size={17} />}
 						</ActionIcon>
 					</Tooltip>
-					{sound.active && (
+					{sound.active && sound.hasMusic && (
 						<Tooltip label={soundLabel} withArrow>
 							<ActionIcon
 								aria-label={soundLabel}

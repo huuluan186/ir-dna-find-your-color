@@ -19,7 +19,7 @@ export type MusicChoice = z.infer<typeof musicChoiceSchema>;
 export type SoundSettings = z.infer<typeof soundSettingsSchema>;
 
 export const DEFAULT_SOUND_SETTINGS: SoundSettings = {
-	nhac_nen: { nguon: "co_san", ma: SOUND.DEFAULT_PRESET },
+	nhac_nen: null,
 	am_luong: SOUND.DEFAULT_VOLUME,
 	hieu_ung: true,
 };

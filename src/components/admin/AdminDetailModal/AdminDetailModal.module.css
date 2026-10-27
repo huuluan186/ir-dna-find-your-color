@@ -1,0 +1,19 @@
+.modalTitle {
+	font-weight: 700;
+}
+
+.legend {
+	padding: 0 8px;
+	font-size: 0.875rem;
+	font-weight: 700;
+	color: light-dark(var(--mantine-color-dna-7), var(--mantine-color-dna-4));
+	letter-spacing: 0.01em;
+}
+
+.fieldset {
+	margin-bottom: 14px;
+
+	&:last-child {
+		margin-bottom: 0;
+	}
+}
