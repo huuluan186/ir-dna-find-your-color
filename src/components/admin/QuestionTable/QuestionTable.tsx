@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Button, Group, Select, Text, Tooltip } from "@mantine/core";
-import { IconCheck, IconEyeOff, IconPlus } from "@tabler/icons-react";
+import { IconCheck, IconDna2, IconEyeOff, IconFilter, IconPlus } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 import {
 	AdminCellText,
@@ -47,7 +47,7 @@ export function QuestionTable() {
 
 	const geneFilterOptions = useMemo(
 		() => [
-			{ value: "", label: t("filterAll") },
+			{ value: "", label: t("filterAllGenes") },
 			...colors.map((c) => ({ value: String(c.id_mau_gen), label: c.ten_mau })),
 		],
 		[colors, t]
@@ -55,11 +55,16 @@ export function QuestionTable() {
 
 	const statusFilterOptions = useMemo(
 		() => [
-			{ value: "", label: t("filterAll") },
+			{ value: "", label: t("filterAllStatus") },
 			{ value: "active", label: t("statusActiveQuestion") },
 			{ value: "inactive", label: t("statusInactiveQuestion") },
 		],
 		[t]
+	);
+
+	const selectedGene = useMemo(
+		() => colors.find((c) => String(c.id_mau_gen) === geneFilter),
+		[colors, geneFilter]
 	);
 
 	const filteredData = useMemo(() => {
@@ -178,16 +183,49 @@ export function QuestionTable() {
 							value={statusFilter ?? ""}
 							onChange={(val) => setStatusFilter(val || null)}
 							placeholder={t("filterQuestionStatus")}
-							w={140}
+							aria-label={t("filterQuestionStatus")}
+							title={t("filterQuestionStatus")}
+							leftSection={<IconFilter size={14} />}
+							w={170}
 							size="sm"
+							allowDeselect={false}
+							comboboxProps={{ withinPortal: true }}
 						/>
 						<Select
 							data={geneFilterOptions}
 							value={geneFilter ?? ""}
 							onChange={(val) => setGeneFilter(val || null)}
 							placeholder={t("filterGenePlaceholder")}
-							w={150}
+							aria-label={t("filterGenePlaceholder")}
+							title={t("filterGenePlaceholder")}
+							leftSection={
+								selectedGene ? (
+									<span
+										className={classes.swatchDot}
+										style={{ backgroundColor: selectedGene.ma_hex, width: 10, height: 10 }}
+									/>
+								) : (
+									<IconDna2 size={14} />
+								)
+							}
+							renderOption={({ option }) => {
+								const g = colors.find((c) => String(c.id_mau_gen) === option.value);
+								return (
+									<Group gap={8} wrap="nowrap">
+										{g && (
+											<span
+												className={classes.swatchDot}
+												style={{ backgroundColor: g.ma_hex, width: 10, height: 10 }}
+											/>
+										)}
+										<Text size="sm">{option.label}</Text>
+									</Group>
+								);
+							}}
+							w={170}
 							size="sm"
+							allowDeselect={false}
+							comboboxProps={{ withinPortal: true }}
 						/>
 					</Group>
 				}
