@@ -138,6 +138,13 @@ Quản lý mã gen `/admin/mau-gen` (21/10/2026):
 - Bảng danh sách `ColorTable` (`src/components/admin/ColorTable/`) kế thừa `AdminDataTable` dùng chung: hiển thị STT, swatch màu kèm mã HEX, tên màu, tên mã gen, các từ khoá (Badge), lĩnh vực, kỹ năng. Hỗ trợ tìm kiếm theo tên màu, tên mã gen, mã hex và từ khoá; sắp xếp theo các cột.
 - Modal chỉnh sửa `ColorEditor` (`src/components/admin/ColorEditor/`) kế thừa `AdminDetailModal`: cho phép sửa tên màu, mã HEX (Mantine `ColorInput` với bảng swatches màu DNA), tên mã gen, từ khoá (Mantine `TagsInput`), ý nghĩa, lĩnh vực gợi ý và kỹ năng phát triển. Xác thực form bằng Zod `updateColorSchema`.
 - Backend & API: `GET /api/admin/colors`, `PATCH /api/admin/colors/[id]`, queries `listAdminColors`, mutations `updateAdminColor`, hook `useAdminColors`, `useUpdateAdminColor` với optimistic update và invalidate cache.
-- Việc tiếp theo: hoàn thiện các menu quản trị còn lại (`/admin/cau-hoi`, `/admin/ket-qua` + xuất CSV, `/admin/qr`).
+
+Quản lý câu hỏi `/admin/cau-hoi` (27/10/2026):
+- Tạo trang `/admin/cau-hoi` (`src/app/admin/(dashboard)/cau-hoi/page.tsx`), mở menu sidebar (`ADMIN_NAV.navQuestions` -> `ready: true`).
+- Bảng câu hỏi `QuestionTable` (`src/components/admin/QuestionTable/`) kế thừa `AdminDataTable`: hiển thị thứ tự, nội dung câu hỏi, danh sách 4 phương án kèm nhãn màu sắc mã gen liên kết, trạng thái hoạt động (bật/tắt). Hỗ trợ tìm kiếm theo nội dung câu hỏi, phương án, tên mã gen; lọc theo trạng thái và mã gen.
+- Thao tác đầy đủ: xem chi tiết (`QuestionDetail`), thêm mới / chỉnh sửa câu hỏi (`QuestionEditor`), bật/tắt nhanh trạng thái câu hỏi, xoá mềm câu hỏi và các phương án liên quan kèm modal xác nhận.
+- Widget cân bằng mã gen `QuestionBalance` (`src/components/admin/QuestionBalance/`): thống kê trực quan tần suất xuất hiện của 6 mã gen trong các câu hỏi đang bật (chuẩn: 8 lần/gen cho bộ 12 câu x 4 phương án = 48 phương án / 6 gen), cảnh báo lệch tỷ lệ và hiển thị thanh tiến độ trực quan.
+- Backend & API: `GET /api/admin/questions`, `POST /api/admin/questions`, `GET /api/admin/questions/[id]`, `PATCH /api/admin/questions/[id]`, `PATCH /api/admin/questions/[id]/status`, `DELETE /api/admin/questions/[id]`, queries `listAdminQuestions`, `getAdminQuestionDetail`, mutations `createAdminQuestion`, `updateAdminQuestion`, `toggleAdminQuestionStatus`, `deleteAdminQuestion`, validation `saveQuestionSchema` chặn trùng mã gen trong cùng 1 câu hỏi, hooks TanStack Query tương ứng.
+- Việc tiếp theo: hoàn thiện các menu quản trị còn lại (`/admin/ket-qua` + xuất CSV, `/admin/qr`).
 
 

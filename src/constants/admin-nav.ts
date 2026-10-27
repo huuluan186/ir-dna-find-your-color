@@ -49,7 +49,7 @@ export const ADMIN_NAV: AdminNavGroup[] = [
 				labelKey: "navQuestions",
 				titleKey: "titleQuestions",
 				Icon: IconListDetails,
-				ready: false,
+				ready: true,
 			},
 		],
 	},
