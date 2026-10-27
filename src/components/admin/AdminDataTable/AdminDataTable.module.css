@@ -88,6 +88,34 @@
 	background: var(--mantine-color-body);
 }
 
+/* Thanh liền ở trên của khung bảng chứa các chức năng trên đối tượng bảng (phóng to, tuỳ biến...) */
+.tableHeader {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 6px 12px;
+	min-height: 38px;
+	border-bottom: 1px solid light-dark(#eaeaea, rgb(255 255 255 / 8%));
+	background: light-dark(#fcfcfc, rgb(255 255 255 / 2%));
+	gap: 12px;
+	flex-shrink: 0;
+}
+
+.tableHeaderLeft {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 0.8125rem;
+	color: var(--mantine-color-dimmed);
+}
+
+.tableHeaderRight {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	margin-left: auto;
+}
+
 .tableScroll {
 	min-height: 0;
 	overflow: auto;

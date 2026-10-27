@@ -76,6 +76,10 @@ export type AdminDataTableProps<T, K extends string = string> = {
 	emptyText: string;
 	// Câu thông báo khi lọc tìm kiếm không có bản ghi khớp (mặc định dùng admin.noMatch)
 	noMatchText?: string;
+	// Tiêu đề hoặc thông tin hiển thị bên trái thanh trên của khung bảng
+	tableTitle?: ReactNode;
+	// Các nút chức năng thao tác trên đối tượng bảng (đặt bên phải cạnh nút phóng to)
+	tableActions?: ReactNode;
 	// Cho phép phóng to toàn màn hình bảng dữ liệu (mặc định: true)
 	withMaximize?: boolean;
 };
@@ -133,6 +137,8 @@ export function AdminDataTable<T, K extends string = string>({
 	onRetry,
 	emptyText,
 	noMatchText,
+	tableTitle,
+	tableActions,
 	withMaximize = true,
 }: AdminDataTableProps<T, K>) {
 	const t = useTranslations("admin");
@@ -197,7 +203,7 @@ export function AdminDataTable<T, K extends string = string>({
 	const rows = visible.slice(firstIndex, firstIndex + pageSize);
 	const pinnedContent = currentPage === 1 && pinnedRows ? pinnedRows(keyword) : null;
 	const hasPinned = Boolean(pinnedContent);
-	const showToolbar = Boolean(searchFields || filters || actions || toolbar || withMaximize);
+	const showToolbar = Boolean(searchFields || filters || actions || toolbar);
 
 	return (
 		<div className={classes.wrapper} data-maximized={isMaximized || undefined}>
@@ -218,26 +224,7 @@ export function AdminDataTable<T, K extends string = string>({
 						)}
 						{filters}
 					</div>
-					<div className={classes.toolbarRight}>
-						{actions ?? toolbar}
-						{withMaximize && (
-							<Tooltip label={isMaximized ? t("minimizeTable") : t("maximizeTable")} withArrow>
-								<ActionIcon
-									variant="default"
-									size={36}
-									radius="sm"
-									aria-label={isMaximized ? t("minimizeTable") : t("maximizeTable")}
-									onClick={() => setIsMaximized((prev) => !prev)}
-								>
-									{isMaximized ? (
-										<IconMinimize size={18} stroke={1.75} />
-									) : (
-										<IconMaximize size={18} stroke={1.75} />
-									)}
-								</ActionIcon>
-							</Tooltip>
-						)}
-					</div>
+					{(actions || toolbar) && <div className={classes.toolbarRight}>{actions ?? toolbar}</div>}
 				</div>
 			)}
 
@@ -256,6 +243,34 @@ export function AdminDataTable<T, K extends string = string>({
 				</div>
 			) : (
 				<div className={classes.tableCard}>
+					{/* Thanh liền ở trên của khung bảng chứa các chức năng trên đối tượng bảng */}
+					{(tableTitle || tableActions || withMaximize) && (
+						<div className={classes.tableHeader}>
+							<div className={classes.tableHeaderLeft}>{tableTitle}</div>
+							<div className={classes.tableHeaderRight}>
+								{tableActions}
+								{withMaximize && (
+									<Tooltip label={isMaximized ? t("minimizeTable") : t("maximizeTable")} withArrow>
+										<ActionIcon
+											variant="subtle"
+											color="gray"
+											size={28}
+											radius="sm"
+											aria-label={isMaximized ? t("minimizeTable") : t("maximizeTable")}
+											onClick={() => setIsMaximized((prev) => !prev)}
+										>
+											{isMaximized ? (
+												<IconMinimize size={16} stroke={1.75} />
+											) : (
+												<IconMaximize size={16} stroke={1.75} />
+											)}
+										</ActionIcon>
+									</Tooltip>
+								)}
+							</div>
+						</div>
+					)}
+
 					{/* Cuộn bên trong khung bảng (cả ngang lẫn dọc) để trang không phải cuộn */}
 					<div className={classes.tableScroll}>
 						<Table
