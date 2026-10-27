@@ -17,6 +17,8 @@ export const API_ENDPOINTS = {
 		COLORS: "/api/admin/colors",
 		COLOR_DETAIL: (id: number) => `/api/admin/colors/${id}`,
 		QUESTIONS: "/api/admin/questions",
+		QUESTION_DETAIL: (id: number) => `/api/admin/questions/${id}`,
+		QUESTION_STATUS: (id: number) => `/api/admin/questions/${id}/status`,
 		RESULTS: "/api/admin/results",
 		EXPORT: "/api/admin/export",
 		SOUND: "/api/admin/sound",

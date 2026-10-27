@@ -30,3 +30,34 @@ export type AdminColorRow = {
 export type AdminColorDetail = AdminColorRow & {
 	created_at: string;
 };
+
+export type AdminQuestionOption = {
+	id_dap_an: number;
+	noi_dung: string;
+	thu_tu: number;
+	id_mau_gen: number;
+	ten_mau: string;
+	ma_hex: string;
+	ten_ma_gen: string;
+};
+
+export type AdminQuestionRow = {
+	id_cau_hoi: number;
+	noi_dung: string;
+	thu_tu: number;
+	dang_bat: boolean;
+	dap_an: AdminQuestionOption[];
+	created_at: string;
+	updated_at: string | null;
+};
+
+export type AdminQuestionDetail = AdminQuestionRow;
+
+export type AdminQuestionBalance = {
+	id_mau_gen: number;
+	ten_mau: string;
+	ma_hex: string;
+	ten_ma_gen: string;
+	so_lan: number;
+	muc_tieu: number;
+};

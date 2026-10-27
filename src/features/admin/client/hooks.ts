@@ -2,15 +2,21 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/constants/query-keys";
-import type { AdminColorRow, AdminStudentRow } from "../types";
+import type { AdminColorRow, AdminQuestionRow, AdminStudentRow } from "../types";
 import {
 	createAdminColorRequest,
+	createAdminQuestionRequest,
 	deleteAdminColorRequest,
+	deleteAdminQuestionRequest,
 	fetchAdminColors,
+	fetchAdminQuestionDetail,
+	fetchAdminQuestions,
 	fetchStudentDetail,
 	fetchStudents,
 	setStudentLockedRequest,
+	toggleAdminQuestionStatusRequest,
 	updateAdminColorRequest,
+	updateAdminQuestionRequest,
 } from "./api";
 
 // Dữ liệu đã prefetch ở page.tsx nên lần đầu không gọi API; sau đó tự làm mới khi quay lại tab
@@ -116,6 +122,90 @@ export function useDeleteAdminColor() {
 		onSettled: () =>
 			Promise.all([
 				queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ADMIN.COLORS }),
+				queryClient.invalidateQueries({ queryKey: QUERY_KEYS.QUIZ.ALL }),
+			]),
+	});
+}
+
+export function useAdminQuestions() {
+	return useQuery({ queryKey: QUERY_KEYS.ADMIN.QUESTIONS, queryFn: fetchAdminQuestions });
+}
+
+export function useAdminQuestionDetail(id: number) {
+	return useQuery({
+		queryKey: QUERY_KEYS.ADMIN.QUESTION_DETAIL(id),
+		queryFn: () => fetchAdminQuestionDetail(id),
+		enabled: id > 0,
+	});
+}
+
+export function useCreateAdminQuestion() {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: createAdminQuestionRequest,
+		onSuccess: () =>
+			Promise.all([
+				queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ADMIN.QUESTIONS }),
+				queryClient.invalidateQueries({ queryKey: QUERY_KEYS.QUIZ.ALL }),
+			]),
+	});
+}
+
+export function useUpdateAdminQuestion() {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: updateAdminQuestionRequest,
+		onSettled: (_data, _error, { id }) =>
+			Promise.all([
+				queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ADMIN.QUESTIONS }),
+				queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ADMIN.QUESTION_DETAIL(id) }),
+				queryClient.invalidateQueries({ queryKey: QUERY_KEYS.QUIZ.ALL }),
+			]),
+	});
+}
+
+export function useToggleAdminQuestionStatus() {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: toggleAdminQuestionStatusRequest,
+		onMutate: async ({ id, dang_bat }) => {
+			await queryClient.cancelQueries({ queryKey: QUERY_KEYS.ADMIN.QUESTIONS });
+			const previous = queryClient.getQueryData<AdminQuestionRow[]>(QUERY_KEYS.ADMIN.QUESTIONS);
+			queryClient.setQueryData<AdminQuestionRow[]>(QUERY_KEYS.ADMIN.QUESTIONS, (rows) =>
+				rows?.map((row) => (row.id_cau_hoi === id ? { ...row, dang_bat } : row))
+			);
+			return { previous };
+		},
+		onError: (_error, _input, context) => {
+			if (context?.previous) queryClient.setQueryData(QUERY_KEYS.ADMIN.QUESTIONS, context.previous);
+		},
+		onSettled: (_data, _error, { id }) =>
+			Promise.all([
+				queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ADMIN.QUESTIONS }),
+				queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ADMIN.QUESTION_DETAIL(id) }),
+				queryClient.invalidateQueries({ queryKey: QUERY_KEYS.QUIZ.ALL }),
+			]),
+	});
+}
+
+export function useDeleteAdminQuestion() {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: deleteAdminQuestionRequest,
+		onMutate: async (id) => {
+			await queryClient.cancelQueries({ queryKey: QUERY_KEYS.ADMIN.QUESTIONS });
+			const previous = queryClient.getQueryData<AdminQuestionRow[]>(QUERY_KEYS.ADMIN.QUESTIONS);
+			queryClient.setQueryData<AdminQuestionRow[]>(QUERY_KEYS.ADMIN.QUESTIONS, (rows) =>
+				rows?.filter((row) => row.id_cau_hoi !== id)
+			);
+			return { previous };
+		},
+		onError: (_error, _id, context) => {
+			if (context?.previous) queryClient.setQueryData(QUERY_KEYS.ADMIN.QUESTIONS, context.previous);
+		},
+		onSettled: () =>
+			Promise.all([
+				queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ADMIN.QUESTIONS }),
 				queryClient.invalidateQueries({ queryKey: QUERY_KEYS.QUIZ.ALL }),
 			]),
 	});

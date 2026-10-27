@@ -4,7 +4,7 @@ import { getActiveQuiz } from "@/features/quiz/server/queries";
 import { getStudentSession } from "@/lib/session";
 
 // Trả bộ đề đang bật cho sinh viên đã đăng nhập (không kèm mã gen/điểm của phương án)
-export async function GET() {
+export async function GET(_request: Request) {
 	try {
 		const session = await getStudentSession();
 		if (!session) {

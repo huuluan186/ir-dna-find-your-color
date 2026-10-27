@@ -17,6 +17,7 @@ export const QUERY_KEYS = {
 		COLORS: ["admin", "colors"],
 		COLOR_DETAIL: (id: number) => ["admin", "colors", id] as const,
 		QUESTIONS: ["admin", "questions"],
+		QUESTION_DETAIL: (id: number) => ["admin", "questions", id] as const,
 		RESULTS: ["admin", "results"],
 		SOUND: ["admin", "sound"],
 	},

@@ -20,3 +20,43 @@ export const updateColorSchema = z.object({
 });
 
 export type UpdateColorInput = z.infer<typeof updateColorSchema>;
+
+// Quản lý câu hỏi trắc nghiệm
+export const questionOptionSchema = z.object({
+	id_dap_an: z.number().optional(),
+	noi_dung: z
+		.string()
+		.trim()
+		.min(1, "Vui lòng nhập nội dung phương án")
+		.max(300, "Tối đa 300 ký tự"),
+	thu_tu: z.number().int().min(1).max(10).default(1),
+	id_mau_gen: z.number().int({ message: "Vui lòng chọn mã gen liên kết" }),
+});
+
+export const saveQuestionSchema = z.object({
+	noi_dung: z.string().trim().min(1, "Vui lòng nhập nội dung câu hỏi").max(500, "Tối đa 500 ký tự"),
+	thu_tu: z.number().int().min(1, "Thứ tự phải lớn hơn 0").default(1),
+	dang_bat: z.boolean().default(true),
+	dap_an: z
+		.array(questionOptionSchema)
+		.min(2, "Câu hỏi phải có ít nhất 2 phương án")
+		.max(6, "Tối đa 6 phương án")
+		.refine(
+			(opts) => {
+				const geneIds = opts.map((o) => o.id_mau_gen);
+				return new Set(geneIds).size === geneIds.length;
+			},
+			{
+				message:
+					"Các phương án trong câu hỏi phải thuộc các mã gen khác nhau (không được trùng mã gen)",
+				path: ["dap_an"],
+			}
+		),
+});
+
+export type SaveQuestionInput = z.infer<typeof saveQuestionSchema>;
+export type QuestionOptionInput = z.infer<typeof questionOptionSchema>;
+
+// PATCH /api/admin/questions/[id]/status: bật hoặc tắt câu hỏi
+export const questionStatusSchema = z.object({ dang_bat: z.boolean() });
+export type QuestionStatusInput = z.infer<typeof questionStatusSchema>;
