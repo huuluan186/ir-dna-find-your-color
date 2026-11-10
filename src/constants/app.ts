@@ -24,8 +24,8 @@ export const STORAGE_KEYS = {
 
 // Luật nhập mã SV và họ tên, bám theo cột bảng sinh_vien
 export const STUDENT_INPUT = {
-	MSSV_PATTERN: /^[0-9]{6,15}$/,
-	MSSV_MAX_LENGTH: 15,
+	MSSV_PATTERN: /^[A-Za-z0-9_-]{3,20}$/,
+	MSSV_MAX_LENGTH: 20,
 	HO_TEN_MAX_LENGTH: 100,
 } as const;
 

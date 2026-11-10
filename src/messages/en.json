@@ -24,7 +24,7 @@
 		"nameLabel": "Full name",
 		"namePlaceholder": "Your full name",
 		"button": "Start exploring",
-		"studentIdError": "Student ID must contain 6–15 digits.",
+		"studentIdError": "Student ID must be 3–20 letters or digits.",
 		"nameError": "Please enter your full name.",
 		"nameTooLongError": "Full name can be at most 100 characters.",
 		"serverError": "System error, please try again later.",

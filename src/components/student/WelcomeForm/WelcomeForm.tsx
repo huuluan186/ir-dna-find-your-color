@@ -136,13 +136,13 @@ export function WelcomeForm() {
 							{...form.getInputProps("mssv")}
 							label={t("studentIdLabel")}
 							placeholder={t("studentIdPlaceholder")}
-							inputMode="numeric"
+							autoCapitalize="characters"
 							autoComplete="off"
 							maxLength={STUDENT_INPUT.MSSV_MAX_LENGTH}
 							required
 							autoFocus={goingBack}
 							onChange={(event) =>
-								form.setFieldValue("mssv", event.currentTarget.value.replace(/D/g, ""))
+								form.setFieldValue("mssv", event.currentTarget.value.toUpperCase())
 							}
 							onFocus={() => form.clearFieldError("mssv")}
 						/>
