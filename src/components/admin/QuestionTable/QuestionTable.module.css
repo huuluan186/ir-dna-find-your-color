@@ -34,3 +34,20 @@
 	font-family: var(--mantine-font-family-monospace);
 	font-size: 0.875rem;
 }
+
+.filters {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+}
+
+.filterSelect {
+	width: 170px;
+
+	@media (max-width: 48em) {
+		flex: 1;
+		width: 100%;
+		min-width: 0;
+	}
+}
