@@ -1,0 +1,75 @@
+.container {
+	display: flex;
+	flex-direction: column;
+	gap: 18px;
+}
+
+.rankingList {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.rankCard {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding: 10px 14px;
+	border-radius: 8px;
+	border: 1px solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-4));
+	background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-7));
+
+	&[data-top] {
+		border-color: light-dark(var(--mantine-color-gray-4), var(--mantine-color-dark-3));
+		background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-6));
+	}
+}
+
+.rankTop {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+.geneInfo {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	min-width: 0;
+}
+
+.swatch {
+	width: 12px;
+	height: 12px;
+	border-radius: 3px;
+	flex-shrink: 0;
+	border: 1px solid rgb(0 0 0 / 10%);
+}
+
+.geneTitle {
+	font-size: 0.875rem;
+	font-weight: 600;
+}
+
+.scoreText {
+	font-family: var(--mantine-font-family-monospace);
+	font-size: 0.875rem;
+	font-weight: 700;
+	font-variant-numeric: tabular-nums;
+}
+
+.progressTrack {
+	width: 100%;
+	height: 6px;
+	border-radius: 999px;
+	background-color: light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-4));
+	overflow: hidden;
+}
+
+.progressFill {
+	height: 100%;
+	border-radius: 999px;
+	transition: width 250ms ease;
+}
