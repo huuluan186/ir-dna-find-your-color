@@ -351,3 +351,16 @@ export async function deleteAdminQuestion(id: number): Promise<{ id_cau_hoi: num
 
 	return data;
 }
+
+// Xoá một bản ghi kết quả làm bài (dùng khi dọn dữ liệu test). Trả null nếu không tìm thấy.
+export async function deleteAdminResult(id: number): Promise<{ id_ket_qua: number } | null> {
+	const { data, error } = await getDb()
+		.from("ket_qua")
+		.delete()
+		.eq("id_ket_qua", id)
+		.select("id_ket_qua")
+		.maybeSingle();
+
+	if (error) throw error;
+	return data;
+}

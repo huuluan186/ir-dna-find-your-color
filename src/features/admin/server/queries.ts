@@ -1,11 +1,14 @@
 import "server-only";
 import { getDb } from "@/lib/db";
+import type { ScoreKind } from "@/lib/scoring";
 import type {
 	AdminColorDetail,
 	AdminColorRow,
 	AdminQuestionDetail,
 	AdminQuestionOption,
 	AdminQuestionRow,
+	AdminResultRankingItem,
+	AdminResultRow,
 	AdminStudentDetail,
 	AdminStudentRow,
 } from "../types";
@@ -237,4 +240,87 @@ export async function getAdminQuestionDetail(id: number): Promise<AdminQuestionD
 		created_at: data.created_at,
 		updated_at: data.updated_at,
 	};
+}
+
+type RawStudentRef = {
+	ho_ten: string;
+	bi_khoa: boolean;
+};
+
+const VALID_KINDS = new Set<ScoreKind>(["don", "ket_hop", "dong_hang", "da_sac"]);
+
+function parseRanking(raw: unknown): AdminResultRankingItem[] {
+	if (!Array.isArray(raw)) return [];
+	return raw.flatMap((item) => {
+		if (!item || typeof item !== "object") return [];
+		const obj = item as Record<string, unknown>;
+		const id_mau_gen = Number(obj.id_mau_gen);
+		const diem = Number(obj.diem);
+		const ten_mau = typeof obj.ten_mau === "string" ? obj.ten_mau : "";
+		if (!Number.isFinite(id_mau_gen) || !Number.isFinite(diem)) return [];
+		return [{ id_mau_gen, ten_mau, diem }];
+	});
+}
+
+function parseNumberArray(raw: unknown): number[] {
+	if (!Array.isArray(raw)) return [];
+	return raw.map(Number).filter(Number.isFinite);
+}
+
+export async function listAdminResults(): Promise<AdminResultRow[]> {
+	const { data, error } = await getDb()
+		.from("ket_qua")
+		.select(
+			`
+			id_ket_qua,
+			mssv,
+			dap_an_da_chon,
+			bang_xep_hang,
+			top_mau_gen_ids,
+			loai_ket_qua,
+			created_at,
+			sinh_vien (
+				ho_ten,
+				bi_khoa
+			)
+		`
+		)
+		.order("created_at", { ascending: false })
+		.order("id_ket_qua", { ascending: false });
+
+	if (error) throw error;
+
+	const totalByMssv = new Map<string, number>();
+	for (const row of data) {
+		totalByMssv.set(row.mssv, (totalByMssv.get(row.mssv) ?? 0) + 1);
+	}
+
+	const seenByMssv = new Map<string, number>();
+
+	return data.map((row) => {
+		const rawSv = row.sinh_vien as unknown as RawStudentRef | RawStudentRef[] | null;
+		const sv = Array.isArray(rawSv) ? rawSv[0] : rawSv;
+
+		const seen = seenByMssv.get(row.mssv) ?? 0;
+		seenByMssv.set(row.mssv, seen + 1);
+		const total = totalByMssv.get(row.mssv) ?? 1;
+
+		const kind = VALID_KINDS.has(row.loai_ket_qua as ScoreKind)
+			? (row.loai_ket_qua as ScoreKind)
+			: "don";
+
+		return {
+			id_ket_qua: row.id_ket_qua,
+			mssv: row.mssv,
+			ho_ten: sv?.ho_ten ?? "",
+			bi_khoa: sv?.bi_khoa ?? false,
+			loai_ket_qua: kind,
+			top_mau_gen_ids: parseNumberArray(row.top_mau_gen_ids),
+			bang_xep_hang: parseRanking(row.bang_xep_hang),
+			dap_an_da_chon: parseNumberArray(row.dap_an_da_chon),
+			created_at: row.created_at,
+			lan_thu: total - seen,
+			la_moi_nhat: seen === 0,
+		};
+	});
 }

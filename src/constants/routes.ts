@@ -20,5 +20,8 @@ export const ROUTES = {
 // Thêm trang mới: tạo thư mục, khai báo URL trong ROUTES, rồi thêm một cặp [URL, thư mục] vào đây.
 export const ROUTE_TO_PAGE_DIR: [url: string, pageDir: string][] = [
 	[ROUTES.ADMIN.SINH_VIEN, "/admin/sinh-vien"],
+	[ROUTES.ADMIN.MAU_GEN, "/admin/mau-gen"],
+	[ROUTES.ADMIN.CAU_HOI, "/admin/cau-hoi"],
+	[ROUTES.ADMIN.KET_QUA, "/admin/ket-qua"],
 	[ROUTES.ADMIN.AM_THANH, "/admin/am-thanh"],
 ];
