@@ -20,6 +20,7 @@ export const API_ENDPOINTS = {
 		QUESTION_DETAIL: (id: number) => `/api/admin/questions/${id}`,
 		QUESTION_STATUS: (id: number) => `/api/admin/questions/${id}/status`,
 		RESULTS: "/api/admin/results",
+		RESULT_DETAIL: (id: number) => `/api/admin/results/${id}`,
 		EXPORT: "/api/admin/export",
 		SOUND: "/api/admin/sound",
 		SOUND_UPLOADS: "/api/admin/sound/uploads",

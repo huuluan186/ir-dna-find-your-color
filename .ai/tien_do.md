@@ -1,6 +1,6 @@
 # TIẾN ĐỘ & BÀN GIAO - IR DNA – FIND YOUR COLOR
 
-File này để một AI (hoặc người) mới vào dự án nắm nhanh: dự án là gì, đã làm tới đâu, việc gì tiếp theo. **Cập nhật file này mỗi khi xong một bước.** Cập nhật lần cuối: 17/10/2026.
+File này để một AI (hoặc người) mới vào dự án nắm nhanh: dự án là gì, đã làm tới đâu, việc gì tiếp theo. **Cập nhật file này mỗi khi xong một bước.** Cập nhật lần cuối: 10/11/2026.
 
 Đọc theo thứ tự: `AGENTS.md` → `.ai/rules/quy_tac_code.md` → file này → `.ai/system/kien_truc.md` → `.ai/system/thiet_ke_csdl.md`.
 
@@ -145,6 +145,12 @@ Quản lý câu hỏi `/admin/cau-hoi` (27/10/2026):
 - Thao tác đầy đủ: xem chi tiết (`QuestionDetail`), thêm mới / chỉnh sửa câu hỏi (`QuestionEditor`), bật/tắt nhanh trạng thái câu hỏi, xoá mềm câu hỏi và các phương án liên quan kèm modal xác nhận.
 - Widget cân bằng mã gen `QuestionBalance` (`src/components/admin/QuestionBalance/`): thống kê trực quan tần suất xuất hiện của 6 mã gen trong các câu hỏi đang bật (chuẩn: 8 lần/gen cho bộ 12 câu x 4 phương án = 48 phương án / 6 gen), cảnh báo lệch tỷ lệ và hiển thị thanh tiến độ trực quan.
 - Backend & API: `GET /api/admin/questions`, `POST /api/admin/questions`, `GET /api/admin/questions/[id]`, `PATCH /api/admin/questions/[id]`, `PATCH /api/admin/questions/[id]/status`, `DELETE /api/admin/questions/[id]`, queries `listAdminQuestions`, `getAdminQuestionDetail`, mutations `createAdminQuestion`, `updateAdminQuestion`, `toggleAdminQuestionStatus`, `deleteAdminQuestion`, validation `saveQuestionSchema` chặn trùng mã gen trong cùng 1 câu hỏi, hooks TanStack Query tương ứng.
-- Việc tiếp theo: hoàn thiện các menu quản trị còn lại (`/admin/ket-qua` + xuất CSV, `/admin/qr`).
+
+Thống kê & Quản lý kết quả `/admin/ket-qua` (10/11/2026):
+- Tạo trang `/admin/ket-qua` (`src/app/admin/(dashboard)/ket-qua/page.tsx`), mở menu sidebar (`ADMIN_NAV.navResults` -> `ready: true`).
+- Widget thống kê `ResultStats` (`src/components/admin/ResultStats/`): hiển thị tổng số sinh viên tham gia, tổng lượt làm, công tắc chuyển giữa kết quả gần nhất của mỗi sinh viên (`latest`) và tất cả lượt làm (`all`), thanh phân bổ 6 màu tổng hợp, lưới 6 ô mã gen (responsive 2/3/6 cột) và bộ đếm 4 loại kết quả (`don`, `ket_hop`, `dong_hang`, `da_sac`). Hỗ trợ bấm trực tiếp vào từng ô màu hoặc loại kết quả để lọc bảng.
+- Bảng kết quả `ResultTable` (`src/components/admin/ResultTable/`) kế thừa `AdminDataTable`: hiển thị mã SV, họ tên (kèm nhãn lần làm), mã gen nổi bật, loại kết quả, bản đồ điểm 6 gen thu gọn, thời gian nộp. Hỗ trợ tìm kiếm không dấu, lọc theo mã gen và loại kết quả, xem chi tiết trong modal (`ResultDetail`), xoá kết quả thử nghiệm và xuất file CSV chuẩn UTF-8 BOM (`GET /api/admin/export`).
+- Backend & API: `GET /api/admin/results`, `DELETE /api/admin/results/[id]`, `GET /api/admin/export`, query `listAdminResults`, mutation `deleteAdminResult`, hook `useAdminResults` (`refetchInterval: 15_000`) và `useDeleteAdminResult`.
+- Việc tiếp theo: hoàn thiện trang tạo & in mã QR (`/admin/qr`) và chạy checklist triển lãm.
 
 

@@ -1,5 +1,7 @@
 // Dữ liệu trả cho trang quản trị. Dùng chung cho server (truy vấn) và client (hiển thị).
 
+import type { ScoreKind } from "@/lib/scoring";
+
 export type AdminStudentRow = {
 	mssv: string;
 	ho_ten: string;
@@ -60,4 +62,24 @@ export type AdminQuestionBalance = {
 	ten_ma_gen: string;
 	so_lan: number;
 	muc_tieu: number;
+};
+
+export type AdminResultRankingItem = {
+	id_mau_gen: number;
+	ten_mau: string;
+	diem: number;
+};
+
+export type AdminResultRow = {
+	id_ket_qua: number;
+	mssv: string;
+	ho_ten: string;
+	bi_khoa: boolean;
+	loai_ket_qua: ScoreKind;
+	top_mau_gen_ids: number[];
+	bang_xep_hang: AdminResultRankingItem[];
+	dap_an_da_chon: number[];
+	created_at: string;
+	lan_thu: number;
+	la_moi_nhat: boolean;
 };

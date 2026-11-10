@@ -61,7 +61,7 @@ export const ADMIN_NAV: AdminNavGroup[] = [
 				labelKey: "navResults",
 				titleKey: "titleResults",
 				Icon: IconChartPie,
-				ready: false,
+				ready: true,
 			},
 			{
 				href: ROUTES.ADMIN.QR,

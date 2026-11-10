@@ -2,15 +2,17 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/constants/query-keys";
-import type { AdminColorRow, AdminQuestionRow, AdminStudentRow } from "../types";
+import type { AdminColorRow, AdminQuestionRow, AdminResultRow, AdminStudentRow } from "../types";
 import {
 	createAdminColorRequest,
 	createAdminQuestionRequest,
 	deleteAdminColorRequest,
 	deleteAdminQuestionRequest,
+	deleteAdminResultRequest,
 	fetchAdminColors,
 	fetchAdminQuestionDetail,
 	fetchAdminQuestions,
+	fetchAdminResults,
 	fetchStudentDetail,
 	fetchStudents,
 	setStudentLockedRequest,
@@ -207,6 +209,38 @@ export function useDeleteAdminQuestion() {
 			Promise.all([
 				queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ADMIN.QUESTIONS }),
 				queryClient.invalidateQueries({ queryKey: QUERY_KEYS.QUIZ.ALL }),
+			]),
+	});
+}
+
+// Kết quả làm bài tại triển lãm: tự làm mới mỗi 15 giây để ban tổ chức theo dõi trực tiếp
+export function useAdminResults() {
+	return useQuery({
+		queryKey: QUERY_KEYS.ADMIN.RESULTS,
+		queryFn: fetchAdminResults,
+		refetchInterval: 15_000,
+	});
+}
+
+export function useDeleteAdminResult() {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: deleteAdminResultRequest,
+		onMutate: async (id) => {
+			await queryClient.cancelQueries({ queryKey: QUERY_KEYS.ADMIN.RESULTS });
+			const previous = queryClient.getQueryData<AdminResultRow[]>(QUERY_KEYS.ADMIN.RESULTS);
+			queryClient.setQueryData<AdminResultRow[]>(QUERY_KEYS.ADMIN.RESULTS, (rows) =>
+				rows?.filter((row) => row.id_ket_qua !== id)
+			);
+			return { previous };
+		},
+		onError: (_error, _id, context) => {
+			if (context?.previous) queryClient.setQueryData(QUERY_KEYS.ADMIN.RESULTS, context.previous);
+		},
+		onSettled: () =>
+			Promise.all([
+				queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ADMIN.RESULTS }),
+				queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ADMIN.STUDENTS }),
 			]),
 	});
 }

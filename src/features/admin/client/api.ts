@@ -6,6 +6,7 @@ import type {
 	AdminColorRow,
 	AdminQuestionDetail,
 	AdminQuestionRow,
+	AdminResultRow,
 	AdminStudentDetail,
 	AdminStudentRow,
 } from "../types";
@@ -57,3 +58,10 @@ export const toggleAdminQuestionStatusRequest = ({
 
 export const deleteAdminQuestionRequest = (id: number) =>
 	http.delete<{ ok: boolean; id_cau_hoi: number }>(API_ENDPOINTS.ADMIN.QUESTION_DETAIL(id));
+
+export const fetchAdminResults = () => http.get<AdminResultRow[]>(API_ENDPOINTS.ADMIN.RESULTS);
+
+export const deleteAdminResultRequest = (id: number) =>
+	http.delete<{ ok: boolean; id_ket_qua: number; message?: string }>(
+		API_ENDPOINTS.ADMIN.RESULT_DETAIL(id)
+	);
