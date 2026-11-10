@@ -4,13 +4,13 @@ import { getActiveQuiz } from "@/features/quiz/server/queries";
 import { getStudentSession } from "@/lib/session";
 
 // Trả bộ đề đang bật cho sinh viên đã đăng nhập (không kèm mã gen/điểm của phương án)
-export async function GET(_request: Request) {
-	try {
-		const session = await getStudentSession();
-		if (!session) {
-			return NextResponse.json({ message: "Chưa đăng nhập" }, { status: 401 });
-		}
+export async function GET() {
+	const session = await getStudentSession();
+	if (!session) {
+		return NextResponse.json({ message: "Chưa đăng nhập" }, { status: 401 });
+	}
 
+	try {
 		const student = await findStudent(session.mssv);
 		if (!student || student.bi_khoa) {
 			return NextResponse.json({ message: "Tài khoản không hợp lệ" }, { status: 403 });

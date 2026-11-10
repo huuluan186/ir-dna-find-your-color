@@ -6,9 +6,13 @@ import { getLatestQuizResult } from "@/features/quiz/server/queries";
 import { getStudentSession } from "@/lib/session";
 
 export async function GET() {
+	const session = await getStudentSession();
+	if (!session) {
+		return NextResponse.json({ message: "Chưa đăng nhập" }, { status: 401 });
+	}
+
 	try {
-		const session = await getStudentSession();
-		const student = session ? await findStudent(session.mssv) : null;
+		const student = await findStudent(session.mssv);
 		if (!student) {
 			return NextResponse.json({ message: "Chưa đăng nhập" }, { status: 401 });
 		}
@@ -31,15 +35,12 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-	try {
-		const session = await getStudentSession();
-		if (!session) {
-			return NextResponse.json(
-				{ message: "Chưa đăng nhập", code: "unauthorized" },
-				{ status: 401 }
-			);
-		}
+	const session = await getStudentSession();
+	if (!session) {
+		return NextResponse.json({ message: "Chưa đăng nhập", code: "unauthorized" }, { status: 401 });
+	}
 
+	try {
 		const body = await request.json().catch(() => null);
 		const parsed = submitQuizSchema.safeParse(body);
 		if (!parsed.success) {
