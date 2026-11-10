@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { STUDENT_INPUT } from "@/constants/app";
 
-// Luật bám theo cột bảng sinh_vien: mssv CHECK ^[0-9]{6,15}$, ho_ten NOT NULL.
+// Luật bám theo cột bảng sinh_vien: mssv CHECK ^[A-Za-z0-9_-]{3,20}$, ho_ten NOT NULL.
 // Bước 1 chỉ gửi mssv; ho_ten chỉ gửi ở bước 2 khi mã SV chưa có trong CSDL.
 // Message là mã lỗi; giao diện dịch sang chữ hiển thị (src/messages).
 
@@ -18,7 +18,7 @@ function normalizeName(value: string) {
 }
 
 export const studentLoginSchema = z.object({
-	mssv: z.string().trim().regex(STUDENT_INPUT.MSSV_PATTERN, "mssv_invalid"),
+	mssv: z.string().trim().toUpperCase().regex(STUDENT_INPUT.MSSV_PATTERN, "mssv_invalid"),
 	ho_ten: z
 		.string()
 		.trim()

@@ -24,7 +24,7 @@
 		"nameLabel": "Họ và tên",
 		"namePlaceholder": "Nhập họ tên của bạn",
 		"button": "Bắt đầu khám phá",
-		"studentIdError": "Mã sinh viên gồm 6–15 chữ số.",
+		"studentIdError": "Mã sinh viên gồm 3–20 ký tự (chữ và số).",
 		"nameError": "Vui lòng nhập họ và tên.",
 		"nameTooLongError": "Họ và tên tối đa 100 ký tự.",
 		"serverError": "Lỗi hệ thống, vui lòng thử lại sau.",

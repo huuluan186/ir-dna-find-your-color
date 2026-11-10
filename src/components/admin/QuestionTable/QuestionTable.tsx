@@ -177,7 +177,7 @@ export function QuestionTable() {
 					...q.dap_an.flatMap((opt) => [opt.noi_dung, opt.ten_mau, opt.ten_ma_gen]),
 				]}
 				filters={
-					<Group gap={8} wrap="nowrap">
+					<div className={classes.filters}>
 						<Select
 							data={statusFilterOptions}
 							value={statusFilter ?? ""}
@@ -186,7 +186,7 @@ export function QuestionTable() {
 							aria-label={t("filterQuestionStatus")}
 							title={t("filterQuestionStatus")}
 							leftSection={<IconFilter size={14} />}
-							w={170}
+							className={classes.filterSelect}
 							size="sm"
 							allowDeselect={false}
 							comboboxProps={{ withinPortal: true }}
@@ -222,12 +222,12 @@ export function QuestionTable() {
 									</Group>
 								);
 							}}
-							w={170}
+							className={classes.filterSelect}
 							size="sm"
 							allowDeselect={false}
 							comboboxProps={{ withinPortal: true }}
 						/>
-					</Group>
+					</div>
 				}
 				actions={
 					<Button

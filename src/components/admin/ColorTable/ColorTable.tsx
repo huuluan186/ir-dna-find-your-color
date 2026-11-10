@@ -136,7 +136,7 @@ export function ColorTable() {
 						value={selectedColorFilter ?? ""}
 						onChange={(val) => setSelectedColorFilter(val || null)}
 						placeholder={t("filterGenePlaceholder")}
-						w={180}
+						className={classes.filterSelect}
 						size="sm"
 					/>
 				}

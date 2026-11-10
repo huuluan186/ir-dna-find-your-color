@@ -126,7 +126,7 @@ Mỗi đáp án phải có đúng một dòng; ràng buộc UNIQUE bảo đảm 
 ### 5. `sinh_vien`
 | Cột | Kiểu | Ràng buộc | Mô tả |
 | :--- | :--- | :--- | :--- |
-| `mssv` | `TEXT` | PK, CHECK `^[0-9]{6,15}$` | Nhập trên điện thoại bằng bàn phím số. CSDL chỉ chặn ký tự không phải số; định dạng chính xác do server kiểm tra theo `cai_dat.dinh_dang_mssv` |
+| `mssv` | `TEXT` | PK, CHECK `^[A-Za-z0-9_-]{3,20}$` | Mã sinh viên gồm 3–20 ký tự (chữ hoặc số). Migration `0006` mở rộng cho phép chữ cái |
 | `ho_ten` | `TEXT` | NOT NULL | Tự viết hoa chữ đầu |
 | `bi_khoa` | `BOOLEAN` | NOT NULL DEFAULT false | Admin khoá tài khoản (migration `0005`): không đăng nhập được, vào `/quiz` bị đưa về màn chào. Nộp bài (`api/quiz/submit`, chưa làm) cũng phải từ chối |
 | `khoa_luc` | `TIMESTAMPTZ` | NULL | Thời điểm khoá gần nhất, mở khoá thì về null |

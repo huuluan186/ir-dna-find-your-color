@@ -77,3 +77,20 @@
 	flex-wrap: wrap;
 	gap: 8px;
 }
+
+.filterSelect {
+	width: 180px;
+}
+
+@media (max-width: 48em) {
+	.filtersGroup {
+		width: 100%;
+		flex-wrap: nowrap;
+	}
+
+	.filterSelect {
+		flex: 1;
+		width: 100%;
+		min-width: 0;
+	}
+}

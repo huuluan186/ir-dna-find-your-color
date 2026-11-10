@@ -25,3 +25,11 @@
 	font-size: 0.875rem;
 	white-space: nowrap;
 }
+
+.filterSelect {
+	width: 180px;
+
+	@media (max-width: 48em) {
+		width: 100%;
+	}
+}

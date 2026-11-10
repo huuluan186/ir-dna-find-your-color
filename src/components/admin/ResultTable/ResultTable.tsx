@@ -311,7 +311,7 @@ export function ResultTable() {
 									</Group>
 								);
 							}}
-							w={170}
+							className={classes.filterSelect}
 							size="sm"
 							allowDeselect={false}
 							comboboxProps={{ withinPortal: true }}
@@ -324,7 +324,7 @@ export function ResultTable() {
 							aria-label={t("filterByKind")}
 							title={t("filterByKind")}
 							leftSection={<IconFilter size={14} />}
-							w={195}
+							className={classes.filterSelect}
 							size="sm"
 							allowDeselect={false}
 							comboboxProps={{ withinPortal: true }}
