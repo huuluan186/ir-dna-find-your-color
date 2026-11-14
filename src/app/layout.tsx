@@ -34,7 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 			<head>
 				<ColorSchemeScript defaultColorScheme="light" />
 			</head>
-			<body>
+			<body suppressHydrationWarning>
 				<Providers>{children}</Providers>
 				<SpeedInsights />
 			</body>
