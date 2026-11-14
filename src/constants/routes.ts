@@ -23,5 +23,6 @@ export const ROUTE_TO_PAGE_DIR: [url: string, pageDir: string][] = [
 	[ROUTES.ADMIN.MAU_GEN, "/admin/mau-gen"],
 	[ROUTES.ADMIN.CAU_HOI, "/admin/cau-hoi"],
 	[ROUTES.ADMIN.KET_QUA, "/admin/ket-qua"],
+	[ROUTES.ADMIN.QR, "/admin/qr"],
 	[ROUTES.ADMIN.AM_THANH, "/admin/am-thanh"],
 ];

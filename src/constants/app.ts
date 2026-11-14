@@ -22,6 +22,18 @@ export const STORAGE_KEYS = {
 	MUTED: "ir-dna-muted",
 } as const;
 
+// Cấu hình mặc định cho trang tạo & in mã QR trạm triển lãm
+export const QR_DEFAULTS = {
+	FALLBACK_URL: process.env.NEXT_PUBLIC_APP_URL || "https://ir-dna-find-your-color.vercel.app",
+	EXPORT_SIZES: [512, 1024, 2048] as const,
+	DEFAULT_EXPORT_SIZE: 1024,
+	PREVIEW_SIZE: 220,
+	DEFAULT_FG_COLOR: "#111111",
+	DNA_FG_COLOR: "#1E4FA3",
+	BG_COLOR: "#FFFFFF",
+	FILE_NAME_PREFIX: "ir-dna-tram-2-qr",
+} as const;
+
 // Luật nhập mã SV và họ tên, bám theo cột bảng sinh_vien
 export const STUDENT_INPUT = {
 	MSSV_PATTERN: /^[A-Za-z0-9_-]{3,20}$/,

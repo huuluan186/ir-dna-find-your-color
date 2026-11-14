@@ -44,6 +44,7 @@ export { QuestionBalance } from "./QuestionBalance";
 export { QuestionDetail } from "./QuestionDetail";
 export { QuestionEditor } from "./QuestionEditor";
 export { QuestionTable } from "./QuestionTable";
+export { QrPanel } from "./QrPanel";
 export { ResultDetail } from "./ResultDetail";
 export { ResultStats, type ResultScope } from "./ResultStats";
 export { ResultTable } from "./ResultTable";
