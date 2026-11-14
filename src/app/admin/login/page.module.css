@@ -1,7 +1,9 @@
 .page {
-	display: grid;
-	place-items: center;
-	min-height: 100dvh;
-	padding: 24px 16px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100dvh;
+	overflow: hidden;
+	padding: clamp(12px, 3dvh, 24px) 16px;
 	background: light-dark(#fbfbfa, #111214);
 }

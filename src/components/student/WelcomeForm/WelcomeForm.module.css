@@ -1,8 +1,9 @@
 .form {
 	width: 100%;
-	padding: clamp(22px, 3vw, 34px);
+	overflow: hidden;
+	padding: clamp(16px, 2.8dvh, 32px) clamp(18px, 3vw, 32px);
 	border: 1px solid light-dark(rgb(255 255 255 / 86%), rgb(255 255 255 / 11%));
-	border-radius: 28px;
+	border-radius: 24px;
 	background: light-dark(rgb(255 255 255 / 88%), rgb(18 27 45 / 88%));
 	box-shadow:
 		0 28px 80px rgb(21 45 91 / 12%),
@@ -31,9 +32,9 @@
 	box-shadow: 0 9px 22px rgb(30 79 163 / 20%);
 }
 
-@media (min-width: 48em) and (max-height: 680px) {
+@media (max-height: 640px) {
 	.form {
-		padding: 20px 24px;
+		padding: 16px 18px;
 	}
 
 	.form > :global(.mantine-Stack-root) {
@@ -41,14 +42,7 @@
 	}
 
 	.submitButton {
-		min-height: 46px;
-	}
-}
-
-@media (max-width: 48em) {
-	.form {
-		padding: 22px 18px;
-		border-radius: 22px;
+		min-height: 44px;
 	}
 }
 
