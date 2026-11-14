@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
 	// Luật cho AI nằm ở .ai/rules/quy_tac_code.md, không để `next dev` tự chèn vào AGENTS.md
 	agentRules: false,
 	experimental: {
+		agentUpgrade: "security",
 		// Tắt bộ nhớ đệm trên đĩa của Turbopack khi dev: từng gặp dev server chạy code cũ sau khi sửa file.
 		// Khởi động chậm hơn vài giây nhưng Ctrl+C rồi `npm run dev` là sạch. Build vẫn giữ cache.
 		turbopackFileSystemCacheForDev: false,
