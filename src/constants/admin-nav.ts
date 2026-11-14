@@ -68,7 +68,7 @@ export const ADMIN_NAV: AdminNavGroup[] = [
 				labelKey: "navQr",
 				titleKey: "titleQr",
 				Icon: IconQrcode,
-				ready: false,
+				ready: true,
 			},
 		],
 	},

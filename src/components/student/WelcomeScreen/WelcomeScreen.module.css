@@ -1,13 +1,13 @@
 .screen {
+	flex: 1;
+	min-height: 0;
 	width: 100%;
-	min-height: calc(100dvh - 132px);
 	display: grid;
-	grid-template-columns: minmax(0, 1.1fr) minmax(340px, 0.9fr);
+	grid-template-columns: minmax(0, 1.1fr) minmax(320px, 440px);
 	grid-template-rows: auto minmax(0, 1fr);
 	align-items: center;
-	column-gap: clamp(48px, 9vw, 128px);
-	row-gap: 18px;
-	padding: 18px 0;
+	column-gap: clamp(36px, 8vw, 120px);
+	row-gap: clamp(8px, 2dvh, 18px);
 }
 
 .intro {
@@ -17,13 +17,16 @@
 .identity {
 	grid-column: 1;
 	grid-row: 1;
-	align-self: start;
+	align-self: center;
+	min-height: 42px;
+	padding-right: 140px;
 }
 
 .brandMark {
 	position: relative;
-	width: 36px;
-	height: 36px;
+	width: 34px;
+	height: 34px;
+	flex-shrink: 0;
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
 	grid-template-rows: repeat(2, 1fr);
@@ -49,6 +52,7 @@
 	font-size: 1rem;
 	font-weight: 800;
 	letter-spacing: -0.04em;
+	line-height: 1.15;
 }
 
 .station {
@@ -63,28 +67,7 @@
 	grid-column: 1;
 	grid-row: 2;
 	align-self: center;
-	padding-top: 0;
-}
-
-@media (min-width: 48em) and (max-height: 680px) {
-	.screen {
-		min-height: 0;
-		flex: 1;
-		row-gap: 12px;
-		padding: 8px 0;
-	}
-
-	.hero {
-		gap: 10px;
-	}
-
-	.title {
-		font-size: clamp(3rem, 6vw, 4.5rem);
-	}
-
-	.description {
-		line-height: 1.5;
-	}
+	gap: clamp(8px, 1.8dvh, 18px);
 }
 
 .eyebrow {
@@ -96,7 +79,7 @@
 
 .title {
 	max-width: 10ch;
-	font-size: clamp(3.8rem, 7vw, 6.5rem);
+	font-size: clamp(2.6rem, min(6.8vw, 9.2dvh), 6.2rem);
 	line-height: 0.98;
 	letter-spacing: -0.075em;
 }
@@ -108,86 +91,88 @@
 .description {
 	max-width: 32ch;
 	color: var(--mantine-color-dimmed);
-	font-size: clamp(1rem, 1.5vw, 1.125rem);
-	line-height: 1.7;
-}
-
-.genes {
-	margin-top: 4px;
-}
-
-.geneDot {
-	width: 13px;
-	height: 13px;
-	display: inline-block;
-	border: 1px solid rgb(0 0 0 / 8%);
-	border-radius: 50%;
-	box-shadow: 0 0 0 4px light-dark(rgb(255 255 255 / 62%), rgb(255 255 255 / 8%));
-}
-
-.duration {
-	margin-left: 9px;
-	color: var(--mantine-color-dimmed);
-	font-size: 0.8125rem;
+	font-size: clamp(0.9375rem, min(1.4vw, 2.2dvh), 1.125rem);
+	line-height: 1.6;
 }
 
 .formColumn {
 	grid-column: 2;
 	grid-row: 2;
 	align-self: center;
+	width: 100%;
 }
 
 @media (max-width: 62em) {
 	.screen {
-		column-gap: 36px;
-		grid-template-columns: minmax(0, 1fr) minmax(310px, 0.88fr);
-	}
-
-	.title {
-		font-size: clamp(3.4rem, 7vw, 5rem);
+		column-gap: 32px;
+		grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
 	}
 }
 
 @media (max-width: 48em) {
 	.screen {
-		min-height: auto;
+		max-width: 440px;
+		margin: 0 auto;
 		display: flex;
 		flex-direction: column;
 		align-items: stretch;
-		gap: 30px;
-		padding: 20px 0 12px;
-	}
-
-	.intro {
-		display: contents;
+		gap: 0;
 	}
 
 	.identity {
 		order: 0;
+		flex: none;
 	}
 
+	/* Đẩy cụm tiêu đề + form vào chính giữa khoảng trống còn lại của màn hình */
 	.hero {
 		order: 1;
-		gap: 14px;
-		padding-top: 0;
+		margin-top: auto;
+		margin-bottom: clamp(12px, 2.4dvh, 24px);
+		gap: clamp(6px, 1.4dvh, 12px);
 	}
 
 	.title {
 		max-width: 11ch;
-		font-size: clamp(3.2rem, 14vw, 4.5rem);
+		font-size: clamp(2rem, min(11vw, 5.6dvh), 3.6rem);
 	}
 
 	.description {
-		max-width: 31ch;
+		max-width: 32ch;
+		font-size: clamp(0.875rem, 2dvh, 1rem);
+		line-height: 1.45;
 	}
 
 	.formColumn {
 		order: 2;
+		margin-bottom: auto;
 	}
 }
 
-@media (max-width: 22.5em) {
-	.title {
-		font-size: 2.85rem;
+/* Khi chiều cao màn hình rất thấp (màn ngang hoặc mở bàn phím ảo trên điện thoại):
+   ẩn bớt phần giới thiệu để form đăng nhập luôn nằm trọn ở chính giữa, không bao giờ sinh thanh cuộn */
+@media (max-width: 48em) and (max-height: 540px) {
+	.hero {
+		display: none;
+	}
+
+	.formColumn {
+		margin-top: auto;
+		margin-bottom: auto;
+	}
+}
+
+@media (min-width: 48em) and (max-height: 460px) {
+	.identity {
+		display: none;
+	}
+
+	.screen {
+		grid-template-rows: minmax(0, 1fr);
+	}
+
+	.hero,
+	.formColumn {
+		grid-row: 1;
 	}
 }

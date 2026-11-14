@@ -1,14 +1,14 @@
 .card {
 	width: 100%;
 	max-width: 400px;
-	padding: 32px;
+	padding: clamp(20px, 4dvh, 32px) clamp(18px, 4vw, 32px);
 	border: 1px solid light-dark(#eaeaea, rgb(255 255 255 / 10%));
 	border-radius: 12px;
 	background: var(--mantine-color-body);
 }
 
 .title {
-	font-size: 1.5rem;
+	font-size: clamp(1.25rem, 3.5dvh, 1.5rem);
 	letter-spacing: -0.02em;
 }
 

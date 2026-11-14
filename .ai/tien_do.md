@@ -1,6 +1,6 @@
 # TIẾN ĐỘ & BÀN GIAO - IR DNA – FIND YOUR COLOR
 
-File này để một AI (hoặc người) mới vào dự án nắm nhanh: dự án là gì, đã làm tới đâu, việc gì tiếp theo. **Cập nhật file này mỗi khi xong một bước.** Cập nhật lần cuối: 10/11/2026.
+File này để một AI (hoặc người) mới vào dự án nắm nhanh: dự án là gì, đã làm tới đâu, việc gì tiếp theo. **Cập nhật file này mỗi khi xong một bước.** Cập nhật lần cuối: 14/11/2026.
 
 Đọc theo thứ tự: `AGENTS.md` → `.ai/rules/quy_tac_code.md` → file này → `.ai/system/kien_truc.md` → `.ai/system/thiet_ke_csdl.md`.
 
@@ -151,6 +151,14 @@ Thống kê & Quản lý kết quả `/admin/ket-qua` (10/11/2026):
 - Widget thống kê `ResultStats` (`src/components/admin/ResultStats/`): hiển thị tổng số sinh viên tham gia, tổng lượt làm, công tắc chuyển giữa kết quả gần nhất của mỗi sinh viên (`latest`) và tất cả lượt làm (`all`), thanh phân bổ 6 màu tổng hợp, lưới 6 ô mã gen (responsive 2/3/6 cột) và bộ đếm 4 loại kết quả (`don`, `ket_hop`, `dong_hang`, `da_sac`). Hỗ trợ bấm trực tiếp vào từng ô màu hoặc loại kết quả để lọc bảng.
 - Bảng kết quả `ResultTable` (`src/components/admin/ResultTable/`) kế thừa `AdminDataTable`: hiển thị mã SV, họ tên (kèm nhãn lần làm), mã gen nổi bật, loại kết quả, bản đồ điểm 6 gen thu gọn, thời gian nộp. Hỗ trợ tìm kiếm không dấu, lọc theo mã gen và loại kết quả, xem chi tiết trong modal (`ResultDetail`), xoá kết quả thử nghiệm và xuất file CSV chuẩn UTF-8 BOM (`GET /api/admin/export`).
 - Backend & API: `GET /api/admin/results`, `DELETE /api/admin/results/[id]`, `GET /api/admin/export`, query `listAdminResults`, mutation `deleteAdminResult`, hook `useAdminResults` (`refetchInterval: 15_000`) và `useDeleteAdminResult`.
-- Việc tiếp theo: hoàn thiện trang tạo & in mã QR (`/admin/qr`) và chạy checklist triển lãm.
+
+Tạo & In mã QR trạm triển lãm `/admin/qr` (14/11/2026):
+- Nâng cấp bảo mật Next.js `16.4.0` → `16.4.6` (`experimental.agentUpgrade: "security"`), thêm `suppressHydrationWarning` cho `<body>` trong `src/app/layout.tsx` để tránh cảnh báo hydration khi trình duyệt có cài extension.
+- Cài `qrcode.react`, tạo trang `/admin/qr` (`src/app/admin/(dashboard)/qr/page.tsx`), mở menu sidebar (`ADMIN_NAV.navQr` -> `ready: true`).
+- Giao diện `QrPanel` (`src/components/admin/QrPanel/`):
+  - Thẻ Poster QR Trạm 2 trực quan với dải 6 màu IR DNA, nhãn trạm, tiêu đề và mã QR vector sắc nét.
+  - Tuỳ chỉnh đường dẫn đích (tự lấy domain hiện tại hoặc `NEXT_PUBLIC_APP_URL`, sao chép nhanh, mở tab mới), đổi màu mã QR (Đen tiêu chuẩn, Xanh IR DNA, màu mã gen), chọn độ phân giải ảnh PNG (`512px`, `1024px`, `2048px`), mức sửa lỗi (`M`, `Q`, `H`) và viền trắng an toàn (`marginSize`).
+  - Xuất file ảnh PNG chất lượng cao, vector SVG nguyên bản cho thiết kế ấn phẩm, và in trực tiếp thẻ Poster QR (`@media print` tự ẩn thanh công cụ/sidebar).
+
 
 

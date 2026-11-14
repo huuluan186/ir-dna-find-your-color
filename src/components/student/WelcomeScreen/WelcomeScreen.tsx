@@ -9,7 +9,7 @@ export function WelcomeScreen() {
 	const t = useTranslations("home");
 
 	return (
-		<div className={classes.screen}>
+		<div className={classes.screen} data-welcome-screen>
 			<div className={classes.intro}>
 				<Group className={classes.identity} gap={10} align="center">
 					<span className={classes.brandMark} aria-hidden="true">
