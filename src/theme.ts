@@ -1,4 +1,4 @@
-import { createTheme, Input, type MantineColorsTuple } from "@mantine/core";
+import { Button, createTheme, Input, type MantineColorsTuple } from "@mantine/core";
 import classes from "./theme.module.css";
 
 // Xanh lam IR DNA (#1E4FA3 ở vị trí 6). Màu của 6 mã gen lấy từ CSDL, không khai báo ở đây.
@@ -24,8 +24,16 @@ export const theme = createTheme({
 	defaultRadius: "md",
 	cursorType: "pointer",
 	components: {
-		// Ô nhập ≥ 16px để iOS không tự phóng to, nút cao ≥ 44px
-		Button: { defaultProps: { size: "md" } },
+		// Ô nhập ≥ 16px để iOS không tự phóng to, nút cao ≥ 44px; khi loading giữ nguyên chữ và phủ lớp loading lên trên
+		Button: Button.extend({
+			defaultProps: { size: "md" },
+			classNames: {
+				root: classes.buttonRoot,
+				inner: classes.buttonInner,
+				label: classes.buttonLabel,
+				loader: classes.buttonLoader,
+			},
+		}),
 		TextInput: { defaultProps: { size: "md" } },
 		PasswordInput: { defaultProps: { size: "md" } },
 		// Áp cho mọi ô nhập (TextInput, Select...): ô disabled là ô chỉ để xem, chữ in nghiêng

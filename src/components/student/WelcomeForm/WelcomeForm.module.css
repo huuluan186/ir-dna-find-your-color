@@ -32,6 +32,12 @@
 	box-shadow: 0 9px 22px rgb(30 79 163 / 20%);
 }
 
+.microsoftButton {
+	min-height: 48px;
+	border-radius: 14px;
+	font-weight: 600;
+}
+
 @media (max-height: 640px) {
 	.form {
 		padding: 16px 18px;
@@ -41,7 +47,8 @@
 		gap: 10px !important;
 	}
 
-	.submitButton {
+	.submitButton,
+	.microsoftButton {
 		min-height: 44px;
 	}
 }

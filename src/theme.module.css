@@ -6,3 +6,26 @@
 	font-style: italic;
 	cursor: default;
 }
+
+/* Nút bấm khi loading: giữ nguyên vị trí chữ/icon, chỉ phủ lớp mờ và vòng xoay lên trên */
+.buttonRoot::before {
+	z-index: 1;
+	transform: none;
+	filter: none;
+	backdrop-filter: blur(1.5px);
+	background-color: light-dark(rgb(255 255 255 / 32%), rgb(15 23 42 / 38%));
+}
+
+.buttonRoot[data-loading] .buttonInner {
+	opacity: 0.45;
+	transform: none;
+}
+
+.buttonLabel[data-loading] {
+	opacity: 1;
+}
+
+.buttonLoader {
+	z-index: 2;
+	transform: translate(-50%, -50%) !important;
+}

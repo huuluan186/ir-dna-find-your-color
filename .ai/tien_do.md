@@ -1,6 +1,6 @@
 # TIẾN ĐỘ & BÀN GIAO - IR DNA – FIND YOUR COLOR
 
-File này để một AI (hoặc người) mới vào dự án nắm nhanh: dự án là gì, đã làm tới đâu, việc gì tiếp theo. **Cập nhật file này mỗi khi xong một bước.** Cập nhật lần cuối: 14/11/2026.
+File này để một AI (hoặc người) mới vào dự án nắm nhanh: dự án là gì, đã làm tới đâu, việc gì tiếp theo. **Cập nhật file này mỗi khi xong một bước.** Cập nhật lần cuối: 15/11/2026.
 
 Đọc theo thứ tự: `AGENTS.md` → `.ai/rules/quy_tac_code.md` → file này → `.ai/system/kien_truc.md` → `.ai/system/thiet_ke_csdl.md`.
 
@@ -159,6 +159,13 @@ Tạo & In mã QR trạm triển lãm `/admin/qr` (14/11/2026):
   - Thẻ Poster QR Trạm 2 trực quan với dải 6 màu IR DNA, nhãn trạm, tiêu đề và mã QR vector sắc nét.
   - Tuỳ chỉnh đường dẫn đích (tự lấy domain hiện tại hoặc `NEXT_PUBLIC_APP_URL`, sao chép nhanh, mở tab mới), đổi màu mã QR (Đen tiêu chuẩn, Xanh IR DNA, màu mã gen), chọn độ phân giải ảnh PNG (`512px`, `1024px`, `2048px`), mức sửa lỗi (`M`, `Q`, `H`) và viền trắng an toàn (`marginSize`).
   - Xuất file ảnh PNG chất lượng cao, vector SVG nguyên bản cho thiết kế ấn phẩm, và in trực tiếp thẻ Poster QR (`@media print` tự ẩn thanh công cụ/sidebar).
+
+Đăng nhập Microsoft OAuth2 / Entra ID giới hạn mail sinh viên HUFLIT (15/11/2026):
+- Thêm tiện ích xác thực OIDC Microsoft `src/lib/microsoft-auth.ts` dùng `jose` (`createRemoteJWKSet`, `jwtVerify`), kiểm tra CSRF `state` + `nonce` qua cookie JWT ngắn hạn (`ir-dna-ms-oauth-state`), bắt buộc tên miền email khớp `MICROSOFT_ALLOWED_DOMAIN` (mặc định `st.huflit.edu.vn`), tự tách `mssv` từ phần trước `@` và chuẩn hoá `ho_ten` từ hồ sơ Microsoft.
+- Tạo 2 route `GET /api/auth/microsoft` (`src/app/api/auth/microsoft/route.ts`) và `GET /api/auth/microsoft/callback` (`src/app/api/auth/microsoft/callback/route.ts`): tự động đăng ký/cập nhật vào bảng `sinh_vien`, chặn tài khoản `bi_khoa`, cấp cookie phiên `ir-dna-student` và chuyển hướng vào `/quiz`.
+- Cập nhật `WelcomeForm` (`src/components/student/WelcomeForm/WelcomeForm.tsx`): thêm nút "Đăng nhập bằng Microsoft" kèm thông báo lỗi tiếng Việt/Anh khi đăng nhập sai tên miền hoặc tài khoản bị khoá.
+- Tuỳ biến `Button` toàn cục trong `src/theme.ts` và `src/theme.module.css`: khi `loading`, giữ nguyên chữ và icon tại chỗ (bỏ hiệu ứng trượt biến mất xuống dưới mặc định của Mantine), chỉ phủ lớp mờ kèm vòng xoay loading ở giữa.
+
 
 
 
