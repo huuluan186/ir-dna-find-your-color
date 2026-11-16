@@ -163,7 +163,7 @@ Tạo & In mã QR trạm triển lãm `/admin/qr` (14/11/2026):
 Đăng nhập Microsoft OAuth2 / Entra ID giới hạn mail sinh viên HUFLIT (15/11/2026):
 - Thêm tiện ích xác thực OIDC Microsoft `src/lib/microsoft-auth.ts` dùng `jose` (`createRemoteJWKSet`, `jwtVerify`), kiểm tra CSRF `state` + `nonce` qua cookie JWT ngắn hạn (`ir-dna-ms-oauth-state`), bắt buộc tên miền email khớp `MICROSOFT_ALLOWED_DOMAIN` (mặc định `st.huflit.edu.vn`), tự tách `mssv` từ phần trước `@` và chuẩn hoá `ho_ten` từ hồ sơ Microsoft.
 - Tạo 2 route `GET /api/auth/microsoft` (`src/app/api/auth/microsoft/route.ts`) và `GET /api/auth/microsoft/callback` (`src/app/api/auth/microsoft/callback/route.ts`): tự động đăng ký/cập nhật vào bảng `sinh_vien`, chặn tài khoản `bi_khoa`, cấp cookie phiên `ir-dna-student` và chuyển hướng vào `/quiz`.
-- Cập nhật `WelcomeForm` (`src/components/student/WelcomeForm/WelcomeForm.tsx`): thêm nút "Đăng nhập bằng Microsoft" kèm thông báo lỗi tiếng Việt/Anh khi đăng nhập sai tên miền hoặc tài khoản bị khoá.
+- Cập nhật `WelcomeForm` (`src/components/student/WelcomeForm/WelcomeForm.tsx`): chỉ giữ nút "Đăng nhập bằng Microsoft" kèm thông báo lỗi tiếng Việt/Anh khi đăng nhập sai tên miền hoặc tài khoản bị khoá; xoá bỏ hoàn toàn luồng nhập MSSV/họ tên thủ công (`src/app/api/auth/student/route.ts`, schema/hook/API client đăng nhập MSSV).
 - Tuỳ biến `Button` toàn cục trong `src/theme.ts` và `src/theme.module.css`: khi `loading`, giữ nguyên chữ và icon tại chỗ (bỏ hiệu ứng trượt biến mất xuống dưới mặc định của Mantine), chỉ phủ lớp mờ kèm vòng xoay loading ở giữa.
 
 
