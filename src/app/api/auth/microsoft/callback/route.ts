@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
 import { ROUTES } from "@/constants/routes";
 import { registerStudent } from "@/features/auth/server/mutations";
@@ -9,8 +10,6 @@ import {
 } from "@/lib/microsoft-auth";
 import { createStudentSession } from "@/lib/session";
 
-export const dynamic = "force-dynamic";
-
 function redirectWithAuthError(request: NextRequest, code: MicrosoftAuthErrorCode) {
 	const homeUrl = new URL(ROUTES.HOME, getRequestOrigin(request));
 	homeUrl.searchParams.set("authError", code);
@@ -18,6 +17,8 @@ function redirectWithAuthError(request: NextRequest, code: MicrosoftAuthErrorCod
 }
 
 export async function GET(request: NextRequest) {
+	await cookies();
+
 	const { searchParams } = request.nextUrl;
 	const oauthError = searchParams.get("error");
 

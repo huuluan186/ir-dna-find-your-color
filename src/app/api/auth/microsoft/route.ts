@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
 import { ROUTES } from "@/constants/routes";
 import {
@@ -6,9 +7,9 @@ import {
 	MicrosoftAuthError,
 } from "@/lib/microsoft-auth";
 
-export const dynamic = "force-dynamic";
-
 export async function GET(request: NextRequest) {
+	await cookies();
+
 	try {
 		const authorizeUrl = await createMicrosoftAuthorizeUrl(request);
 		return NextResponse.redirect(authorizeUrl);
