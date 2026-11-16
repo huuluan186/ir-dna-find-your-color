@@ -24,16 +24,10 @@
 	font-size: 0.875rem;
 }
 
-.submitButton {
+.microsoftButton {
+	--button-radius: 14px;
 	min-height: 50px;
 	margin-top: 2px;
-	border-radius: 14px;
-	font-weight: 700;
-	box-shadow: 0 9px 22px rgb(30 79 163 / 20%);
-}
-
-.microsoftButton {
-	min-height: 48px;
 	border-radius: 14px;
 	font-weight: 600;
 }
@@ -47,7 +41,6 @@
 		gap: 10px !important;
 	}
 
-	.submitButton,
 	.microsoftButton {
 		min-height: 44px;
 	}
@@ -57,40 +50,4 @@
 	color: var(--mantine-color-error);
 	font-size: 0.8125rem;
 	line-height: 1.5;
-}
-
-.greeting {
-	color: var(--mantine-color-text);
-	font-size: 1.125rem;
-	font-weight: 800;
-}
-
-/* Chuyển bước: nội dung mới trượt vào (từ phải khi tiến, từ trái khi quay lại) */
-.slide {
-	animation: slide-in 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
-	will-change: transform, opacity;
-
-	&[data-back] {
-		animation-name: slide-in-back;
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		animation: none;
-	}
-}
-
-@keyframes slide-in {
-	from {
-		opacity: 0;
-		transform: translateX(18px);
-		filter: blur(2px);
-	}
-}
-
-@keyframes slide-in-back {
-	from {
-		opacity: 0;
-		transform: translateX(-18px);
-		filter: blur(2px);
-	}
 }

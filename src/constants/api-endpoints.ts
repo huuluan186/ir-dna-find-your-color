@@ -2,7 +2,6 @@
 export const API_ENDPOINTS = {
 	ROOT: "/api",
 	AUTH: {
-		STUDENT: "/api/auth/student",
 		MICROSOFT: "/api/auth/microsoft",
 		MICROSOFT_CALLBACK: "/api/auth/microsoft/callback",
 		ADMIN: "/api/auth/admin",
