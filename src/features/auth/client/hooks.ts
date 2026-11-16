@@ -2,15 +2,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/constants/query-keys";
-import { loginAdminRequest, loginStudentRequest, logoutAdminRequest } from "./api";
-
-export function useLoginStudent() {
-	const queryClient = useQueryClient();
-	return useMutation({
-		mutationFn: loginStudentRequest,
-		onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.STUDENT.ME }),
-	});
-}
+import { loginAdminRequest, logoutAdminRequest } from "./api";
 
 export function useLoginAdmin() {
 	return useMutation({ mutationFn: loginAdminRequest });
