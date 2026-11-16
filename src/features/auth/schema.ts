@@ -9,7 +9,7 @@ export type LoginErrorCode = "mssv_invalid" | "ho_ten_required" | "ho_ten_too_lo
 export type LoginField = "mssv" | "ho_ten";
 
 // Gộp khoảng trắng thừa và viết hoa chữ đầu mỗi từ
-function normalizeName(value: string) {
+export function normalizeName(value: string) {
 	return value
 		.trim()
 		.replace(/\s+/g, " ")

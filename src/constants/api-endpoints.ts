@@ -3,6 +3,8 @@ export const API_ENDPOINTS = {
 	ROOT: "/api",
 	AUTH: {
 		STUDENT: "/api/auth/student",
+		MICROSOFT: "/api/auth/microsoft",
+		MICROSOFT_CALLBACK: "/api/auth/microsoft/callback",
 		ADMIN: "/api/auth/admin",
 	},
 	// Cài đặt âm thanh công khai cho trang sinh viên (nhạc nền đang dùng, âm lượng)

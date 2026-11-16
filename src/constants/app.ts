@@ -14,6 +14,8 @@ export const SESSION = {
 	STUDENT_MAX_AGE_SECONDS: 7 * 24 * 60 * 60,
 	ADMIN_COOKIE: "ir-dna-admin",
 	ADMIN_MAX_AGE_SECONDS: 12 * 60 * 60,
+	OAUTH_STATE_COOKIE: "ir-dna-ms-oauth-state",
+	OAUTH_STATE_MAX_AGE_SECONDS: 10 * 60,
 } as const;
 
 // Khoá localStorage của trình duyệt
