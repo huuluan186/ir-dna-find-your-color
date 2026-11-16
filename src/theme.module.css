@@ -7,17 +7,18 @@
 	cursor: default;
 }
 
-/* Nút bấm khi loading: giữ nguyên vị trí chữ/icon, chỉ phủ lớp mờ và vòng xoay lên trên */
+/* Nút bấm khi loading: tắt lớp phủ ::before và bỏ overflow: hidden để trình duyệt không cắt răng cưa
+   viền bo góc khi vòng xoay Loader chạy GPU animation; giữ nguyên chữ/icon và chỉ hạ độ mờ nội dung */
+.buttonRoot {
+	overflow: visible;
+}
+
 .buttonRoot::before {
-	z-index: 1;
-	transform: none;
-	filter: none;
-	backdrop-filter: blur(1.5px);
-	background-color: light-dark(rgb(255 255 255 / 32%), rgb(15 23 42 / 38%));
+	display: none;
 }
 
 .buttonRoot[data-loading] .buttonInner {
-	opacity: 0.45;
+	opacity: 0.35;
 	transform: none;
 }
 
