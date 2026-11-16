@@ -35,7 +35,12 @@
 		"confirmHint": "Is that you?",
 		"notYou": "Not you?",
 		"studentIdSummary": "Student ID: {mssv}",
-		"accountLocked": "This account has been locked. Please contact the organizers."
+		"accountLocked": "This account has been locked. Please contact the organizers.",
+		"microsoftButton": "Sign in with Microsoft",
+		"orDivider": "or enter student ID",
+		"microsoftDomainError": "Please sign in with your HUFLIT student email (@st.huflit.edu.vn).",
+		"microsoftNotConfiguredError": "Microsoft sign-in is not configured yet.",
+		"microsoftAuthError": "Microsoft sign-in failed. Please try again."
 	},
 	"quiz": {
 		"counter": "Question {current}/{total}",

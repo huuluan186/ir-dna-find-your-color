@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { Anchor, Button, Stack, Text, TextInput } from "@mantine/core";
+import { useState, useSyncExternalStore } from "react";
+import { Anchor, Button, Divider, Stack, Text, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { API_ENDPOINTS } from "@/constants/api-endpoints";
 import { STUDENT_INPUT } from "@/constants/app";
 import { ROUTES } from "@/constants/routes";
 import { LoginValidationError } from "@/features/auth/client/api";
@@ -18,6 +19,26 @@ const ERROR_KEYS: Record<LoginErrorCode, string> = {
 	ho_ten_required: "nameError",
 	ho_ten_too_long: "nameTooLongError",
 };
+
+const OAUTH_ERROR_KEYS: Record<string, string> = {
+	invalid_domain: "microsoftDomainError",
+	locked: "accountLocked",
+	not_configured: "microsoftNotConfiguredError",
+	invalid_state: "microsoftAuthError",
+	invalid_profile: "microsoftAuthError",
+	oauth_failed: "microsoftAuthError",
+};
+
+function MicrosoftIcon() {
+	return (
+		<svg width="18" height="18" viewBox="0 0 21 21" aria-hidden="true">
+			<rect x="1" y="1" width="9" height="9" fill="#F25022" />
+			<rect x="11" y="1" width="9" height="9" fill="#7FBA00" />
+			<rect x="1" y="11" width="9" height="9" fill="#00A4EF" />
+			<rect x="11" y="11" width="9" height="9" fill="#FFB900" />
+		</svg>
+	);
+}
 
 // Server trả 403 khi admin đã khoá tài khoản
 function isLockedError(error: unknown) {
@@ -35,6 +56,30 @@ export function WelcomeForm() {
 	const [studentName, setStudentName] = useState("");
 	// Hướng trượt: tiến tới thì vào từ phải, quay lại thì vào từ trái
 	const [goingBack, setGoingBack] = useState(false);
+	const [oauthErrorDismissed, setOauthErrorDismissed] = useState(false);
+	const [redirectingMicrosoft, setRedirectingMicrosoft] = useState(false);
+
+	const urlAuthError = useSyncExternalStore(
+		() => () => {},
+		() => new URLSearchParams(window.location.search).get("authError"),
+		() => null
+	);
+
+	const oauthErrorKey =
+		!oauthErrorDismissed && urlAuthError
+			? (OAUTH_ERROR_KEYS[urlAuthError] ?? "microsoftAuthError")
+			: null;
+
+	function clearOauthError() {
+		if (!urlAuthError && oauthErrorDismissed) return;
+		setOauthErrorDismissed(true);
+		const params = new URLSearchParams(window.location.search);
+		if (!params.has("authError")) return;
+		params.delete("authError");
+		const nextQuery = params.toString();
+		const nextUrl = `${window.location.pathname}${nextQuery ? `?${nextQuery}` : ""}`;
+		window.history.replaceState(null, "", nextUrl);
+	}
 
 	// Bước 1 chỉ gửi mã SV; bước 2 gửi thêm họ tên
 	function toPayload(values: { mssv: string; ho_ten: string }) {
@@ -88,13 +133,17 @@ export function WelcomeForm() {
 		setStep("mssv");
 	}
 
-	const serverError = login.isError &&
-		!(login.error instanceof LoginValidationError) &&
-		!isLockedError(login.error) && (
-			<Text className={classes.serverError} role="alert">
-				{t("serverError")}
-			</Text>
-		);
+	function handleMicrosoftLogin() {
+		clearOauthError();
+		setRedirectingMicrosoft(true);
+		window.location.assign(API_ENDPOINTS.AUTH.MICROSOFT);
+	}
+
+	const errorMessage = oauthErrorKey
+		? t(oauthErrorKey)
+		: login.isError && !(login.error instanceof LoginValidationError) && !isLockedError(login.error)
+			? t("serverError")
+			: null;
 
 	if (step === "confirm") {
 		return (
@@ -129,6 +178,24 @@ export function WelcomeForm() {
 					</Text>
 				</div>
 
+				{step === "mssv" && (
+					<>
+						<Button
+							type="button"
+							variant="default"
+							fullWidth
+							className={classes.microsoftButton}
+							leftSection={<MicrosoftIcon />}
+							loading={redirectingMicrosoft}
+							disabled={login.isPending}
+							onClick={handleMicrosoftLogin}
+						>
+							{t("microsoftButton")}
+						</Button>
+						<Divider label={t("orDivider")} labelPosition="center" />
+					</>
+				)}
+
 				{/* key đổi theo bước để ô nhập mới trượt vào thay ô cũ */}
 				<div key={step} className={classes.slide} data-back={goingBack || undefined}>
 					{step === "mssv" ? (
@@ -141,9 +208,10 @@ export function WelcomeForm() {
 							maxLength={STUDENT_INPUT.MSSV_MAX_LENGTH}
 							required
 							autoFocus={goingBack}
-							onChange={(event) =>
-								form.setFieldValue("mssv", event.currentTarget.value.toUpperCase())
-							}
+							onChange={(event) => {
+								clearOauthError();
+								form.setFieldValue("mssv", event.currentTarget.value.toUpperCase());
+							}}
 							onFocus={() => form.clearFieldError("mssv")}
 						/>
 					) : (
@@ -161,7 +229,13 @@ export function WelcomeForm() {
 					)}
 				</div>
 
-				<Button type="submit" fullWidth className={classes.submitButton} loading={login.isPending}>
+				<Button
+					type="submit"
+					fullWidth
+					className={classes.submitButton}
+					loading={login.isPending}
+					disabled={redirectingMicrosoft}
+				>
 					{step === "name" ? t("button") : t("continue")}
 				</Button>
 
@@ -171,7 +245,11 @@ export function WelcomeForm() {
 					</Anchor>
 				)}
 
-				{serverError}
+				{errorMessage && (
+					<Text className={classes.serverError} role="alert">
+						{errorMessage}
+					</Text>
+				)}
 			</Stack>
 		</form>
 	);

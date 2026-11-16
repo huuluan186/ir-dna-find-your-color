@@ -35,7 +35,12 @@
 		"confirmHint": "Đúng là bạn chứ?",
 		"notYou": "Không phải bạn?",
 		"studentIdSummary": "Mã sinh viên: {mssv}",
-		"accountLocked": "Tài khoản này đã bị khoá. Vui lòng liên hệ ban tổ chức."
+		"accountLocked": "Tài khoản này đã bị khoá. Vui lòng liên hệ ban tổ chức.",
+		"microsoftButton": "Đăng nhập bằng Microsoft",
+		"orDivider": "hoặc nhập mã sinh viên",
+		"microsoftDomainError": "Vui lòng đăng nhập bằng email sinh viên HUFLIT (@st.huflit.edu.vn).",
+		"microsoftNotConfiguredError": "Chưa cấu hình đăng nhập Microsoft trên hệ thống.",
+		"microsoftAuthError": "Xác thực Microsoft không thành công. Vui lòng thử lại."
 	},
 	"quiz": {
 		"counter": "Câu {current}/{total}",
